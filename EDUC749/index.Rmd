@@ -389,14 +389,14 @@ DOM_FCT_Part_Avg <- left_join(DOM_FCT_Final, DOM_FCT_Part_Avg, by = c("Part_ID" 
 
 ## Form overall master
 DOM_Master <- rbind(DOM_EPT_Part_Avg, DOM_FCT_Part_Avg)
-DOM_Master$Group <- factor(DOM_Master$Group, levels = c("SDBA", "DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+DOM_Master$Group <- factor(DOM_Master$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
 DOM_Master$Task <- factor(DOM_Master$Task, levels = c("SCT", "MST"))
 
 
 ## Calculate HS master
 DOM_Master_HS <- DOM_Master %>% 
   filter(!Group == "SDBA")
-DOM_Master_HS$Group <- factor(DOM_Master_HS$Group, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+DOM_Master_HS$Group <- factor(DOM_Master_HS$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
 DOM_Master_HS$Task <- factor(DOM_Master_HS$Task, levels = c("SCT", "MST"))
 DOM_Master_HS$Age <- factor(DOM_Master_HS$Age, levels = c("5th", "7th/8th"))
 ```
@@ -414,14 +414,14 @@ Subj_FCT_Part_Avg <- left_join(Subj_FCT_Final, Subj_FCT_Part_Avg, by = c("Part_I
 
 ## Form overall master
 Subj_Master <- rbind(Subj_EPT_Part_Avg, Subj_FCT_Part_Avg)
-Subj_Master$Group <- factor(Subj_Master$Group, levels = c("SDBA", "DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+Subj_Master$Group <- factor(Subj_Master$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
 Subj_Master$Task <- factor(Subj_Master$Task, levels = c("SCT", "MST"))
 
 
 ## Form HS master
 Subj_Master_HS <- Subj_Master %>% 
   filter(!Group == "SDBA")
-Subj_Master_HS$Group <- factor(Subj_Master_HS$Group, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+Subj_Master_HS$Group <- factor(Subj_Master_HS$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
 Subj_Master_HS$Task <- factor(Subj_Master_HS$Task, levels = c("SCT", "MST"))
 Subj_Master_HS$Age <- factor(Subj_Master_HS$Age, levels = c("5th", "7th/8th"))
 ```
@@ -737,7 +737,7 @@ knitr::include_graphics(Overload)
 
 --
 ```{r, load-partipant-table}
-Participants <- read_csv("../PoLaR Presentation/PoLaR Participant Table.csv")
+Participants <- read_csv("../PoLaR/PoLaR Participant Table.csv")
 ```
 
 ```{r, list-participant-table}
@@ -918,7 +918,7 @@ DOM_Overall <- glmer(DOM_Use ~ Group + Task + Use_Joint_Std + Task:Use_Joint_Std
 DOM_Overall_Plot <- plot_model(DOM_Overall, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
                 scale_y_continuous(breaks = seq(-6, 6, 2),
                      limits = c(-6, 6)) +
-          scale_x_discrete(labels = c("MST : Freq. of use", "Frequency of use of Spanish", "Morphology selection task (MST)", "MLS-5 group", "DLI-5 group", "MLS-7/8 group", "(Intercept)")) +
+            scale_x_discrete(labels = c("MST : Freq. of use", "Frequency of use of Spanish", "Morphology selection task (MST)", "DLI-7/8 group", "MLS-7/8 group", "DLI-5 group", "(Intercept)")) +
   labs(title = "DOM Overall Model", y = "Estimates") +
   theme(axis.text = element_text(size = 18, face = "bold"),
         axis.title = element_text(size = 20, face = "bold"),
@@ -980,7 +980,7 @@ DOM_Diffs = left_join(DOM_EPT_Diffs, DOM_FCT_Diffs, by = "Part_ID", "Group") %>%
   mutate(Total = Preference + Production) %>% 
   filter(!Group == "SDBA")
 
-DOM_Diffs$Group <- factor(DOM_Diffs$Group, levels = c("SDBA", "DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+DOM_Diffs$Group <- factor(DOM_Diffs$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
 ```
 
 ```{r, generate-DOM-diffs-plot}
@@ -1034,17 +1034,18 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
 ---
 # Subjunctive: Correlation
 
-```{r, generate-Subj-overall-correlation}
+```{r, generate-subj-overall-correlation}
 Subj_Overall <- glmer(Mood_Use ~ Group + Task + Use_Joint_Std + Task:Use_Joint_Std +
                        (1 | Part_ID) + (1 | Item),
                      data = Subj_Master_HS,
                      family = "binomial")
 ```
 
-```{r, generate-Subj-overall-forest-plot}
+```{r, generate-subj-overall-forest-plot}
 Subj_Overall_Plot <- plot_model(Subj_Overall, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
               scale_y_continuous(breaks = seq(-6, 6, 2),
                      limits = c(-6, 6)) +
+            scale_x_discrete(labels = c("MST : Freq. of use", "Frequency of use of Spanish", "Morphology selection task (MST)", "DLI-7/8 group", "MLS-7/8 group", "DLI-5 group", "(Intercept)")) +
   labs(title = "DOM Overall Model", y = "Estimates") +
   labs(title = "Subjunctive Overall Model", y = "Estimates") +
   theme(axis.text = element_text(size = 18, face = "bold"),
@@ -1076,6 +1077,10 @@ kable(Subj_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t rati
 
 --
 - There does not seem to be any effect of DLI on the development of the subjunctive
+
+
+--
+- Looking at the graphs, it seems that older children have more knowledge of subjunctive than younger children, so additional stats would be useful comparing age groups without considering school group
 
 
 ---
@@ -1128,7 +1133,7 @@ Subj_Diffs = left_join(Subj_EPT_Diffs, Subj_FCT_Diffs, by = "Part_ID", "Group") 
   mutate(Total = Preference + Production) %>% 
   filter(!Group == "SDBA")
 
-Subj_Diffs$Group <- factor(Subj_Diffs$Group, levels = c("SDBA", "DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+Subj_Diffs$Group <- factor(Subj_Diffs$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
 ```
 
 ```{r, generate-subj-diffs-plot}
