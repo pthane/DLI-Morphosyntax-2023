@@ -389,7 +389,7 @@ DOM_FCT_Part_Avg <- left_join(DOM_FCT_Final, DOM_FCT_Part_Avg, by = c("Part_ID" 
 
 ## Form overall master
 DOM_Master <- rbind(DOM_EPT_Part_Avg, DOM_FCT_Part_Avg)
-DOM_Master$Group <- factor(DOM_Master$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
+DOM_Master$Group <- factor(DOM_Master$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
 DOM_Master$Task <- factor(DOM_Master$Task, levels = c("SCT", "MST"))
 
 
@@ -414,7 +414,7 @@ Subj_FCT_Part_Avg <- left_join(Subj_FCT_Final, Subj_FCT_Part_Avg, by = c("Part_I
 
 ## Form overall master
 Subj_Master <- rbind(Subj_EPT_Part_Avg, Subj_FCT_Part_Avg)
-Subj_Master$Group <- factor(Subj_Master$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
+Subj_Master$Group <- factor(Subj_Master$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
 Subj_Master$Task <- factor(Subj_Master$Task, levels = c("SCT", "MST"))
 
 
@@ -846,7 +846,7 @@ La mamá sabe que Juanito tiene miedo de alturas. No quiere subir al tobogán 
   + Task (SCT, production versus MST, receptive)
 
 --
-  + School type (DLI versus MLS/monolingual school)
+  + Group (MLS-5, DLI-5, MLS-7/8, DLI-7/8)
 
 --
   + Age group (5th grade versus 7th/8th grade)
@@ -980,7 +980,7 @@ DOM_Diffs = left_join(DOM_EPT_Diffs, DOM_FCT_Diffs, by = "Part_ID", "Group") %>%
   mutate(Total = Preference + Production) %>% 
   filter(!Group == "SDBA")
 
-DOM_Diffs$Group <- factor(DOM_Diffs$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
+DOM_Diffs$Group <- factor(DOM_Diffs$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
 ```
 
 ```{r, generate-DOM-diffs-plot}
@@ -1014,10 +1014,8 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
 --
   + DLI-7/8 were greater than both monolingually-educated groups
 
-
 --
   + DLI-7/8 were not different from DLI-5 (same school, different age)
-
 
 --
   + DLI-5 were not different from MLS-5 (same age, different school)
@@ -1133,7 +1131,7 @@ Subj_Diffs = left_join(Subj_EPT_Diffs, Subj_FCT_Diffs, by = "Part_ID", "Group") 
   mutate(Total = Preference + Production) %>% 
   filter(!Group == "SDBA")
 
-Subj_Diffs$Group <- factor(Subj_Diffs$Group, levels = c("SDBA", "MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
+Subj_Diffs$Group <- factor(Subj_Diffs$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
 ```
 
 ```{r, generate-subj-diffs-plot}
@@ -1247,7 +1245,7 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 - Age *and* bilingual education appear to interact in the acquisition of DOM
 
 --
-  + Neither variable alone appears to matter by itself, but more statistics would be needed to back up this claim
+  + Neither variable appears to matter by itself, but more statistics would be needed to back up this claim
 
 --
   + Such an effect is called an *interaction* because there is a relationship between two independent variables (that is, X sometimes affects Y)
