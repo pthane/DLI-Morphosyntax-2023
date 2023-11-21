@@ -732,7 +732,7 @@ Quoted from Putnam & Sánchez (2013, pp. 489-490):
 
 
 --
-**4. Does feature interpretability or interface variability have a greater effect on school-aged Spanish HSs knowledge of the structures tested?**
+**4. Does feature interpretability or interface variability have a greater effect on school-aged Spanish HSs' knowledge of the structures tested?**
 
 
 --
@@ -1245,7 +1245,7 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 # Research Question 1
 
 
-**Do the following experiential factors affect individual HSs' knowledge of volitional subjunctive and DOM: Frequency of use, morphosyntactic proficiency, DLI education?**
+**Do frequency of use, morphosyntactic proficiency, DLI education affect individual HSs' knowledge of volitional subjunctive and DOM?**
 
 
 --
@@ -1313,11 +1313,11 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 ---
 # Research Question 4
 
-**Does feature interpretability or interface variability have a greater effect on school-aged Spanish HSs knowledge of the structures tested?**
+**Does feature interpretability or interface variability have a greater effect on school-aged Spanish HSs' knowledge of the structures tested?**
 
 
 --
-- Interface variability appears to matter more than interpretability
+- Interface variability appears to matter more than feature interpretability in these data
 
 
 --
