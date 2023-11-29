@@ -1,7 +1,7 @@
 ---
 title: "Empiricalizing Heritage Spanish Development in Dual-Language Immersion: Initial Insights"
 author: "Patrick D. Thane, Ph.D. (él/he/him/his)<br/>pthane@umass.edu"
-institute: "LLC #26: UMass College of Education"
+institute: "LLC XXVI: UMass College of Education<br/>https://tinyurl.com/4sathhsw"
 date: "November 29, 2023"
 output:
   xaringan::moon_reader:
@@ -444,6 +444,7 @@ Subj_FCT_HS <- Subj_Master_HS %>%
   filter(Task == "MST")
 ```
 
+---
 # Abstract
 
 
@@ -607,6 +608,7 @@ More needs to be done to adequately document the impact of DLI on heritage langu
 # Structures Tested
 
 
+--
 - Volitional subjunctive:
 
 --
@@ -1112,6 +1114,7 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 # Implications
 
 
+--
 - Without creating specific efforts to integrate langauge and content, some of the more technical aspects of language might not develop "for free"
 
 --
