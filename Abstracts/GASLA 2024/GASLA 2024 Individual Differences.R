@@ -1,10 +1,4 @@
 library(tidyverse)
-library(lme4)
-library(lmerTest)
-library(emmeans)
-
-options(scipen = 99)
-
 
 # Load and prepare data
 ## EPT
@@ -69,22 +63,38 @@ MLS5_FCT <- read.csv("./CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>%
 EPT <- rbind(HSA_EPT, DLI78_EPT, MLS78_EPT, DLI5_EPT, MLS78_EPT)
 FCT <- rbind(HSA_FCT, DLI78_FCT, MLS78_FCT, DLI5_FCT, MLS78_FCT)
 
-Master <- rbind(EPT, FCT)
-Master$Task <- factor(Master$Task, levels = c("Production", "Forced Choice"))
-Master$Group <- factor(Master$Group, levels = c("HSA", "HS7/8", "HS5"))
+
+# Generate individual differences statistics
+EPT_Diffs <- EPT %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+FCT_Diffs <- FCT %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+Diffs = left_join(EPT_Diffs, FCT_Diffs, by = "Part_ID", "Group") %>%
+  rename(Group = Group.x,
+         Production = Production.x,
+         Preference = Production.y) %>% 
+  mutate(Total = Preference + Production) %>% 
+  filter(!Group == "SDBA")
+
+Diffs$Group <- factor(Diffs$Group, levels = c("HSA", "HS7/8", "HS5"))
 
 
-# GLMM
-## Generate main correlation
-DOM_Correlation <- glmer(DOM_Use ~ Group + Use_Joint_Std + School + Task + Use_Joint_Std:Task +
-                           (1 | Part_ID) + (1 | Item),
-                         data = Master,
-                         family = "binomial")
-
-summary(DOM_Correlation)
-
-
-## Generate Tukey comparisons
-DOM_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
-DOM_Tukey <- contrast(DOM_Pairwise, method = "pairwise")
-summary(DOM_Tukey)
+# Generate scatter plot
+Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Group)) +
+  scale_x_continuous(breaks = seq (0, 10, 2),
+                     limits = c(-1, 11)) +
+  scale_y_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  labs(x = "Number of sentences with DOM produced", y = "Number of sentences with DOM selected", title = "Individual Rates of DOM Selection and Production", color = "Group") +
+  theme(axis.title = element_text(face = "bold"),
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        legend.title = element_text(face = "bold"),
+        strip.text = element_text(face = "bold", size = 10))

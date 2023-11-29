@@ -1,6 +1,6 @@
 ---
 title: "Empiricalizing Heritage Spanish Development in Dual-Language Immersion: Initial Insights"
-author: "Patrick D. Thane, Ph.D.<br/>pthane@umass.edu"
+author: "Patrick D. Thane, Ph.D. (él/he/him/his)<br/>pthane@umass.edu"
 institute: "LLC #26: UMass College of Education"
 date: "November 29, 2023"
 output:
@@ -447,7 +447,7 @@ Subj_FCT_HS <- Subj_Master_HS %>%
 # Abstract
 
 
-Research on the grammars of heritage speakers of Spanish has become extensive in recent years, but the systematic exploration of how dual-language immersion influences Spanish-speaking children’s development of their heritage language is lacking. The present study presents data comparing middle school children’s knowledge of subjunctive mood and differential object marking by comparing participants in a dual-language school with those in a monolingual school. These two grammatical structures have been identified as challenging to acquire in extensive previous heritage language research with adults. Results from two experimental tasks (one testing production and one testing written receptive knowledge) show that children in the dual-language immersion program have an advantage in their knowledge of differential object marking over monolingually-educated peers, but this advantage does not extend to the subjunctive mood. Implications for teaching Spanish in dual-language immersion programs are discussed.
+Research on the grammars of heritage speakers of Spanish has become extensive in recent years, but the systematic exploration of how dual-language immersion influences Spanish-speaking children’s development of their heritage language is lacking. The present study presents data assessing middle school Spanish-speaking children’s knowledge of subjunctive mood and differential object marking by comparing participants in a dual-language school with those in a monolingual school. These two grammatical structures have been identified as challenging to acquire in extensive previous heritage language research with adults. Results from two experimental tasks (one testing production and one testing written receptive knowledge) show that children in the dual-language immersion program have an advantage in their knowledge of differential object marking over monolingually-educated peers, but this advantage does not extend to the subjunctive mood. Implications for teaching Spanish in dual-language immersion programs are discussed.
 
 ---
 # Reviewing Dual-Language Immersion
@@ -564,8 +564,23 @@ More needs to be done to adequately document the impact of DLI on heritage langu
 --
 - To date, no systematic study comparing heritage speakers of Spanish in immersion programs to monolingually-educated HSs *during the school years*
 
+
+---
+- How does language exposure outside of school interact with the role of schooling? (Individual differences)
+
+
 ---
 # The Role of Age in Previous Research
+
+
+- Typically, language development increases with age
+
+
+--
+  + Monolingual children tend to master *most* aspects of their language by the school period
+  
+--
+  + Bilingual children may need longer, but we still hope for an *upward* trajectory
 
 
 --
@@ -1029,7 +1044,8 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 
 
 --
-- Age affects speakers' knowledge of both structures
+- Effect of bilingual education with older children in 4-way group analysis only
+
 
 --
 - Overall frequency of use subtly affected individual variability in subjunctive
@@ -1079,12 +1095,13 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 --
 - Prediction: HSs will show growth with age in their command of both DOM and subjunctive
 
+
 --
-- Age *and* bilingual education appear to interact in the acquisition of DOM
+- Age modulated rates of DOM and subjunctive production and selection
 
 
 --
-- Age modulated rates of subjunctive production and selection
+- Age *and* bilingual education may interact in the acquisition of DOM
 
 
 --
@@ -1107,6 +1124,7 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
   + Babino & Stewart (2017), Potowski (2004): children often (or always) respond in English, even when they receive rich input in Spanish
 
 
+--
 - A space for translanguaging?
 
 --
@@ -1163,6 +1181,12 @@ Subj_Diffs_Plot <- Subj_Diffs %>%
 
 --
 - Registers, metalinguistic awareness, and biliteracy development as important pieces of the puzzle
+
+
+---
+# Bridging the Gap
+
+From Glenn Martínez (2003, p. 53)
 
 
 --
