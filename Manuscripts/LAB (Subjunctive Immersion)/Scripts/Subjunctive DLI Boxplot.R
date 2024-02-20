@@ -34,29 +34,29 @@ MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>%
 SDB_FCT <- read_csv("./CSV Files/SDB/SDB Subjunctive FCT.csv") %>%
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "SDBA",
-         Task = "Preference")
+         Task = "Selection")
 
 DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv") %>%
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "DLI-7/8",
-         Task = "Preference")
+         Task = "Selection")
 
 MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "MLE-7/8",
-         Task = "Preference")
+         Task = "Selection")
 
 DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")  %>%
   filter(Property == "Intensional subjunctive")%>% 
   mutate(Group = "DLI-5",
-         Task = "Preference")
+         Task = "Selection")
 
 MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "MLE-5",
-         Task = "Preference")
+         Task = "Selection")
 
 
 ## Rejoin datasets for all participants
@@ -79,7 +79,7 @@ FCT_Average <- left_join(FCT, FCT_Average, by = c("Part_ID" = "Group.1")) %>%
 # Join dataset
 Aggregate <- rbind(EPT_Average, FCT_Average)
 Aggregate$Group <- factor(Aggregate$Group, levels = c("DLI-5", "MLE-5", "DLI-7/8", "MLE-7/8", "SDBA"))
-Aggregate$Task <- factor(Aggregate$Task, levels = c("Production", "Preference"))
+Aggregate$Task <- factor(Aggregate$Task, levels = c("Production", "Selection"))
 
 
 # Generate graph

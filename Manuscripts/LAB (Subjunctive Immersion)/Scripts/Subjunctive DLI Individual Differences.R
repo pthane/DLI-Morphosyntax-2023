@@ -30,24 +30,24 @@ MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>%
 DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv")  %>%
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "DLI-7/8",
-         Task = "Preference")
+         Task = "Selection")
 
 MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv")  %>%
   filter(!School == "GBCS") %>% 
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "MLE-7/8",
-         Task = "Preference")
+         Task = "Selection")
 
 DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")  %>%
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "DLI-5",
-         Task = "Preference")
+         Task = "Selection")
 
 MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "MLE-5",
-         Task = "Preference")
+         Task = "Selection")
 
 
 # Join datasets
@@ -83,11 +83,12 @@ Aggregate %>%
                      limits = c(-1, 9)) +
   scale_y_continuous(breaks = seq (0, 8, 2),
                      limits = c(-1, 9)) +
-  labs(x = "Number of sentences with subjunctive produced", y = "Number of sentences with subjunctive selected", title = "Individual Rates of Subjunctive Selection and Production", color = "Group") +
+  labs(x = "Number of sentences with subjunctive produced", y = "Number of sentences with subjunctive selected", title = "Individual Rates of Subjunctive Production and Selection", color = "Group") +
   theme(axis.title = element_text(face = "bold"),
         plot.title = element_text(hjust = 0.5, face = "bold"),
         legend.title = element_text(face = "bold"),
         strip.text = element_text(face = "bold", size = 10))
+
 
 ## With labels
 Aggregate %>% 

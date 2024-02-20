@@ -35,29 +35,29 @@ MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>%
 SDB_FCT <- read_csv("./CSV Files/SDB/SDB Subjunctive FCT.csv") %>%
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "SDBA",
-         Task = "Preference")
+         Task = "Selection")
 
 DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv") %>%
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "DLI-7/8",
-         Task = "Preference")
+         Task = "Selection")
 
 MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "MLE-7/8",
-         Task = "Preference")
+         Task = "Selection")
 
 DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")  %>%
   filter(Property == "Intensional subjunctive")%>% 
   mutate(Group = "DLI-5",
-         Task = "Preference")
+         Task = "Selection")
 
 MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   filter(Property == "Intensional subjunctive") %>% 
   mutate(Group = "MLE-5",
-         Task = "Preference")
+         Task = "Selection")
 
 
 ## Rejoin datasets for all participants
@@ -122,7 +122,7 @@ FCT_Structure <- rbind(DLI5_FCT_Structure, MLS5_FCT_Structure, DLI78_FCT_Structu
 
 Subj_Percentage <- rbind(EPT_Structure, FCT_Structure)
 Subj_Percentage$Group <- factor(Subj_Percentage$Group, levels = c("DLI-5", "MLE-5", "DLI-7/8", "MLE-7/8", "SDBA"))
-Subj_Percentage$Task <- factor(Subj_Percentage$Task, levels = c("Production", "Preference"))
+Subj_Percentage$Task <- factor(Subj_Percentage$Task, levels = c("Production", "Selection"))
 
 # Generate bar graph
 Subj_Percentage %>% 
@@ -135,7 +135,7 @@ Subj_Percentage %>%
             vjust = -0.5,
             size = 3) +
   scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
-  labs(x = "Subjunctive type", y = "Percentage of subjunctive responses", fill = "Task", title = "Subjunctive by Group and Task") +
+  labs(x = "Group", y = "Percentage of subjunctive responses", fill = "Task", title = "Subjunctive by Group and Task") +
   theme(axis.title = element_text(face = "bold"),
         plot.title = element_text(hjust = 0.5, face = "bold"))
 
