@@ -200,9 +200,20 @@ plot_model(HS_Correlation_Final, show.values = TRUE, show.intercept = TRUE, valu
 
 
 # Frequency model
+## Generate model and summary
 Frequency_Model <- glmer(Mood_Freq ~ Davies_Centered_Std +
                           (1 | Part_ID) + (1 | Item),
                         data = Aggregate_Heritage,
                         family = "binomial")
 
 summary(Frequency_Model)
+
+
+## Generate forest plot
+plot_model(Frequency_Model, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+  labs(title = "Summary of HS GLMM Model", y = "Parameter estimates") +
+  scale_y_continuous(breaks = seq(-2, 2, 1),
+                     limits = c(-2, 2)) +
+  scale_x_discrete(labels = c("Lexical frequency", "(Intercept)")) +
+  theme(axis.title = element_text(face = "bold"),
+        plot.title = element_text(hjust = 0.5, face = "bold"))
