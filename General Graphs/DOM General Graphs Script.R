@@ -38,31 +38,31 @@ MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>%
 # Selection
 SDB_FCT <- read_csv("./CSV Files/SDB/SDB DOM FCT.csv") %>% 
   mutate(Group = "SDBA",
-         Task = "Preference")
+         Task = "Selection")
 
 DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 DOM FCT.csv") %>% 
   mutate(Group = "DLI-7/8",
-         Task = "Preference",
+         Task = "Selection",
          School = "Immersion",
          Age = "7th/8th")
 
 MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 DOM FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "MES-7/8",
-         Task = "Preference",
+         Task = "Selection",
          School = "Monolingual",
          Age = "7th/8th")
 
 DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 DOM FCT.csv") %>% 
   mutate(Group = "DLI-5",
-         Task = "Preference",
+         Task = "Selection",
          School = "Immersion",
          Age = "5th")
 
 MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "MES-5",
-         Task = "Preference",
+         Task = "Selection",
          School = "Monolingual",
          Age = "5th")
 
@@ -126,14 +126,14 @@ FCT <- rbind(SDB_FCT_Structure, DLI78_FCT_Structure, MLS78_FCT_Structure, DLI5_F
 
 Aggregate <- rbind(EPT, FCT)
 Aggregate$Group <- factor(Aggregate$Group, levels = c("SDBA", "DLI-7/8", "MES-7/8", "DLI-5", "MES-5"))
-Aggregate$Task <- factor(Aggregate$Task, levels = c("Production", "Preference"))
+Aggregate$Task <- factor(Aggregate$Task, levels = c("Production", "Selection"))
 
 
 ## Create heritage-only dataset
 Aggregate_Heritage <- Aggregate %>% 
   filter(!Group == "SDBA")
 Aggregate_Heritage$Group <- factor(Aggregate_Heritage$Group, levels = c("DLI-7/8", "MES-7/8", "DLI-5", "MES-5"))
-Aggregate_Heritage$Task <- factor(Aggregate_Heritage$Task, levels = c("Production", "Preference"))
+Aggregate_Heritage$Task <- factor(Aggregate_Heritage$Task, levels = c("Production", "Selection"))
 
 
 
