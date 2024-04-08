@@ -34,4 +34,3 @@ EPT_Non_Subj <- EPT_Responses %>%
 Alternative_Forms_Table <- EPT_Non_Subj %>% 
   count(Prod_Code) %>% 
   tibble()
-

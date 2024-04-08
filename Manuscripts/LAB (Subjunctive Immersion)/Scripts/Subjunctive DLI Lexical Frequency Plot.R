@@ -92,4 +92,3 @@ Aggregate %>%
   labs(x = "Verb (most to least frequent)", y = "Percentage of subjunctive responses", fill = "Task", title = "Subjunctive by Verb and Task") +
   theme(axis.title = element_text(face = "bold"),
         plot.title = element_text(hjust = 0.5, face = "bold"))
-
