@@ -1,0 +1,1179 @@
+---
+title: "Towards a Unified Theory of Heritage Language Acquisition: Evidence from Spanish Differential Object Marking Across Childhood"
+author: "Patrick D. Thane<br/>University of Massachusetts - Amherst"
+institute: "17th Generative Approaches to Second Language Acquisition Conference"
+date: "Friday, May 3, 2024"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: false
+---
+
+```{r, setup, include = FALSE}
+library(tidyverse)
+library(lme4)
+library(xaringan)
+library(xaringanthemer)
+library(xaringanExtra)
+library(lmerTest)
+library(kableExtra)
+library(patchwork)
+library(jtools)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(emmeans)
+
+options(htmltools.dir.version = FALSE)
+options(scipen = 999)
+
+
+knitr::opts_chunk$set(fig.width = 16, fig.height = 7, fig.retina = 3, fig.align = 'center', cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE, hiline = TRUE)
+```
+
+```{r xaringan, include = FALSE, warning = FALSE}
+style_duo_accent(
+  primary_color = "#881C1C",
+  secondary_color = "#212721",
+  inverse_header_color = "#FFFDD0")
+```
+
+```{r xaringan-logo, echo = FALSE}
+use_logo(
+  image_url = "https://www.umass.edu/university-relations/sites/default/files/styles/tile_max_250px/public/2023-12/seal_workmark_source-lrg.png?itok=DOrf20Xh"
+)
+```
+
+```{r, load-DOM-data}
+# EPT
+SDB_EPT <- read.csv("../CSV Files/SDB/SDB DOM EPT.csv") %>% 
+  mutate(Group = "SDBA",
+         GradeGroup = "SDBA",
+         ChildGroup = "N/A",
+         Task = "EPT",
+         School = "Adult")
+
+HSA_EPT <- read.csv("../CSV Files/Adult HS/Adult HS DOM EPT.csv") %>% 
+  mutate(Group = "HSA",
+         GradeGroup = "N/A",
+         ChildGroup = "N/A",
+         Task = "EPT",
+         School = "Adult")
+
+DLI78_EPT <- read.csv("../CSV Files/DLI-78/DLI-78 DOM EPT.csv") %>% 
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "DLI-7/8",
+         Task = "EPT",
+         School = "Dual language")
+
+MLS78_EPT <- read.csv("../CSV Files/MLS-78/MLS-78 DOM EPT.csv") %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "MLS-7/8",
+         Task = "EPT",
+         School = "English-only")
+
+DLI5_EPT <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "DLI-5",
+         Task = "EPT",
+         School = "Dual language")
+
+MLS5_EPT <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "MLS-5",
+         Task = "EPT",
+         School = "English-only")
+
+
+# FCT
+SDB_FCT <- read.csv("../CSV Files/SDB/SDB DOM FCT.csv") %>% 
+  mutate(Group = "SDBA",
+         GradeGroup = "SDBA",
+         ChildGroup = "N/A",
+         Task = "MST",
+         School = "Adult")
+
+HSA_FCT <- read.csv("../CSV Files/Adult HS/Adult HS DOM FCT.csv") %>% 
+  mutate(Group = "HSA",
+         GradeGroup = "N/A",
+         ChildGroup = "N/A",
+         Task = "MST",
+         School = "Adult")
+
+DLI78_FCT <- read.csv("../CSV Files/DLI-78/DLI-78 DOM FCT.csv") %>% 
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "DLI-7/8",
+         Task = "MST",
+         School = "Dual language")
+
+MLS78_FCT <- read.csv("../CSV Files/MLS-78/MLS-78 DOM FCT.csv") %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "MLS-7/8",
+         Task = "MST",
+         School = "English-only")
+
+DLI5_FCT <- read.csv("../CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "DLI-5",
+         Task = "MST",
+         School = "Dual language")
+
+MLS5_FCT <- read.csv("../CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "MLS-5",
+         Task = "MST",
+         School = "English-only")
+
+## Join datasets
+HS8_EPT <- rbind(DLI78_EPT, MLS78_EPT)
+HS8_FCT <- rbind(DLI78_FCT, MLS78_FCT)
+
+HS5_EPT <- rbind(DLI5_EPT, MLS5_EPT)
+HS5_FCT <- rbind(DLI5_FCT, MLS5_FCT)
+```
+
+```{r, generate-averages}
+# Adult data
+## SDB
+SDB_EPT_Structure <- aggregate(SDB_EPT$DOM_Use, list(SDB_EPT$Structure), FUN = mean, na.rm = TRUE)
+SDB_EPT_Structure <- SDB_EPT_Structure %>% rename(Structure_Avg = x)
+SDB_EPT_Structure <- left_join(SDB_EPT, SDB_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+SDB_FCT_Structure <- aggregate(SDB_FCT$DOM_Use, list(SDB_FCT$Structure), FUN = mean, na.rm = TRUE)
+SDB_FCT_Structure <- SDB_FCT_Structure %>% rename(Structure_Avg = x)
+SDB_FCT_Structure <- left_join(SDB_FCT, SDB_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HSA
+HSA_EPT_Structure <- aggregate(HSA_EPT$DOM_Use, list(HSA_EPT$Structure), FUN = mean, na.rm = TRUE)
+HSA_EPT_Structure <- HSA_EPT_Structure %>% rename(Structure_Avg = x)
+HSA_EPT_Structure <- left_join(HSA_EPT, HSA_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HSA_FCT_Structure <- aggregate(HSA_FCT$DOM_Use, list(HSA_FCT$Structure), FUN = mean, na.rm = TRUE)
+HSA_FCT_Structure <- HSA_FCT_Structure %>% rename(Structure_Avg = x)
+HSA_FCT_Structure <- left_join(HSA_FCT, HSA_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+# Children by age group
+## HS7/8
+HS8_EPT_Structure <- aggregate(HS8_EPT$DOM_Use, list(HS8_EPT$Structure), FUN = mean, na.rm = TRUE)
+HS8_EPT_Structure <- HS8_EPT_Structure %>% rename(Structure_Avg = x)
+HS8_EPT_Structure <- left_join(HS8_EPT, HS8_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS8_FCT_Structure <- aggregate(HS8_FCT$DOM_Use, list(HS8_FCT$Structure), FUN = mean, na.rm = TRUE)
+HS8_FCT_Structure <- HS8_FCT_Structure %>% rename(Structure_Avg = x)
+HS8_FCT_Structure <- left_join(HS8_FCT, HS8_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HS5
+HS5_EPT_Structure <- aggregate(HS5_EPT$DOM_Use, list(HS5_EPT$Structure), FUN = mean, na.rm = TRUE)
+HS5_EPT_Structure <- HS5_EPT_Structure %>% rename(Structure_Avg = x)
+HS5_EPT_Structure <- left_join(HS5_EPT, HS5_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS5_FCT_Structure <- aggregate(HS5_FCT$DOM_Use, list(HS5_FCT$Structure), FUN = mean, na.rm = TRUE)
+HS5_FCT_Structure <- HS5_FCT_Structure %>% rename(Structure_Avg = x)
+HS5_FCT_Structure <- left_join(HS5_FCT, HS5_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+# Children by school group
+## DLI7/8
+DLI78_EPT_Structure <- aggregate(DLI78_EPT$DOM_Use, list(DLI78_EPT$Structure), FUN = mean, na.rm = TRUE)
+DLI78_EPT_Structure <- DLI78_EPT_Structure %>% rename(Structure_Avg = x)
+DLI78_EPT_Structure <- left_join(DLI78_EPT, DLI78_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+DLI78_FCT_Structure <- aggregate(DLI78_FCT$DOM_Use, list(DLI78_FCT$Structure), FUN = mean, na.rm = TRUE)
+DLI78_FCT_Structure <- DLI78_FCT_Structure %>% rename(Structure_Avg = x)
+DLI78_FCT_Structure <- left_join(DLI78_FCT, DLI78_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS7/8
+MLS78_EPT_Structure <- aggregate(MLS78_EPT$DOM_Use, list(MLS78_EPT$Structure), FUN = mean, na.rm = TRUE)
+MLS78_EPT_Structure <- MLS78_EPT_Structure %>% rename(Structure_Avg = x)
+MLS78_EPT_Structure <- left_join(MLS78_EPT, MLS78_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+MLS78_FCT_Structure <- aggregate(MLS78_FCT$DOM_Use, list(MLS78_FCT$Structure), FUN = mean, na.rm = TRUE)
+MLS78_FCT_Structure <- MLS78_FCT_Structure %>% rename(Structure_Avg = x)
+MLS78_FCT_Structure <- left_join(MLS78_FCT, MLS78_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5
+DLI5_EPT_Structure <- aggregate(DLI5_EPT$DOM_Use, list(DLI5_EPT$Structure), FUN = mean, na.rm = TRUE)
+DLI5_EPT_Structure <- DLI5_EPT_Structure %>% rename(Structure_Avg = x)
+DLI5_EPT_Structure <- left_join(DLI5_EPT, DLI5_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+DLI5_FCT_Structure <- aggregate(DLI5_FCT$DOM_Use, list(DLI5_FCT$Structure), FUN = mean, na.rm = TRUE)
+DLI5_FCT_Structure <- DLI5_FCT_Structure %>% rename(Structure_Avg = x)
+DLI5_FCT_Structure <- left_join(DLI5_FCT, DLI5_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5
+MLS5_EPT_Structure <- aggregate(MLS5_EPT$DOM_Use, list(MLS5_EPT$Structure), FUN = mean, na.rm = TRUE)
+MLS5_EPT_Structure <- MLS5_EPT_Structure %>% rename(Structure_Avg = x)
+MLS5_EPT_Structure <- left_join(MLS5_EPT, MLS5_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+MLS5_FCT_Structure <- aggregate(MLS5_FCT$DOM_Use, list(MLS5_FCT$Structure), FUN = mean, na.rm = TRUE)
+MLS5_FCT_Structure <- MLS5_FCT_Structure %>% rename(Structure_Avg = x)
+MLS5_FCT_Structure <- left_join(MLS5_FCT, MLS5_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+```
+
+```{r, rejoin-datasets}
+# By grade
+EPT_Age <- rbind(SDB_EPT_Structure, HSA_EPT_Structure, HS8_EPT_Structure, HS5_EPT_Structure) %>% 
+  mutate(Structure = "DOM")
+
+FCT_Age <- rbind(SDB_FCT_Structure, HSA_FCT_Structure, HS8_FCT_Structure, HS5_FCT_Structure) %>% 
+  mutate(Structure = "DOM")
+
+Master_Age <- rbind(EPT_Age, FCT_Age)
+Master_Age$Group <- factor(Master_Age$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
+Master_Age$Task <- factor(Master_Age$Task, levels = c("EPT", "MST"))
+```
+
+```{r, generate-school-group}
+EPT_School <- rbind(DLI78_EPT_Structure, MLS78_EPT_Structure, DLI5_EPT_Structure, MLS5_EPT_Structure)
+FCT_School <- rbind(DLI78_FCT_Structure, MLS78_FCT_Structure, DLI5_FCT_Structure, MLS5_FCT_Structure)
+
+Master_School <- rbind(EPT_School, FCT_School)
+
+Master_School$GradeGroup <- factor(Master_School$GradeGroup, levels = c("7th/8th grade", "5th grade"))
+Master_School$ChildGroup <- factor(Master_School$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+Master_School$School <- factor(Master_School$School, levels = c("Dual language", "English-only"))
+Master_School$Task <- factor(Master_School$Task, levels = c("EPT", "MST"))
+```
+
+```{r, generate-participant-part-avg}
+EPT_Part_Avg <- aggregate(EPT_Age$DOM_Use, list(EPT_Age$Part_ID), FUN = sum, na.rm = TRUE)
+EPT_Part_Avg <- EPT_Part_Avg %>% rename(Part_Avg = x)
+EPT_Part_Avg <- left_join(EPT_Age, EPT_Part_Avg, by = c("Part_ID" = "Group.1")) %>% 
+  filter(Item == "EPT-02") %>%
+  filter(!Group == "SDBA")
+
+FCT_Part_Avg <- aggregate(FCT_Age$DOM_Use, list(FCT_Age$Part_ID), FUN = sum, na.rm = TRUE)
+FCT_Part_Avg <- FCT_Part_Avg %>% rename(Part_Avg = x)
+FCT_Part_Avg <- left_join(FCT_Age, FCT_Part_Avg, by = c("Part_ID" = "Group.1")) %>% 
+  filter(Item == "FCT-03") %>%
+  filter(!Group == "SDBA")
+
+Master_Part_Avg <- rbind(EPT_Part_Avg, FCT_Part_Avg)
+Master_Part_Avg$Group <- factor(Master_Part_Avg$Group, levels = c("HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-boxplot-averages-by-age}
+EPT_Age_Averages <- rbind(SDB_EPT, HSA_EPT, HS8_EPT, HS5_EPT) %>% 
+  group_by(Part_ID, Group) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Ratio = (Ratio*100))
+
+FCT_Age_Averages <- rbind(SDB_FCT, HSA_FCT, HS8_FCT, HS5_FCT) %>% 
+  group_by(Part_ID, Group) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "MST",
+         Ratio = (Ratio*100))
+
+Master_Age_Averages <- rbind(EPT_Age_Averages, FCT_Age_Averages)
+```
+
+```{r, generate-boxplot-averages-by-education}
+EPT_School_Averages <- rbind(DLI78_EPT, MLS78_EPT, DLI5_EPT, MLS5_EPT) %>% 
+  group_by(Part_ID, GradeGroup, School, ChildGroup) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Ratio = (Ratio*100))
+
+FCT_School_Averages <- rbind(DLI78_FCT, MLS78_FCT, DLI5_FCT, MLS5_FCT) %>% 
+  group_by(Part_ID, GradeGroup, School, ChildGroup) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "MST",
+         Ratio = (Ratio*100))
+
+Master_School_Averages <- rbind(EPT_School_Averages, FCT_School_Averages)
+Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+```
+
+# Introduction
+
+
+--
+- There has been extensive theorizing concerning HL acquisition and maintenance
+
+
+--
+  + Incomplete acquisition/divergent development (e.g., Montrul, 2008, 2013)
+
+--
+  + Protracted development
+  
+--
+  + Reassembly of features (Putnam and Sánchez, 2013)
+
+
+--
+- School-aged heritage speakers are the "missing link" in heritage language acquisition (Montrul, 2018, p. 534)
+
+--
+  + Longitudinal data are necessary to definitively distinguish between end-state differences in development and language attrition
+
+--
+  + In the absence of such data, comparing age groups of children and adult HSs allows for a "quasi-longitudinal" approach to distinguish between theories
+  
+
+--
+- López-Beltrán Forcada (2021, pp. 4-5): "achieving a unified theory of HL acquisition and processing requires a certain degree of common ground between all of these approaches."
+
+
+---
+# Identifying Layers of Variability
+
+
+--
+- Incomplete acquisition, attrition, protracted development: HSs diverge from other native speaker populations due to:
+
+--
+  + Insufficient input
+
+--
+  + Early onset of acquisition of an additional language
+
+--
+  + Changes in exposure leading to morphosyntactic optionality ("reactivation" of the inference engine, c.f. Hicks & Dominguez, 2020)
+
+
+--
+- Feature reassembly approach (Putnam & Sánchez): HSs differ from one another and at the within-speaker level
+
+--
+  + Patterns of activation (frequency of use and/or proficiency) affect the maintenance of HL features
+  
+--
+  + Lower frequency of use ~ greater crosslinguistic influence and feature reassembly (between-speakers)
+
+--
+  + Asymmetrical performance between syntax (receptive tasks) vs. morphology (production tasks) due to mapping challenges and crosslinguistic influence (intraspeaker variability)
+
+--
+  + Reassembly begins with features bundled within less-frequent lexical items and in production before underlying knowledge (intraspeaker variability)
+
+
+--
+- Can we accomplish a theory that focuses on all of these levels (between-groups, between-speakers, within-speakers) and that can be bidirectional (e.g., acquisition and attrition) in child language acquisition?
+
+
+---
+# Education Effects in HL Acquisition
+
+
+--
+- Previous studies in European contexts have shown that literacy level and/or bilingual education affects acquisition and maintenance of HL competence (Bayram et al., 2017; Kupisch & Rothman, 2018; Torregrossa et al., 2023)
+
+
+--
+- Dual language immersion (DLI): opportunity in the U.S. for children to learn at least 50% of instruction in Spanish (or a different non-English language)
+
+
+--
+- Previous research on the acquisition of inflectional morphology on DLI has shown:
+
+--
+  + HSs show stronger competence than L2 learners (e.g., Montrul & Potowski, 2007; Potowski, 2007)
+
+--
+  + Spanish-dominant children show stronger knowledge of morphosyntax than HSs (e.g., Potowski, 2007)
+  
+
+--
+- Does DLI confer an advantage relative to non-immersion environments in HL acquisition/maintenance?
+
+
+---
+# Differential Object Marking in Spanish
+
+
+--
+- Example of structure at the syntax-semantics interface in Spanish
+
+
+--
+- Spanish is one of 300+ languages to mark certain direct objects, particularly those that are [+animate] and [+specific] (Bossong, 1991)
+
+--
+  + Other entailments are involved with DOM, but only these two "core" considerations are discussed here
+
+--
+  + DOM-marked objects are preceded by the marker *a* (morphological realization of DOM)
+
+
+--
+- In Spanish, [+animate] and [+specific] direct objects raise from VP-internal to check a D-feature in _spec,vP_
+
+--
+  + Example of inherent case marking
+
+--
+  + The *a* marking is also present with all indirect objects to mark dative case regardless of semantics
+
+---
+# Why DOM?
+
+
+--
+- DOM is abundantly studied in HL acquisition, and appears to be prone to:
+
+--
+  + Patterns of HL exposure (Montrul & Sánchez-Walker, 2013)
+
+--
+  + Morphosyntactic proficiency (Arechabaleta-Regulez & Montrul, 2023; Guijarro-Fuentes et al., 2017; Montrul & Bowles, 2009)
+
+
+--
+- The role of age in DOM acquisition remains unclear:
+
+--
+  + Protracted development comparing children to adults (Montrul & Sánchez-Walker, 2013)
+
+--
+  + No age effects within children (Cuza et al., 2019) or adolescents (Guijarro-Fuentes et al., 2017)
+
+
+--
+- DOM attrition has even been attested in Spanish-dominant bilingual adults (Montrul & Sánchez-Walker, 2013)
+
+--
+- To date, there is not yet a single study on DOM that:
+
+--
+  + Has both productive and receptive tasks
+
+--
+  + Tests the role of proficiency and frequency of exposure
+
+--
+  + Traces development from early adolescence to adulthood
+
+
+---
+# Research Questions and Hypotheses
+
+
+--
+** 1. At the group and individual levels, do English-dominant HSs converge on the Spanish-dominant DOM system with animate and specific direct objects?**
+
+--
+  + Hypotheses: (A) Spanish-dominant bilingual adults will produce/select more DOM with animate and specific direct objects than HSs; (B) some HSs will converge on Spanish-dominant adults.
+
+
+--
+** 2. Do HSs develop stronger knowledge of DOM with animate and specific direct objects with age? **
+
+--
+  + Hypothesis: HSs will show protracted development of DOM from 5th grade through adulthood.
+
+
+--
+** 3. Do proficiency, frequency of HL exposure, and bilingual education influence HSs' command of DOM with animate and specific direct objects? **
+
+--
+  + Hypotheses: (A) HSs with greater proficiency and exposure will produce/select more DOM; (B) HSs who attend a dual-language immersion program will produce/select more DOM
+
+
+--
+** 4. Do HSs show stronger receptive knowledge of DOM than they produce this structure?**
+
+--
+  + Hypothesis: HSs will show stronger receptive knowledge than they exhibit in production.
+
+
+---
+# Participants
+
+
+--
+- 127 total participants
+
+--
+  + 41 5th grade Spanish HS, ages 10-11 (HS5)
+
+--
+  + 34 7th/8th grade Spanish HS, ages 12-14 (HS7/8)
+
+--
+  + 35 HS adults (HSA)
+
+--
+  + 18 Spanish-dominant bilingual adults (SDBA)
+
+
+--
+- HS5 and HS7/8 were further subdivided into different groups:
+
+--
+  + DLI students (received 50% of elementary education in Spanish + Spanish HL course in middle school)
+  
+--
+  + Other students received a traditional monolingual English education
+
+--
+  + Both schools were selected because of their similar student bodies (socioeconomic status, home Spanish speakers, number of English language learners)
+
+
+--
+- Extensive diversity in Spanish spoken among bilingual adults:
+
+--
+  + HSAs spoke varieties from 13 total Spanish-speaking countries
+  
+--
+  + SDBAs were raised in 9 Spanish-speaking countries and did not live in the USA until at least age 12
+
+
+--
+- Most children were of Mexican descent
+
+
+---
+# Background Tasks
+
+--
+- Children completed the Bilingual English-Spanish Assessment (BESA; Peña et al., 2018)
+
+--
+  + 18 questions evaluating multiple morphosyntactic structures
+
+--
+  + Number of expected answers used as proficiency score in statistical modeling
+
+
+--
+- Language questionnaire evaluating linguistic variables (children completed tasks per validity of child self-reports; Castilla-Earls et al., 2022):
+
+--
+  + Number of Spanish-speaking parents
+  
+--
+  + Languages spoken at home
+
+--
+  + Frequency of use (1-5 Likert scale) across 6 contexts (continuous variable for statistics)
+
+
+---
+# Linguistic Tasks
+
+
+--
+- Production and selection tasks designed to tap [+animate] and [+specific] direct objects
+
+--
+  + Communicative context about a mother's wishes for her children at summer camp
+
+--
+  + Also used to test subjunctive mood morphology
+
+
+--
+- **Elicited production task (EPT)**: participants completed sentences targeting DOM orally
+
+--
+  + 10 sentences tapping knowledge of DOM with [+animate] and [+specific] direct objects
+
+--
+  + 3rd person plural verb (ending in -an) to increase salience of *a*
+
+--
+  + 6 distractors for children, 37 distractors for adults (following Montrul & Sánchez-Walker, 2013)
+
+
+--
+- **Morphology selection task (MST)**: written multiple choice between sentences with and without DOM
+
+--
+  + 8 sentences tapping DOM (one choice with *a* and one choice without any object marking)
+
+--
+  + DOM occurred only after 3rd person plural verbs (-an inflection) to increase salience of *a*
+
+--
+  + 14 distractors for children, 47 for adults
+
+
+--
+- DOM was only included preceding the proper noun _Juanito_ where no dialectal variability of DOM is attested
+
+
+---
+# DOM Production/Selection by Group
+
+```{r, generate-age-boxplot}
+Age_Boxplot <- Master_Age_Averages %>% 
+  ggplot(aes(x = Group, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses with DOM", title = "DOM by Age Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, generate-school-boxplot}
+School_Boxplot <- Master_School_Averages %>% 
+  ggplot(aes(x = School, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  facet_grid(facets = vars(GradeGroup)) +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "School", y = "Percentage of responses with DOM", title = "DOM by School, Age, and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-boxplots}
+(Age_Boxplot)+(School_Boxplot)
+```
+
+
+---
+# Individual Variability
+
+```{r, generate-DOM-individual-values}
+EPT_Diffs <- EPT_Age %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+FCT_Diffs <- FCT_Age %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+Diffs = left_join(EPT_Diffs, FCT_Diffs, by = "Part_ID", "Group") %>%
+  rename(Group = Group.x,
+         Production = Production.x,
+         Preference = Production.y) %>% 
+  mutate(Total = Preference + Production) %>% 
+  filter(!Group == "SDBA")
+
+Diffs$Group <- factor(Diffs$Group, levels = c("HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-DOM-diffs-plot}
+Diffs_Plot <- Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  scale_x_continuous(breaks = seq (0, 10, 2),
+                     limits = c(-1, 11)) +
+  scale_y_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  labs(x = "Number of sentences with DOM produced", y = "Number of sentences with DOM selected", title = "Individual Rates of DOM Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-DOM-diffs-plot}
+(Diffs_Plot)
+```
+
+---
+# Inferential Statistics (All Groups)
+
+```{r, DOM-master-correlation}
+DOM_Correlation <- glmer(DOM_Use ~ Group + BESA_Total_Std + Use_Joint_Std + Task + BESA_Total_Std:Task + Use_Joint_Std:Task +
+                           (1 | Part_ID) + (1 | Item),
+                         data = Master_Age,
+                         family = "binomial")
+```
+
+```{r, generate-DOM-correlation-forest-plot}
+DOM_Forest_Plot <- plot_model(DOM_Correlation, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+  labs(title = "GLMM Summary (All Participant Groups)", y = "Estimates") +
+      scale_y_continuous(breaks = seq(-9, 9, 3),
+                     limits = c(-9, 9)) +
+    scale_x_discrete(labels = c("Use : MST", "BESA : MST", "MST", "Frequency of use", "BESA score", "Group (HS5)", "Group (HS7/8)", "Group (HSA)", "(Intercept)")) +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-DOM-correlation-forest-plot}
+(DOM_Forest_Plot)
+```
+
+
+---
+# Group Comparisons (All Groups)
+
+```{r, generate-DOM-correlation-tukey}
+DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
+DOM_Correlation_Tukey <- contrast(DOM_Correlation_Pairwise, method = "pairwise")
+DOM_Correlation_Table <- summary(DOM_Correlation_Tukey)
+```
+
+```{r, show-DOM-correlation-Tukey-results}
+kable(DOM_Correlation_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
+```
+
+--
+* SDBA have higher production/selection rates of DOM than all groups of HSs (speaker group-level difference)
+
+
+--
+* HSA have significantly higher percentages of DOM production/selection than HS5 (protracted development over time)
+
+
+--
+* No differences emerge as significant when comparisons involve the "intermittent" HS7/8 group (development is slow and gradual)
+
+
+---
+# Effects of School and Age (HS Children)
+```{r, DOM-school-correlation}
+DOM_School <- glmer(DOM_Use ~ GradeGroup * School + 
+                      (1 | Part_ID) + (1 | Item),
+                    data = Master_School,
+                    family = "binomial")
+```
+
+```{r, generate-DOM-child-forest-plot}
+DOM_School_Plot <- plot_model(DOM_School, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+      scale_y_continuous(breaks = seq(-9, 9, 3),
+                     limits = c(-9, 9)) +
+    scale_x_discrete(labels = c("HS5 : English-only school", "English-only school", "HS5", "(Intercept)")) +
+  labs(title = "GLMM Summary (Children)", y = "Estimates") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-DOM-child-forest-plot}
+(DOM_School_Plot)
+```
+
+
+---
+# Group Comparisons (HS Children)
+
+```{r, generate-child-group-correlation}
+DOM_Children <- glmer(DOM_Use ~ + ChildGroup +
+                        (1 | Part_ID) + (1 | Item),
+                      data = Master_School,
+                      family = "binomial")
+```
+
+```{r, generate-DOM-child-tukey}
+DOM_Children_Pairwise <- emmeans(DOM_Children, spec = "ChildGroup")
+DOM_Children_Tukey <- contrast(DOM_Children_Pairwise, method = "pairwise")
+DOM_Children_Table <- summary(DOM_Children_Tukey)
+```
+
+```{r, show-DOM-child-Tukey-results}
+kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
+```
+
+
+--
+- Children enrolled in the dual language immersion school in 7th/8th grade used significantly more DOM than all other groups of children
+
+
+--
+- Suggests clear interaction between age and school (supported by statistics)
+
+
+--
+- Age and bilingual education work together
+
+
+---
+# Research Question #1
+
+
+--
+- **At the group and individual levels, do English-dominant HSs converge on the Spanish-dominant DOM system with animate and specific direct objects?**
+
+
+--
+- Hypotheses:
+
+--
+  + (A) Spanish-dominant bilingual adults will produce/select more DOM with animate and specific direct objects than HSs
+
+--
+  + (B) some HSs will converge on Spanish-dominant adults.
+
+
+--
+- SDBAs do not show variability in producing/selecting DOM with animate and specific direct objects
+
+
+--
+- HSs show more heterogeneity / variability in DOM production and selection than SDBAs
+
+
+--
+- HSs *can* perform within the range of SDBAs (19/109 HSs were within SDBA range)
+
+
+--
+- Hypotheses 1A and 1B upheld
+
+
+---
+# Research Question #2
+
+
+--
+- **Do HSs develop stronger knowledge of DOM with animate and specific direct objects with age? **
+
+
+--
+- Hypothesis: HSs will show protracted development of DOM from 5th grade through adulthood.
+
+
+--
+- HSA > HS5 in statistical modeling; gradual increases across age groups in descriptive statistics
+
+
+--
+- Hypothesis #2 upheld
+
+
+--
+- Joins a growing body of work showing continuation of HL acquisition late into childhood and even into adulthood in multiple languages:
+
+--
+  + Greek (Daskalaki et al., 2022)
+
+--
+  + Mandarin (Jia & Paradis, 2020)
+
+--
+  + Portuguese (Flores & Barbosa, 2014; Flores et al., 2017)
+  
+--
+  + Spanish (e.g., Corbet & Domínguez, 2020; Cuza & Miller, 2015; Montrul & Sánchez-Walker, 2013)
+
+
+---
+# Research Question #3
+
+
+--
+- **Do proficiency, frequency of HL exposure, and bilingual education influence HSs' command of DOM with animate and specific direct objects?**
+
+
+--
+- Hypotheses:
+
+
+--
+  + (A) HSs with greater proficiency and exposure will produce/select more DOM
+
+--
+  + (B) HSs who attend a dual-language immersion program will produce/select more DOM
+
+
+--
+- Proficiency affected HSs' production/selection of DOM
+
+
+---
+# Research Question #4
+
+
+--
+- **Do HSs show stronger receptive knowledge of DOM than they produce this structure?**
+
+
+--
+- Hypothesis: HSs will show stronger receptive knowledge than they exhibit in production.
+
+
+--
+- HSs' performance on the MST was stronger than on the EPT; all HSs showed *some* use of DOM
+
+
+--
+- Hypothesis #4 upheld
+
+
+--
+- Supports research arguing for a dissociation between morphology and syntax in HL acquisition
+
+
+---
+# Theoretical Discussion
+
+
+--
+- HSs diverge as a group for SDBAs (supporting incomplete acquisition at the between-group level)
+
+
+--
+- Putnam and Sánchez (2013) discuss feature _re_ assembly, yet some of their predictions can be adapted to account for results at the within-speaker level
+
+--
+  + Proficiency and bilingual education affect the acquisition of DOM
+
+--
+  + Receptive knowledge stronger than production (syntactic representation intact; morphological realization more variable)
+
+--
+  + No evidence of _re_ assembly of features, but rather protracted development
+
+
+--
+- Is it possible that Putnam and Sánchez's (2013) approach runs in reverse in initial protracted HL acquisition
+
+--
+  + According to descriptive statistics, comprehension stabilizes before production
+
+--
+  + Exposure appears to modulate the rate and ultimate point of development
+
+
+--
+- Incomplete acquisition *and* Putnam and Sánchez's (2013) approach work together at distinct levels
+
+--
+  + Incomplete acquisition: differences between HSs and other groups of native speakers
+
+--
+  + Putnam & Sánchez's (2013) activation approach: proficiency modulates differences between and within individual HSs
+
+
+---
+# Limitations
+
+
+--
+- Only evaluated DOM in "core" contexts such as [+animate] and [+specific] direct objects
+
+
+--
+- Broader age range to make a clearer set of predictions regarding protracted development: how would younger bilinguals perform?
+
+
+--
+- Did not control for age of acquisition using statistical modeling (only requested number of bilingual parents)
+
+
+---
+# References
+
+
+Arechabaleta Regulez, B., & Montrul, S. (2023). Production, acceptability, and online comprehension of Spanish differential object marking by heritage speakers and L2 learners. *Frontiers in Psychology*, *14*, 1106613. https://doi.org/10.3389/fpsyg.2023.1106613
+
+Bayram, F., Rothman, J., Iverson, M., Kupisch, T., Miller, D., Puig-Mayenco, E., & Westergaard, M. (2017). Differences in use without deficiencies in competence: Passives in the Turkish and German of Turkish heritage speakers in Germany. *International Journal of Bilingual Education and Bilingualism*, *22*(8), 919–939. https://doi.org/10.1080/13670050.2017.1324403
+
+Bossong, G. (1991). Differential object marking in Romance and beyond. In D. Wanner & D. A. Kibbee (Eds.), *Current issues in linguistic theory* (Vol. 69, p. 143). John Benjamins Publishing Company. https://doi.org/10.1075/cilt.69.14bos
+
+Castilla-Earls, A., Ronderos, J., & Fitton, L. (2022). Can bilingual children self-report their bilingual experience and proficiency? The Houston Questionnaire. *Journal of Speech, Language, and Hearing Research*, *65*(10), 3835–3853. https://doi.org/10.1044/2022_JSLHR-21-00675
+
+Corbet, J., & Domínguez, L. (2020). The comprehension of tense–aspect morphology by Spanish heritage speakers in the United Kingdom. *Languages*, *5*(46), 1–20. https://doi.org/10.3390/languages5040046
+
+
+---
+# References
+
+Cuza, A., & Miller, L. (2015). The protracted acquisition of past tense aspectual values in child heritage Spanish. In R. Klassen, J. M. Liceras, & E. Valenzuela (Eds.), *Issues in Hispanic and Lusophone linguistics* (Vol. 4, pp. 211–230). John Benjamins. https://doi.org/10.1075/ihll.4.11cuz
+
+Cuza, A., Miller, L., Pérez-Tattam, R., & Ortiz Vergara, M. (2019). Structure complexity effects in child heritage Spanish: The case of the Spanish personal a. *International Journal of Bilingualism*, *23*(6), 1333–1357. https://doi.org/10.1177/1367006918786467
+
+Daskalaki, E., Chondrogianni, V., & Blom, E. (2023). Path and rate of development in child heritage speakers: Evidence from Greek subject/object form and placement. *International Journal of Bilingualism*, *27*(5), 634–662. https://doi.org/10.1177/13670069221111648
+
+Flores, C., & Barbosa, P. (2014). When reduced input leads to delayed acquisition: A study on the acquisition of clitic placement by Portuguese heritage speakers. *International Journal of Bilingualism*, *18*(3), 304–325. https://doi.org/10.1177/1367006912448124
+
+Flores, C., Santos, A. L., Jesus, A., & Marques, R. (2017). Age and input effects in the acquisition of mood in Heritage Portuguese. *Journal of Child Language*, *44*(4), 795–828. https://doi.org/10.1017/S0305000916000222
+
+
+---
+# References
+
+
+Guijarro-Fuentes, P., Pires, A., & Nediger, W. (2017). Delay in the acquisition of Differential Object Marking by Spanish monolingual and bilingual teenagers. *International Journal of Bilingualism*, *21*(2), 159–177. https://doi.org/10.1177/1367006915601249
+
+Hicks, G., & Domínguez, L. (2020). A model for L1 grammatical attrition. *Second Language Research*, *36*(2), 143–165. https://doi.org/10.1177/0267658319862011
+
+Jia, R., & Paradis, J. (2020). The acquisition of relative clauses by Mandarin heritage language children. *Linguistic Approaches to Bilingualism*, *10*(2), 153–183. https://doi.org/10.1075/lab.16015.jia
+
+Kupisch, T., & Rothman, J. (2018). Terminology matters! Why difference is not incompleteness and how early child bilinguals are heritage speakers. *International Journal of Bilingualism*, *22*(5), 564–582. https://doi.org/10.1177/1367006916654355
+
+López-Beltrán Forcada, P. (2021). *Heritage speakers’ online processing of the Spanish subjunctive: A comprehensive usage-based study* [Doctoral dissertation]. The Pennsylvania State University.
+
+Montrul, S. (2008). *Incomplete acquisition in bilingualism: Re-examining the age factor* (Vol. 39). John Benjamins Publishing Company. https://doi.org/10.1075/sibil.39
+
+
+---
+# References
+
+Montrul, S. (2013). Incomplete L1 acquisition. In J. Herschensohn & M. Young-Scholten (Eds.), *The Cambridge handbook of second language acquisition* (pp. 353–371). Cambridge University Press. https://doi.org/10.1017/CBO9781139051729.022
+
+Montrul, S. (2018). Heritage language development: Connecting the dots. *International Journal of Bilingualism*, *22*(5), 530–546. https://doi.org/10.1177/1367006916654368
+
+Montrul, S., & Bowles, M. (2009). Back to basics: Incomplete knowledge of Differential Object Marking in Spanish heritage speakers. *Bilingualism: Language and Cognition*, *12*(3), 363–383. https://doi.org/10.1017/S1366728909990071
+
+Montrul, S., & Potowski, K. (2007). Command of gender agreement in school-age Spanish-English bilingual children. *International Journal of Bilingualism*, *11*(3), 301–328. https://doi.org/10.1177/13670069070110030301
+
+Montrul, S., & Sánchez-Walker, N. (2013). Differential object marking in child and adult Spanish heritage speakers. *Language Acquisition*, *20*(2), 109–132. https://doi.org/10.1080/10489223.2013.766741
+
+Peña, E. D., Gutiérrez-Clellen, V. F., Iglesias, A., Goldstein, B. A., & Bedore, L. M. (2018). *Bilingual English Spanish Assessment (BESA)*. Brookes.
+
+
+---
+# References
+
+
+Potowski, K. (2007). Characteristics of the Spanish grammar and sociolinguistic proficiency of dual immersion graduates. *Spanish in Context*, *4*(2), 187–216. https://doi.org/10.1075/sic.4.2.04pot
+
+Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
+
+Torregrossa, J., Flores, C., & Rinke, E. (2023). What modulates the acquisition of difficult structures in a heritage language? A study on Portuguese in contact with French, German and Italian. *Bilingualism: Language and Cognition*, *26*(1), 179–192. https://doi.org/10.1017/S1366728922000438
+
+
+---
+# Appendix A: Percentages of DOM Used
+
+```{r, bar-graph-by-age}
+Master_Age_Plot <- Master_Age %>% 
+  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses with DOM", fill = "Task", title = "DOM by Age Group and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, bar-graph-by-school}
+School_Age_Plot <- Master_School %>% 
+  ggplot(aes(x = GradeGroup, y = Structure_Percentage, fill = Task)) +
+  facet_grid(facets = vars(School)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Child age group", y = "Percentage of responses with DOM", fill = "Task", title = "DOM by School Group and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-bar-graphs}
+(Master_Age_Plot)+(School_Age_Plot)
+```
+
+
+---
+# Appendix B: DOM by Proficiency/Freq. of Use
+
+```{r, generate-proficiency-plot}
+Proficiency_Plot <- Master_Part_Avg %>% 
+  ggplot(aes(x = BESA_Total, y = Part_Avg)) + 
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  geom_smooth(method = glm) +
+  facet_grid(rows = vars(Task)) +
+  scale_y_continuous(breaks = seq (0, 10, 2),
+                     limits = c(-1, 11)) +
+  scale_x_continuous(breaks = seq (0, 18, 3),
+                     limits = c(3, 18)) +
+  labs(x = "BESA proficiency score", y = "Number of DOM responses per participant", 
+       title = "DOM by BESA Proficiency and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, generate-use-plot}
+Use_Plot <- Master_Part_Avg %>% 
+  ggplot(aes(x = Use_Joint, y = Part_Avg)) + 
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  geom_smooth(method = glm) +
+  facet_grid(rows = vars(Task)) +
+  scale_y_continuous(breaks = seq (0, 10, 2),
+                     limits = c(-1, 11)) +
+  scale_x_continuous(breaks = seq (0, 30, 5),
+                     limits = c(2.5, 31)) +
+  labs(x = "Self-reported frequency of use of Spanish", y = "Number of DOM responses per participant", 
+       title = "DOM by Frequency of Use and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-use-and-proficiency-plots}
+(Proficiency_Plot)+(Use_Plot)
+```
