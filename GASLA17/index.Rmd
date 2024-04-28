@@ -340,64 +340,107 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-  + Incomplete acquisition/divergent development (e.g., Montrul, 2008, 2013)
+  + Incomplete acquisition/divergent attainment (e.g., Montrul, 2008, 2013)
 
 --
   + Protracted development
   
 --
-  + Reassembly of features (Putnam and Sánchez, 2013)
+  + Attrition/reassembly of features (e.g., Hicks & Domínguez, 2020; Putnam and Sánchez, 2013)
 
 
 --
 - School-aged heritage speakers are the "missing link" in heritage language acquisition (Montrul, 2018, p. 534)
 
 --
-  + Longitudinal data are necessary to definitively distinguish between end-state differences in development and language attrition
+  + Ample evidence in bilingual first language acquisition with young children
 
 --
-  + In the absence of such data, comparing age groups of children and adult HSs allows for a "quasi-longitudinal" approach to distinguish between theories
-  
+  + Heavy focus on HL acquisition and maintenance in adulthood
 
 --
-- López-Beltrán Forcada (2021, pp. 4-5): "achieving a unified theory of HL acquisition and processing requires a certain degree of common ground between all of these approaches."
+  + What is the developmental trajectory between these age ranges?
 
 
 ---
-# Identifying Layers of Variability
+# Theories of HL Acquisition/Maintenance
 
 
 --
-- Incomplete acquisition, attrition, protracted development: HSs diverge from other native speaker populations due to:
+- Incomplete acquisition (e.g., Montrul, 2008, 2013): Heritage speakers diverge from other populations of native speakers due to:
 
 --
-  + Insufficient input
+  + Decreased/divided input after the onset of schooling
 
 --
   + Early onset of acquisition of an additional language
 
 --
-  + Changes in exposure leading to morphosyntactic optionality ("reactivation" of the inference engine, c.f. Hicks & Dominguez, 2020)
+  + Different *route* of acquisition
 
 
 --
-- Feature reassembly approach (Putnam & Sánchez): HSs differ from one another and at the within-speaker level
+- Protracted development
 
 --
-  + Patterns of activation (frequency of use and/or proficiency) affect the maintenance of HL features
-  
---
-  + Lower frequency of use ~ greater crosslinguistic influence and feature reassembly (between-speakers)
+  + Slower acquisition of morphosyntactic structures by bilingual children (e.g., Corbet & Domínguez, 2020; Cuza & Miller, 2015; Jia & Paradis, 2020)
 
 --
-  + Asymmetrical performance between syntax (receptive tasks) vs. morphology (production tasks) due to mapping challenges and crosslinguistic influence (intraspeaker variability)
-
---
-  + Reassembly begins with features bundled within less-frequent lexical items and in production before underlying knowledge (intraspeaker variability)
+  + Different *rate* of acquisition
 
 
 --
-- Can we accomplish a theory that focuses on all of these levels (between-groups, between-speakers, within-speakers) and that can be bidirectional (e.g., acquisition and attrition) in child language acquisition?
+- Attrition and feature reassembly approaches (e.g., Hicks & Domínguez, 2020; Putnam & Sánchez, 2013)
+
+--
+  + Changes in exposure lead to morphosyntactic optionality
+
+--
+  + HSs restructure their grammatical knowledge, often as a function of crosslinguistic influence
+
+
+---
+# Identifying Levels of Variability
+
+
+--
+- Incomplete acquisition, protracted development, some accounts of attrition: HSs differ from other native speaker populations (*between-groups* or *between-speaker* with regards to age of acquisition)
+
+
+--
+- Feature reassembly approach (Putnam & Sánchez, 2013): HSs differ from _one another_ (*between-speaker*) and at the within-speaker level (*within-speaker*)
+
+--
+  + Patterns of activation (frequency of use and/or proficiency) affect different levels of maintenance of HL features (*between-speaker*)
+
+--
+  + Asymmetrical performance between syntax (receptive tasks) vs. morphology (production tasks) due to mapping challenges and crosslinguistic influence (*within-speaker*)
+
+
+---
+# The Dimensions of HL Acquisition Theory
+
+
+--
+- These theories differ in three key dimensions:
+
+--
+  + Rate vs. route of acquisition
+
+--
+  + Directionality of predictions (development vs. loss)
+
+--
+  + Level of variability (between-group, between-speaker, within-speaker)
+
+
+--
+- Can we achieve a theory that focuses on rate/route of development at all of these levels (between-groups, between-speakers, within-speakers) and that can be bidirectional (e.g., acquisition and attrition) in child HL acquisition?
+
+
+--
+- López-Beltrán Forcada (2021, pp. 4-5): "achieving a unified theory of HL acquisition and processing requires a certain degree of common ground between all of these approaches."
+
 
 
 ---
@@ -405,7 +448,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Previous studies in European contexts have shown that literacy level and/or bilingual education affects acquisition and maintenance of HL competence (Bayram et al., 2017; Kupisch & Rothman, 2018; Torregrossa et al., 2023)
+- Literacy level and bilingual education affect HL acquisition (Bayram et al., 2017; Kupisch & Rothman, 2018; Torregrossa et al., 2023)
 
 
 --
@@ -413,25 +456,18 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Previous research on the acquisition of inflectional morphology on DLI has shown:
+  + Input *quantity* is greater for children in DLI programs
 
 --
-  + HSs show stronger competence than L2 learners (e.g., Montrul & Potowski, 2007; Potowski, 2007)
+  + Potentially superior input *quality* in DLI through academic registers
+
 
 --
-  + Spanish-dominant children show stronger knowledge of morphosyntax than HSs (e.g., Potowski, 2007)
-  
-
---
-- Does DLI confer an advantage relative to non-immersion environments in HL acquisition/maintenance?
+- Studying different HL education levels aligns with Putnam and Sánchez's (2013) approach concentrating on individual experiences
 
 
 ---
 # Differential Object Marking in Spanish
-
-
---
-- Example of structure at the syntax-semantics interface in Spanish
 
 
 --
@@ -458,7 +494,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- DOM is abundantly studied in HL acquisition, and appears to be prone to:
+- DOM is abundantly studied in HL acquisition; its development is affected by:
 
 --
   + Patterns of HL exposure (Montrul & Sánchez-Walker, 2013)
@@ -471,14 +507,11 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 - The role of age in DOM acquisition remains unclear:
 
 --
-  + Protracted development comparing children to adults (Montrul & Sánchez-Walker, 2013)
+  + HS adults produce more DOM than children (Montrul & Sánchez-Walker, 2013)
 
 --
   + No age effects within children (Cuza et al., 2019) or adolescents (Guijarro-Fuentes et al., 2017)
 
-
---
-- DOM attrition has even been attested in Spanish-dominant bilingual adults (Montrul & Sánchez-Walker, 2013)
 
 --
 - To date, there is not yet a single study on DOM that:
@@ -501,7 +534,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 ** 1. At the group and individual levels, do English-dominant HSs converge on the Spanish-dominant DOM system with animate and specific direct objects?**
 
 --
-  + Hypotheses: (A) Spanish-dominant bilingual adults will produce/select more DOM with animate and specific direct objects than HSs; (B) some HSs will converge on Spanish-dominant adults.
+  + Hypotheses: (A) Spanish-dominant bilingual adults will produce/select more DOM with animate and specific direct objects than HSs; (B) some HSs will converge on Spanish-dominant bilingual adults.
 
 
 --
@@ -559,24 +592,20 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Extensive diversity in Spanish spoken among bilingual adults:
+- Extensive diversity in Spanish dialects:
 
 --
-  + HSAs spoke varieties from 13 total Spanish-speaking countries
+  + Participants or their relatives were from 13 total Spanish-speaking countries
   
 --
-  + SDBAs were raised in 9 Spanish-speaking countries and did not live in the USA until at least age 12
-
-
---
-- Most children were of Mexican descent
+  + No documented optionality in DOM use in [+animate] and [+specific] contexts with definite and proper nouns
 
 
 ---
 # Background Tasks
 
 --
-- Children completed the Bilingual English-Spanish Assessment (BESA; Peña et al., 2018)
+- Bilingual English-Spanish Assessment (BESA; Peña et al., 2018)
 
 --
   + 18 questions evaluating multiple morphosyntactic structures
@@ -586,7 +615,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Language questionnaire evaluating linguistic variables (children completed tasks per validity of child self-reports; Castilla-Earls et al., 2022):
+- Language questionnaire evaluating linguistic variables (children self-completed tasks per Castilla-Earls et al., 2022):
 
 --
   + Number of Spanish-speaking parents
@@ -603,43 +632,24 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Production and selection tasks designed to tap [+animate] and [+specific] direct objects
+- Two tasks targeting DOM use:
 
 --
-  + Communicative context about a mother's wishes for her children at summer camp
-
---
-  + Also used to test subjunctive mood morphology
-
-
---
-- **Elicited production task (EPT)**: participants completed sentences targeting DOM orally
-
---
-  + 10 sentences tapping knowledge of DOM with [+animate] and [+specific] direct objects
+  + With [+animate] and [+specific] direct objects
 
 --
   + 3rd person plural verb (ending in -an) to increase salience of *a*
 
 --
-  + 6 distractors for children, 37 distractors for adults (following Montrul & Sánchez-Walker, 2013)
+  + DOM was only included preceding the proper noun _Juanito_ where no dialectal variability of DOM is attested
 
 
 --
-- **Morphology selection task (MST)**: written multiple choice between sentences with and without DOM
-
---
-  + 8 sentences tapping DOM (one choice with *a* and one choice without any object marking)
-
---
-  + DOM occurred only after 3rd person plural verbs (-an inflection) to increase salience of *a*
-
---
-  + 14 distractors for children, 47 for adults
+- **Elicited production task (EPT)**: participants completed 10 sentences targeting DOM orally
 
 
 --
-- DOM was only included preceding the proper noun _Juanito_ where no dialectal variability of DOM is attested
+- **Morphology selection task (MST)**: written multiple choice between 8 sentences with and without DOM
 
 
 ---
@@ -679,6 +689,83 @@ School_Boxplot <- Master_School_Averages %>%
 
 ```{r, print-boxplots}
 (Age_Boxplot)+(School_Boxplot)
+```
+
+
+---
+# Multivariate Analyses
+
+
+- Two binomial logistic regressions/GLMMs used with production/selection of DOM as the binary dependent variable (participant and item as random effects)
+
+
+--
+- GLMM #1: all groups' data incorporated with following independent variables:
+
+--
+  + Group (HS5, HS7/8, HSA, SDBA)
+
+--
+  + BESA proficiency score
+
+--
+  + Frequency of use (from questionnaire)
+
+--
+  + Task (EPT vs. MST)
+
+
+- GLMM #2: children's data with school type, age group, and their interaction
+
+
+---
+# GLMM: All Groups
+
+```{r, DOM-master-correlation}
+DOM_Correlation <- glmer(DOM_Use ~ Group + BESA_Total_Std + Use_Joint_Std + Task +
+                           (1 | Part_ID) + (1 | Item),
+                         data = Master_Age,
+                         family = "binomial")
+```
+
+```{r, generate-DOM-correlation-forest-plot}
+DOM_Forest_Plot <- plot_model(DOM_Correlation, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+  labs(title = "GLMM Summary (All Participant Groups)", y = "Estimates") +
+      scale_y_continuous(breaks = seq(-9, 9, 3),
+                     limits = c(-9, 9)) +
+    scale_x_discrete(labels = c("MST", "Frequency of use", "BESA score", "Group (HS5)", "Group (HS7/8)", "Group (HSA)", "(Intercept)")) +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-DOM-correlation-forest-plot}
+(DOM_Forest_Plot)
+```
+
+
+---
+# GLMM #2: Effects of School and Age
+```{r, DOM-school-correlation}
+DOM_School <- glmer(DOM_Use ~ GradeGroup * School + 
+                      (1 | Part_ID) + (1 | Item),
+                    data = Master_School,
+                    family = "binomial")
+```
+
+```{r, generate-DOM-child-forest-plot}
+DOM_School_Plot <- plot_model(DOM_School, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+      scale_y_continuous(breaks = seq(-9, 9, 3),
+                     limits = c(-9, 9)) +
+    scale_x_discrete(labels = c("HS5 : English-only school", "English-only school", "HS5", "(Intercept)")) +
+  labs(title = "GLMM Summary (Children)", y = "Estimates") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-DOM-child-forest-plot}
+(DOM_School_Plot)
 ```
 
 
@@ -727,130 +814,11 @@ Diffs_Plot <- Diffs %>%
 ```
 
 ---
-# Inferential Statistics (All Groups)
-
-```{r, DOM-master-correlation}
-DOM_Correlation <- glmer(DOM_Use ~ Group + BESA_Total_Std + Use_Joint_Std + Task + BESA_Total_Std:Task + Use_Joint_Std:Task +
-                           (1 | Part_ID) + (1 | Item),
-                         data = Master_Age,
-                         family = "binomial")
-```
-
-```{r, generate-DOM-correlation-forest-plot}
-DOM_Forest_Plot <- plot_model(DOM_Correlation, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
-  labs(title = "GLMM Summary (All Participant Groups)", y = "Estimates") +
-      scale_y_continuous(breaks = seq(-9, 9, 3),
-                     limits = c(-9, 9)) +
-    scale_x_discrete(labels = c("Use : MST", "BESA : MST", "MST", "Frequency of use", "BESA score", "Group (HS5)", "Group (HS7/8)", "Group (HSA)", "(Intercept)")) +
-  theme(axis.text = element_text(size = 18, face = "bold"),
-        axis.title = element_text(size = 20, face = "bold"),
-        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
-```
-
-```{r, print-DOM-correlation-forest-plot}
-(DOM_Forest_Plot)
-```
-
-
----
-# Group Comparisons (All Groups)
-
-```{r, generate-DOM-correlation-tukey}
-DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
-DOM_Correlation_Tukey <- contrast(DOM_Correlation_Pairwise, method = "pairwise")
-DOM_Correlation_Table <- summary(DOM_Correlation_Tukey)
-```
-
-```{r, show-DOM-correlation-Tukey-results}
-kable(DOM_Correlation_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
-```
-
---
-* SDBA have higher production/selection rates of DOM than all groups of HSs (speaker group-level difference)
-
-
---
-* HSA have significantly higher percentages of DOM production/selection than HS5 (protracted development over time)
-
-
---
-* No differences emerge as significant when comparisons involve the "intermittent" HS7/8 group (development is slow and gradual)
-
-
----
-# Effects of School and Age (HS Children)
-```{r, DOM-school-correlation}
-DOM_School <- glmer(DOM_Use ~ GradeGroup * School + 
-                      (1 | Part_ID) + (1 | Item),
-                    data = Master_School,
-                    family = "binomial")
-```
-
-```{r, generate-DOM-child-forest-plot}
-DOM_School_Plot <- plot_model(DOM_School, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
-      scale_y_continuous(breaks = seq(-9, 9, 3),
-                     limits = c(-9, 9)) +
-    scale_x_discrete(labels = c("HS5 : English-only school", "English-only school", "HS5", "(Intercept)")) +
-  labs(title = "GLMM Summary (Children)", y = "Estimates") +
-  theme(axis.text = element_text(size = 18, face = "bold"),
-        axis.title = element_text(size = 20, face = "bold"),
-        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
-```
-
-```{r, print-DOM-child-forest-plot}
-(DOM_School_Plot)
-```
-
-
----
-# Group Comparisons (HS Children)
-
-```{r, generate-child-group-correlation}
-DOM_Children <- glmer(DOM_Use ~ + ChildGroup +
-                        (1 | Part_ID) + (1 | Item),
-                      data = Master_School,
-                      family = "binomial")
-```
-
-```{r, generate-DOM-child-tukey}
-DOM_Children_Pairwise <- emmeans(DOM_Children, spec = "ChildGroup")
-DOM_Children_Tukey <- contrast(DOM_Children_Pairwise, method = "pairwise")
-DOM_Children_Table <- summary(DOM_Children_Tukey)
-```
-
-```{r, show-DOM-child-Tukey-results}
-kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
-```
-
-
---
-- Children enrolled in the dual language immersion school in 7th/8th grade used significantly more DOM than all other groups of children
-
-
---
-- Suggests clear interaction between age and school (supported by statistics)
-
-
---
-- Age and bilingual education work together
-
-
----
 # Research Question #1
 
 
 --
 - **At the group and individual levels, do English-dominant HSs converge on the Spanish-dominant DOM system with animate and specific direct objects?**
-
-
---
-- Hypotheses:
-
---
-  + (A) Spanish-dominant bilingual adults will produce/select more DOM with animate and specific direct objects than HSs
-
---
-  + (B) some HSs will converge on Spanish-dominant adults.
 
 
 --
@@ -878,11 +846,11 @@ kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df",
 
 
 --
-- Hypothesis: HSs will show protracted development of DOM from 5th grade through adulthood.
+- Gradual increases across age groups in descriptive statistics
 
 
 --
-- HSA > HS5 in statistical modeling; gradual increases across age groups in descriptive statistics
+- Additional analyses (available after presentation) show significant difference between HSA and HS5
 
 
 --
@@ -914,18 +882,15 @@ kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df",
 
 
 --
-- Hypotheses:
+- Proficiency affected HSs' production/selection of DOM, but not frequency of use
 
 
 --
-  + (A) HSs with greater proficiency and exposure will produce/select more DOM
-
---
-  + (B) HSs who attend a dual-language immersion program will produce/select more DOM
+- Bilingual education affects children's production and selection of DOM
 
 
 --
-- Proficiency affected HSs' production/selection of DOM
+- Hypothesis 3A partially supported, hypothesis 3B supported
 
 
 ---
@@ -934,10 +899,6 @@ kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df",
 
 --
 - **Do HSs show stronger receptive knowledge of DOM than they produce this structure?**
-
-
---
-- Hypothesis: HSs will show stronger receptive knowledge than they exhibit in production.
 
 
 --
@@ -957,30 +918,30 @@ kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df",
 
 
 --
-- HSs diverge as a group for SDBAs (supporting incomplete acquisition at the between-group level)
+- HSs diverge as a group for SDBAs in rates of DOM production/selection (between-group level)
 
 
 --
-- Putnam and Sánchez (2013) discuss feature _re_ assembly, yet some of their predictions can be adapted to account for results at the within-speaker level
+- Putnam and Sánchez (2013) account partially supports results:
 
 --
-  + Proficiency and bilingual education affect the acquisition of DOM
+  + Proficiency and bilingual education (individual language experiences) affect the acquisition of DOM at between-speaker level
 
 --
-  + Receptive knowledge stronger than production (syntactic representation intact; morphological realization more variable)
+  + Receptive knowledge stronger than production (syntactic representation intact, morphological realization more variable; within-speaker variability)
 
 --
   + No evidence of _re_ assembly of features, but rather protracted development
 
 
 --
-- Is it possible that Putnam and Sánchez's (2013) approach runs in reverse in initial protracted HL acquisition
+- Is it possible that Putnam and Sánchez's (2013) approach runs in reverse in initial but protracted process?
 
 --
   + According to descriptive statistics, comprehension stabilizes before production
 
 --
-  + Exposure appears to modulate the rate and ultimate point of development
+  + Exposure appears to modulate the rate and ultimate route of development
 
 
 --
@@ -990,7 +951,7 @@ kable(DOM_Children_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df",
   + Incomplete acquisition: differences between HSs and other groups of native speakers
 
 --
-  + Putnam & Sánchez's (2013) activation approach: proficiency modulates differences between and within individual HSs
+  + Putnam & Sánchez's (2013) show that proficiency and education modulate differences between individual HSs; separation of syntax and morphology
 
 
 ---
@@ -1132,7 +1093,31 @@ School_Age_Plot <- Master_School %>%
 
 
 ---
-# Appendix B: DOM by Proficiency/Freq. of Use
+# Appendix B: Tukey Post-Hoc Comparisons (All Groups)
+
+```{r, generate-DOM-correlation-tukey}
+DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
+DOM_Correlation_Tukey <- contrast(DOM_Correlation_Pairwise, method = "pairwise")
+DOM_Correlation_Table <- summary(DOM_Correlation_Tukey)
+```
+
+```{r, show-DOM-correlation-Tukey-results}
+kable(DOM_Correlation_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
+```
+
+--
+* SDBA have higher production/selection rates of DOM than all groups of HSs (speaker group-level difference)
+
+
+--
+* HSA have significantly higher percentages of DOM production/selection than HS5 (protracted development over time)
+
+
+--
+* No differences emerge as significant when comparisons involve the "intermittent" HS7/8 group (development is slow and gradual)
+
+---
+# Appendix C: DOM by Proficiency/Freq. of Use
 
 ```{r, generate-proficiency-plot}
 Proficiency_Plot <- Master_Part_Avg %>% 
