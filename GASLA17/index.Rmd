@@ -270,8 +270,6 @@ Master_School <- rbind(EPT_School, FCT_School)
 
 Master_School$GradeGroup <- factor(Master_School$GradeGroup, levels = c("7th/8th grade", "5th grade"))
 Master_School$ChildGroup <- factor(Master_School$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
-Master_School$School <- factor(Master_School$School, levels = c("Dual language", "English-only"))
-Master_School$Task <- factor(Master_School$Task, levels = c("EPT", "MST"))
 ```
 
 ```{r, generate-participant-part-avg}
@@ -309,6 +307,7 @@ FCT_Age_Averages <- rbind(SDB_FCT, HSA_FCT, HS8_FCT, HS5_FCT) %>%
          Ratio = (Ratio*100))
 
 Master_Age_Averages <- rbind(EPT_Age_Averages, FCT_Age_Averages)
+Master_Age_Averages$Group <- factor(Master_Age_Averages$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
 ```
 
 ```{r, generate-boxplot-averages-by-education}
@@ -329,6 +328,7 @@ FCT_School_Averages <- rbind(DLI78_FCT, MLS78_FCT, DLI5_FCT, MLS5_FCT) %>%
          Ratio = (Ratio*100))
 
 Master_School_Averages <- rbind(EPT_School_Averages, FCT_School_Averages)
+Master_School_Averages$GradeGroup <- factor(Master_School_Averages$GradeGroup, levels = c("7th/8th grade", "5th grade"))
 Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
 ```
 
@@ -340,10 +340,10 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-  + Incomplete acquisition/divergent attainment (e.g., Montrul, 2008, 2013)
+  + Incomplete acquisition (e.g., Montrul, 2008, 2013)
 
 --
-  + Protracted development
+  + Protracted development (e.g., Corbet & Domínguez, 2020; Cuza & Miller, 2015; Jia & Paradis, 2020)
   
 --
   + Attrition/reassembly of features (e.g., Hicks & Domínguez, 2020; Putnam and Sánchez, 2013)
@@ -367,7 +367,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Incomplete acquisition (e.g., Montrul, 2008, 2013): Heritage speakers diverge from other populations of native speakers due to:
+- Incomplete acquisition (e.g., Montrul, 2008, 2013): Heritage speakers differ from other populations of native speakers due to:
 
 --
   + Decreased/divided input after the onset of schooling
@@ -378,43 +378,34 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 --
   + Different *route* of acquisition
 
+--
+  + Focus on between-group differences (and some differences between speakers)
+
 
 --
-- Protracted development
+- Protracted development (e.g., Corbet & Domínguez, 2020; Cuza & Miller, 2015; Jia & Paradis, 2020)
 
 --
-  + Slower acquisition of morphosyntactic structures by bilingual children (e.g., Corbet & Domínguez, 2020; Cuza & Miller, 2015; Jia & Paradis, 2020)
+  + Slower acquisition of morphosyntactic structures by bilingual children
 
 --
   + Different *rate* of acquisition
 
-
 --
-- Attrition and feature reassembly approaches (e.g., Hicks & Domínguez, 2020; Putnam & Sánchez, 2013)
-
---
-  + Changes in exposure lead to morphosyntactic optionality
-
---
-  + HSs restructure their grammatical knowledge, often as a function of crosslinguistic influence
-
-
----
-# Identifying Levels of Variability
+  + Focus on between-group differences between bilingual and monolingual children
 
 
 --
-- Incomplete acquisition, protracted development, some accounts of attrition: HSs differ from other native speaker populations (*between-groups* or *between-speaker* with regards to age of acquisition)
-
-
---
-- Feature reassembly approach (Putnam & Sánchez, 2013): HSs differ from _one another_ (*between-speaker*) and at the within-speaker level (*within-speaker*)
+- Reassembly of HL grammars (Putnam & Sánchez, 2013)
 
 --
-  + Patterns of activation (frequency of use and/or proficiency) affect different levels of maintenance of HL features (*between-speaker*)
+  + HSs reassemble featural bundles over time
 
 --
-  + Asymmetrical performance between syntax (receptive tasks) vs. morphology (production tasks) due to mapping challenges and crosslinguistic influence (*within-speaker*)
+  + The degree/speed of this restructuring is tied to input and exposure (between-speaker differences)
+
+--
+  + Production is more impacted than receptive knowledge (within-speaker differences)
 
 
 ---
@@ -436,11 +427,6 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 --
 - Can we achieve a theory that focuses on rate/route of development at all of these levels (between-groups, between-speakers, within-speakers) and that can be bidirectional (e.g., acquisition and attrition) in child HL acquisition?
-
-
---
-- López-Beltrán Forcada (2021, pp. 4-5): "achieving a unified theory of HL acquisition and processing requires a certain degree of common ground between all of these approaches."
-
 
 
 ---
@@ -662,7 +648,7 @@ Age_Boxplot <- Master_Age_Averages %>%
   scale_y_continuous(breaks = seq (0, 100, 20),
                      limits = c(0, 100)) +
   scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
-  labs(x = "Group", y = "Percentage of responses with DOM", title = "DOM by Age Group") +
+  labs(x = "Group", y = "Percentage of responses with DOM", title = "DOM Production/Selection Averages") +
   theme(axis.text = element_text(size = 18, face = "bold"),
         axis.title = element_text(size = 20, face = "bold"),
         plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
@@ -670,15 +656,18 @@ Age_Boxplot <- Master_Age_Averages %>%
         legend.text = element_text(size = 18))
 ```
 
-```{r, generate-school-boxplot}
-School_Boxplot <- Master_School_Averages %>% 
-  ggplot(aes(x = School, y = Ratio, fill = Task)) +
-  geom_boxplot() +
-  facet_grid(facets = vars(GradeGroup)) +
-  scale_y_continuous(breaks = seq (0, 100, 20),
-                     limits = c(0, 100)) +
+```{r, bar-graph-by-age}
+Master_Age_Plot <- Master_Age %>% 
+  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
   scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
-  labs(x = "School", y = "Percentage of responses with DOM", title = "DOM by School, Age, and Task") +
+  labs(x = "Group", y = "Percentage of responses with DOM", fill = "Task", title = "DOM Production/Selection Summary") +
   theme(axis.text = element_text(size = 18, face = "bold"),
         axis.title = element_text(size = 20, face = "bold"),
         plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
@@ -687,8 +676,52 @@ School_Boxplot <- Master_School_Averages %>%
         strip.text = element_text(face = "bold", size = 18))
 ```
 
-```{r, print-boxplots}
-(Age_Boxplot)+(School_Boxplot)
+```{r, print-age-plots}
+(Master_Age_Plot)+(Age_Boxplot)
+```
+
+---
+# DOM Production/Selection by Schooling
+```{r, bar-graph-by-school}
+School_Age_Plot <- Master_School %>% 
+  ggplot(aes(x = GradeGroup, y = Structure_Percentage, fill = Task)) +
+  facet_grid(facets = vars(School)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Child age group", y = "Percentage of responses with DOM", fill = "Task", title = "Child HS DOM Production/Selection Averages") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, generate-school-boxplot}
+School_Boxplot <- Master_School_Averages %>% 
+  ggplot(aes(x = GradeGroup, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  facet_grid(facets = vars(School)) +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "School", y = "Percentage of responses with DOM", title = "Child HS DOM Production/Selection Summary") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-school-plots}
+(School_Age_Plot)+(School_Boxplot)
 ```
 
 
@@ -696,6 +729,7 @@ School_Boxplot <- Master_School_Averages %>%
 # Multivariate Analyses
 
 
+--
 - Two binomial logistic regressions/GLMMs used with production/selection of DOM as the binary dependent variable (participant and item as random effects)
 
 
@@ -715,11 +749,12 @@ School_Boxplot <- Master_School_Averages %>%
   + Task (EPT vs. MST)
 
 
+--
 - GLMM #2: children's data with school type, age group, and their interaction
 
 
 ---
-# GLMM: All Groups
+# GLMM #1: All Groups
 
 ```{r, DOM-master-correlation}
 DOM_Correlation <- glmer(DOM_Use ~ Group + BESA_Total_Std + Use_Joint_Std + Task +
@@ -850,10 +885,6 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Additional analyses (available after presentation) show significant difference between HSA and HS5
-
-
---
 - Hypothesis #2 upheld
 
 
@@ -971,6 +1002,14 @@ Diffs_Plot <- Diffs %>%
 
 
 ---
+# ¡Mil gracias!
+
+
+```{r, QR-code, ut.height = 500, out.width = 500, fig.align = 'center', fig.retina = 2}
+knitr::include_graphics("../GASLA17/GASLA QR Code.png")
+```
+
+---
 # References
 
 
@@ -1011,32 +1050,21 @@ Jia, R., & Paradis, J. (2020). The acquisition of relative clauses by Mandarin h
 
 Kupisch, T., & Rothman, J. (2018). Terminology matters! Why difference is not incompleteness and how early child bilinguals are heritage speakers. *International Journal of Bilingualism*, *22*(5), 564–582. https://doi.org/10.1177/1367006916654355
 
-López-Beltrán Forcada, P. (2021). *Heritage speakers’ online processing of the Spanish subjunctive: A comprehensive usage-based study* [Doctoral dissertation]. The Pennsylvania State University.
-
 Montrul, S. (2008). *Incomplete acquisition in bilingualism: Re-examining the age factor* (Vol. 39). John Benjamins Publishing Company. https://doi.org/10.1075/sibil.39
+
+Montrul, S. (2013). Incomplete L1 acquisition. In J. Herschensohn & M. Young-Scholten (Eds.), *The Cambridge handbook of second language acquisition* (pp. 353–371). Cambridge University Press. https://doi.org/10.1017/CBO9781139051729.022
 
 
 ---
 # References
-
-Montrul, S. (2013). Incomplete L1 acquisition. In J. Herschensohn & M. Young-Scholten (Eds.), *The Cambridge handbook of second language acquisition* (pp. 353–371). Cambridge University Press. https://doi.org/10.1017/CBO9781139051729.022
 
 Montrul, S. (2018). Heritage language development: Connecting the dots. *International Journal of Bilingualism*, *22*(5), 530–546. https://doi.org/10.1177/1367006916654368
 
 Montrul, S., & Bowles, M. (2009). Back to basics: Incomplete knowledge of Differential Object Marking in Spanish heritage speakers. *Bilingualism: Language and Cognition*, *12*(3), 363–383. https://doi.org/10.1017/S1366728909990071
 
-Montrul, S., & Potowski, K. (2007). Command of gender agreement in school-age Spanish-English bilingual children. *International Journal of Bilingualism*, *11*(3), 301–328. https://doi.org/10.1177/13670069070110030301
-
 Montrul, S., & Sánchez-Walker, N. (2013). Differential object marking in child and adult Spanish heritage speakers. *Language Acquisition*, *20*(2), 109–132. https://doi.org/10.1080/10489223.2013.766741
 
 Peña, E. D., Gutiérrez-Clellen, V. F., Iglesias, A., Goldstein, B. A., & Bedore, L. M. (2018). *Bilingual English Spanish Assessment (BESA)*. Brookes.
-
-
----
-# References
-
-
-Potowski, K. (2007). Characteristics of the Spanish grammar and sociolinguistic proficiency of dual immersion graduates. *Spanish in Context*, *4*(2), 187–216. https://doi.org/10.1075/sic.4.2.04pot
 
 Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
 
@@ -1044,56 +1072,7 @@ Torregrossa, J., Flores, C., & Rinke, E. (2023). What modulates the acquisition 
 
 
 ---
-# Appendix A: Percentages of DOM Used
-
-```{r, bar-graph-by-age}
-Master_Age_Plot <- Master_Age %>% 
-  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
-  geom_bar(position = "dodge", color = "black", stat = "identity") +
-  scale_y_continuous(breaks = seq(0, 100, 20),
-                     limits = c(0, 105)) +
-  geom_text(aes(label = round(Structure_Percentage)),
-            position = position_dodge(width = .9),
-            vjust = -0.5,
-            size = 3.5) +
-  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
-  labs(x = "Group", y = "Percentage of responses with DOM", fill = "Task", title = "DOM by Age Group and Task") +
-  theme(axis.text = element_text(size = 18, face = "bold"),
-        axis.title = element_text(size = 20, face = "bold"),
-        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
-        legend.title = element_text(size = 18, face = "bold"),
-        legend.text = element_text(size = 18),
-        strip.text = element_text(face = "bold", size = 18))
-```
-
-```{r, bar-graph-by-school}
-School_Age_Plot <- Master_School %>% 
-  ggplot(aes(x = GradeGroup, y = Structure_Percentage, fill = Task)) +
-  facet_grid(facets = vars(School)) +
-  geom_bar(position = "dodge", color = "black", stat = "identity") +
-  scale_y_continuous(breaks = seq(0, 100, 20),
-                     limits = c(0, 105)) +
-  geom_text(aes(label = round(Structure_Percentage)),
-            position = position_dodge(width = .9),
-            vjust = -0.5,
-            size = 3.5) +
-  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
-  labs(x = "Child age group", y = "Percentage of responses with DOM", fill = "Task", title = "DOM by School Group and Task") +
-  theme(axis.text = element_text(size = 18, face = "bold"),
-        axis.title = element_text(size = 20, face = "bold"),
-        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
-        legend.title = element_text(size = 18, face = "bold"),
-        legend.text = element_text(size = 18),
-        strip.text = element_text(face = "bold", size = 18))
-```
-
-```{r, print-bar-graphs}
-(Master_Age_Plot)+(School_Age_Plot)
-```
-
-
----
-# Appendix B: Tukey Post-Hoc Comparisons (All Groups)
+# Appendix A: Tukey Comparisons for All Groups
 
 ```{r, generate-DOM-correlation-tukey}
 DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
@@ -1117,7 +1096,7 @@ kable(DOM_Correlation_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "d
 * No differences emerge as significant when comparisons involve the "intermittent" HS7/8 group (development is slow and gradual)
 
 ---
-# Appendix C: DOM by Proficiency/Freq. of Use
+# Appendix B: DOM by Proficiency/Freq. of Use
 
 ```{r, generate-proficiency-plot}
 Proficiency_Plot <- Master_Part_Avg %>% 
