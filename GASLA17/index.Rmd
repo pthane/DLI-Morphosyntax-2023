@@ -485,10 +485,16 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
+- Not challenging for monolinguals; acquired by approximately age 3 (Rodríguez Mondoñedo, 2008)
+
+
+--
 - English does not have DOM (or any object marking), making it an area to study crosslinguistic influence
+
 
 --
 - DOM is abundantly studied in HL acquisition; its development is affected by:
+
 
 --
   + Patterns of HL exposure (Montrul & Sánchez-Walker, 2013)
@@ -1088,6 +1094,8 @@ Peña, E. D., Gutiérrez-Clellen, V. F., Iglesias, A., Goldstein, B. A., & Bedor
 # References
 
 Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
+
+Rodríguez-Mondoñedo, M. (2008). The acquisition of Differential Object Marking in Spanish. *Probus*, *20*(1). https://doi.org/10.1515/PROBUS.2008.004
 
 Torregrossa, J., Flores, C., & Rinke, E. (2023). What modulates the acquisition of difficult structures in a heritage language? A study on Portuguese in contact with French, German and Italian. *Bilingualism: Language and Cognition*, *26*(1), 179–192. https://doi.org/10.1017/S1366728922000438
 
