@@ -336,7 +336,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- There has been extensive theorizing concerning HL acquisition and maintenance
+- There has been extensive theorizing concerning HL acquisition and maintenance within generative paradigms:
 
 
 --
@@ -353,7 +353,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 - School-aged heritage speakers are the "missing link" in heritage language acquisition (Montrul, 2018, p. 534)
 
 --
-  + Ample evidence in bilingual first language acquisition with young children
+  + Extensive research in bilingual first language acquisition with young children
 
 --
   + Heavy focus on HL acquisition and maintenance in adulthood
@@ -361,13 +361,16 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 --
   + What is the developmental trajectory between these age ranges?
 
+--
+  + Do we observe HL growth or loss during these years?
+
 
 ---
 # Theories of HL Acquisition/Maintenance
 
 
 --
-- Incomplete acquisition (e.g., Montrul, 2008, 2013): Heritage speakers differ from other populations of native speakers due to:
+- Incomplete acquisition (e.g., Montrul, 2008, 2013): HS differ from other populations due to:
 
 --
   + Decreased/divided input after the onset of schooling
@@ -399,10 +402,10 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 - Reassembly of HL grammars (Putnam & Sánchez, 2013)
 
 --
-  + HSs reassemble featural bundles over time
+  + HSs reassemble featural bundles over time due to crosslinguistic influence ("reverse" of Feature Reassembly Hypothesis, Lardiere, 2008, 2009)
 
 --
-  + The degree/speed of this restructuring is tied to input and exposure (between-speaker differences)
+  + The degree/speed of this restructuring is driven by HL activation/exposure and individual HL experiences (between-speaker differences)
 
 --
   + Production is more impacted than receptive knowledge (within-speaker differences)
@@ -467,7 +470,8 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- In Spanish, [+animate] and [+specific] direct objects raise from VP-internal to check a D-feature in _spec,vP_
+- In Spanish, [+animate] and [+specific] direct objects raise from VP-internal to check an interpretable D-feature in _spec,vP_
+
 
 --
   + Example of inherent case marking
@@ -475,9 +479,13 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 --
   + The *a* marking is also present with all indirect objects to mark dative case regardless of semantics
 
+
 ---
 # Why DOM?
 
+
+--
+- English does not have DOM (or any object marking), making it an area to study crosslinguistic influence
 
 --
 - DOM is abundantly studied in HL acquisition; its development is affected by:
@@ -513,35 +521,23 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 ---
-# Research Questions and Hypotheses
+# Research Questions
 
 
 --
 ** 1. At the group and individual levels, do English-dominant HSs converge on the Spanish-dominant DOM system with animate and specific direct objects?**
 
---
-  + Hypotheses: (A) Spanish-dominant bilingual adults will produce/select more DOM with animate and specific direct objects than HSs; (B) some HSs will converge on Spanish-dominant bilingual adults.
-
 
 --
 ** 2. Do HSs develop stronger knowledge of DOM with animate and specific direct objects with age? **
-
---
-  + Hypothesis: HSs will show protracted development of DOM from 5th grade through adulthood.
 
 
 --
 ** 3. Do proficiency, frequency of HL exposure, and bilingual education influence HSs' command of DOM with animate and specific direct objects? **
 
---
-  + Hypotheses: (A) HSs with greater proficiency and exposure will produce/select more DOM; (B) HSs who attend a dual-language immersion program will produce/select more DOM
-
 
 --
 ** 4. Do HSs show stronger receptive knowledge of DOM than they produce this structure?**
-
---
-  + Hypothesis: HSs will show stronger receptive knowledge than they exhibit in production.
 
 
 ---
@@ -604,7 +600,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 - Language questionnaire evaluating linguistic variables (children self-completed tasks per Castilla-Earls et al., 2022):
 
 --
-  + Number of Spanish-speaking parents
+  + Spanish dialects spoken at home
   
 --
   + Languages spoken at home
@@ -641,23 +637,16 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 ---
 # DOM Production/Selection by Group
 
-```{r, generate-age-boxplot}
-Age_Boxplot <- Master_Age_Averages %>% 
-  ggplot(aes(x = Group, y = Ratio, fill = Task)) +
-  geom_boxplot() +
-  scale_y_continuous(breaks = seq (0, 100, 20),
-                     limits = c(0, 100)) +
-  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
-  labs(x = "Group", y = "Percentage of responses with DOM", title = "DOM Production/Selection Averages") +
-  theme(axis.text = element_text(size = 18, face = "bold"),
-        axis.title = element_text(size = 20, face = "bold"),
-        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
-        legend.title = element_text(size = 18, face = "bold"),
-        legend.text = element_text(size = 18))
+```{r, rearrange-age-boxplot-order}
+Age_Averages_Reordered <- Master_Age_Averages
+Age_Averages_Reordered$Group <- factor(Age_Averages_Reordered$Group, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+
+Age_Reordered <- Master_Age
+Age_Reordered$Group <- factor(Age_Reordered$Group, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
 ```
 
 ```{r, bar-graph-by-age}
-Master_Age_Plot <- Master_Age %>% 
+Master_Age_Plot <- Age_Reordered %>% 
   ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
   geom_bar(position = "dodge", color = "black", stat = "identity") +
   scale_y_continuous(breaks = seq(0, 100, 20),
@@ -676,14 +665,39 @@ Master_Age_Plot <- Master_Age %>%
         strip.text = element_text(face = "bold", size = 18))
 ```
 
+```{r, generate-age-boxplot}
+Age_Boxplot <- Age_Averages_Reordered %>% 
+  ggplot(aes(x = Group, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses with DOM", title = "DOM Production/Selection Averages") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+
 ```{r, print-age-plots}
 (Master_Age_Plot)+(Age_Boxplot)
 ```
 
 ---
 # DOM Production/Selection by Schooling
+
+```{r, rearrange-school-boxplot-order}
+School_Average_Reordered <- Master_School_Averages
+School_Average_Reordered$GradeGroup <- factor(School_Average_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
+
+School_Reordered <- Master_School
+School_Reordered$Group <- factor(School_Reordered$Group, levels = c("5th grade", "7th/8th grade"))
+```
+
 ```{r, bar-graph-by-school}
-School_Age_Plot <- Master_School %>% 
+School_Age_Plot <- School_Reordered %>% 
   ggplot(aes(x = GradeGroup, y = Structure_Percentage, fill = Task)) +
   facet_grid(facets = vars(School)) +
   geom_bar(position = "dodge", color = "black", stat = "identity") +
@@ -704,7 +718,7 @@ School_Age_Plot <- Master_School %>%
 ```
 
 ```{r, generate-school-boxplot}
-School_Boxplot <- Master_School_Averages %>% 
+School_Boxplot <- School_Average_Reordered %>% 
   ggplot(aes(x = GradeGroup, y = Ratio, fill = Task)) +
   geom_boxplot() +
   facet_grid(facets = vars(School)) +
@@ -869,7 +883,7 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Hypotheses 1A and 1B upheld
+- Not a single HS does not use DOM in either production/selection in at least two instances
 
 
 ---
@@ -881,11 +895,11 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Gradual increases across age groups in descriptive statistics
+- Gradual increases across age groups in descriptive and inferential statistics
 
 
 --
-- Hypothesis #2 upheld
+- HSs continue to acquire DOM at a different rate from monolinguals between adolescence and adulthood
 
 
 --
@@ -921,7 +935,7 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Hypothesis 3A partially supported, hypothesis 3B supported
+- Critical finding from both a linguistic and social justice perspective
 
 
 ---
@@ -937,10 +951,6 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Hypothesis #4 upheld
-
-
---
 - Supports research arguing for a dissociation between morphology and syntax in HL acquisition
 
 
@@ -949,40 +959,43 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- HSs diverge as a group for SDBAs in rates of DOM production/selection (between-group level)
+- Tenets of each theory applies at different levels:
+
+--
+  + Incomplete acquisition: differences between HSs and other groups of native speakers (between-groups; route)
+
+--
+  + Protracted development: continued development with age into adulthood (between-groups; rate)
+
+--
+  + Putnam & Sánchez (2013): language experience modulates differences between individual HSs; separation of syntax and morphology (between-speaker and within-speaker)
 
 
 --
-- Putnam and Sánchez (2013) account partially supports results:
+- Incomplete acquisition partially explains group-level difference:
+
 
 --
-  + Proficiency and bilingual education (individual language experiences) affect the acquisition of DOM at between-speaker level
+  + Some HS converged on rates of Spanish-dominant bilingual adults
 
 --
-  + Receptive knowledge stronger than production (syntactic representation intact, morphological realization more variable; within-speaker variability)
+  + None of the HS categorically omitted DOM across tasks
+
+
+--
+- Putnam and Sánchez's (2013) account partially supports results:
+
+--
+  + Accounts for variability at the between-speaker and within-speaker levels
 
 --
   + No evidence of _re_ assembly of features, but rather protracted development
 
+--
+  + Is it possible that Putnam and Sánchez's (2013) approach runs in reverse in initial but protracted process?
 
 --
-- Is it possible that Putnam and Sánchez's (2013) approach runs in reverse in initial but protracted process?
-
---
-  + According to descriptive statistics, comprehension stabilizes before production
-
---
-  + Exposure appears to modulate the rate and ultimate route of development
-
-
---
-- Incomplete acquisition *and* Putnam and Sánchez's (2013) approach work together at distinct levels
-
---
-  + Incomplete acquisition: differences between HSs and other groups of native speakers
-
---
-  + Putnam & Sánchez's (2013) show that proficiency and education modulate differences between individual HSs; separation of syntax and morphology
+  + Proficiency and education (individual experiences and proxies for exposure?) modulate the rate and ultimate route of development
 
 
 ---
@@ -1050,13 +1063,17 @@ Jia, R., & Paradis, J. (2020). The acquisition of relative clauses by Mandarin h
 
 Kupisch, T., & Rothman, J. (2018). Terminology matters! Why difference is not incompleteness and how early child bilinguals are heritage speakers. *International Journal of Bilingualism*, *22*(5), 564–582. https://doi.org/10.1177/1367006916654355
 
-Montrul, S. (2008). *Incomplete acquisition in bilingualism: Re-examining the age factor* (Vol. 39). John Benjamins Publishing Company. https://doi.org/10.1075/sibil.39
+Lardiere, D. (2008). Feature-assembly in second language acquisition. In J. M. Liceras, H. Zobl, & H. Goodluck (Eds.), *The role of formal features in second language acquisition* (1st ed., pp. 106–140). Routledge. https://doi.org/10.4324/9781315085340-5
 
-Montrul, S. (2013). Incomplete L1 acquisition. In J. Herschensohn & M. Young-Scholten (Eds.), *The Cambridge handbook of second language acquisition* (pp. 353–371). Cambridge University Press. https://doi.org/10.1017/CBO9781139051729.022
+Lardiere, D. (2009). Some thoughts on the contrastive analysis of features in second language acquisition. *Second Language Research*, *25*(2), 173–227. https://doi.org/10.1177/0267658308100283
 
 
 ---
 # References
+
+Montrul, S. (2008). *Incomplete acquisition in bilingualism: Re-examining the age factor* (Vol. 39). John Benjamins Publishing Company. https://doi.org/10.1075/sibil.39
+
+Montrul, S. (2013). Incomplete L1 acquisition. In J. Herschensohn & M. Young-Scholten (Eds.), *The Cambridge handbook of second language acquisition* (pp. 353–371). Cambridge University Press. https://doi.org/10.1017/CBO9781139051729.022
 
 Montrul, S. (2018). Heritage language development: Connecting the dots. *International Journal of Bilingualism*, *22*(5), 530–546. https://doi.org/10.1177/1367006916654368
 
@@ -1066,13 +1083,36 @@ Montrul, S., & Sánchez-Walker, N. (2013). Differential object marking in child 
 
 Peña, E. D., Gutiérrez-Clellen, V. F., Iglesias, A., Goldstein, B. A., & Bedore, L. M. (2018). *Bilingual English Spanish Assessment (BESA)*. Brookes.
 
+
+---
+# References
+
 Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
 
 Torregrossa, J., Flores, C., & Rinke, E. (2023). What modulates the acquisition of difficult structures in a heritage language? A study on Portuguese in contact with French, German and Italian. *Bilingualism: Language and Cognition*, *26*(1), 179–192. https://doi.org/10.1017/S1366728922000438
 
 
 ---
-# Appendix A: Tukey Comparisons for All Groups
+# Appendix A: Sample Items
+
+
+**Sample sentence from SCT**
+
+A veces Juanito se pone triste si sus hermanas dicen que no quieren hablar con él. ¿Qué quiere la mamá? Quiere que las hermanas _________ (LLAMAR) Juanito cada noche.
+
+
+
+**Sample sentences from MST**
+
+
+¿Qué tienen que hacer las hermanas? 
+  + Tienen que llevar a Juanito para subir al tobogán. 
+
+  + *Tienen que llevar Juanito para subir al tobogán.
+
+
+---
+# Appendix B: Tukey Comparisons for All Groups
 
 ```{r, generate-DOM-correlation-tukey}
 DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
@@ -1096,7 +1136,7 @@ kable(DOM_Correlation_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "d
 * No differences emerge as significant when comparisons involve the "intermittent" HS7/8 group (development is slow and gradual)
 
 ---
-# Appendix B: DOM by Proficiency/Freq. of Use
+# Appendix C: DOM by Proficiency/Freq. of Use
 
 ```{r, generate-proficiency-plot}
 Proficiency_Plot <- Master_Part_Avg %>% 
