@@ -1112,7 +1112,7 @@ A veces Juanito se pone triste si sus hermanas dicen que no quieren hablar con Ã
 
 
 ---
-# Appendix B: Tukey Comparisons for All Groups
+# Appendix B: Tukey Comparisons for Groups
 
 ```{r, generate-DOM-correlation-tukey}
 DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
