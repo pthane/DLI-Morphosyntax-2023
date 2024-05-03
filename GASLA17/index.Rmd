@@ -402,7 +402,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
   + HSs reassemble featural bundles over time due to L2/L1B crosslinguistic influence ("reverse" of Feature Reassembly Hypothesis, Lardiere, 2008, 2009)
 
 --
-  + The degree/speed of this restructuring is driven by HL activation/exposure and individual HL experiences (between-speaker differences)
+  + The rate/ultimate route of this restructuring is driven by HL activation/exposure and individual HL experiences (between-speaker differences)
 
 --
   + Production is more impacted than receptive knowledge (within-speaker differences)
@@ -429,7 +429,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 - These theories do not necessarily/categorically make competing predictions
 
 --
-- Is it possible to generate a single, unified theory?
+- Is it possible to generate a single, unified theory that can capture acquisition/attrition across the lifespan?
 
 
 ---
@@ -692,7 +692,7 @@ School_Average_Reordered <- Master_School_Averages
 School_Average_Reordered$GradeGroup <- factor(School_Average_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
 
 School_Reordered <- Master_School
-School_Reordered$Group <- factor(School_Reordered$Group, levels = c("5th grade", "7th/8th grade"))
+School_Reordered$GradeGroup <- factor(School_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
 ```
 
 ```{r, bar-graph-by-school}
@@ -736,34 +736,6 @@ School_Boxplot <- School_Average_Reordered %>%
 ```{r, print-school-plots}
 (School_Age_Plot)+(School_Boxplot)
 ```
-
-
----
-# Multivariate Analyses
-
-
---
-- Two binomial logistic regressions/GLMMs used (participant and item as random effects)
-
-
---
-- GLMM #1: all groups' DOM data incorporated with following independent variables:
-
---
-  + Group (SDBA as reference level, HSA, HS5, HS7/8)
-
---
-  + BESA proficiency score
-
---
-  + Frequency of use (from questionnaire)
-
---
-  + Task (EPT as reference level vs. MST)
-
-
---
-- GLMM #2: HS children's data only with school type, age group, and their interaction
 
 
 ---
@@ -894,7 +866,7 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Gradual increases across age groups in descriptive and inferential statistics
+- Increases from fifth to eighth grade; plateau after that time period
 
 
 --
@@ -1115,7 +1087,34 @@ A veces Juanito se pone triste si sus hermanas dicen que no quieren hablar con Ã
 
 
 ---
-# Appendix B: Tukey Comparisons for Groups
+# Appendix B: Explanation of Multivariate Analyses
+
+
+--
+- Two binomial logistic regressions/GLMMs used (participant and item as random effects)
+
+
+--
+- GLMM #1: all groups' DOM data incorporated with following independent variables:
+
+--
+  + Group (SDBA as reference level, HSA, HS5, HS7/8)
+
+--
+  + BESA proficiency score
+
+--
+  + Frequency of use (from questionnaire)
+
+--
+  + Task (EPT as reference level vs. MST)
+
+
+--
+- GLMM #2: HS children's data only with school type, age group, and their interaction
+
+---
+# Appendix C: Tukey Comparisons for Groups
 
 ```{r, generate-DOM-correlation-tukey}
 DOM_Correlation_Pairwise <- emmeans(DOM_Correlation, spec = "Group")
