@@ -356,13 +356,10 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
   + Extensive research in bilingual first language acquisition with young children
 
 --
-  + Heavy focus on HL acquisition and maintenance in adulthood
+  + Focus on HL acquisition/maintenance in adulthood
 
 --
   + What is the developmental trajectory between these age ranges?
-
---
-  + Do we observe HL growth or loss during these years?
 
 
 ---
@@ -402,7 +399,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 - Reassembly of HL grammars (Putnam & Sánchez, 2013)
 
 --
-  + HSs reassemble featural bundles over time due to crosslinguistic influence ("reverse" of Feature Reassembly Hypothesis, Lardiere, 2008, 2009)
+  + HSs reassemble featural bundles over time due to L2/L1B crosslinguistic influence ("reverse" of Feature Reassembly Hypothesis, Lardiere, 2008, 2009)
 
 --
   + The degree/speed of this restructuring is driven by HL activation/exposure and individual HL experiences (between-speaker differences)
@@ -412,7 +409,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 ---
-# The Dimensions of HL Acquisition Theory
+# Dimensions of HL Acquisition Theory
 
 
 --
@@ -429,7 +426,10 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- Can we achieve a theory that focuses on rate/route of development at all of these levels (between-groups, between-speakers, within-speakers) and that can be bidirectional (e.g., acquisition and attrition) in child HL acquisition?
+- These theories do not necessarily/categorically make competing predictions
+
+--
+- Is it possible to generate a single, unified theory?
 
 
 ---
@@ -470,14 +470,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- In Spanish, [+animate] and [+specific] direct objects raise from VP-internal to check an interpretable D-feature in _spec,vP_
-
-
---
-  + Example of inherent case marking
-
---
-  + The *a* marking is also present with all indirect objects to mark dative case regardless of semantics
+- In Spanish, [+animate] and [+specific] direct objects raise from VP-internal to check an interpretable D-feature in _spec,vP_ (Torrego, 1998)
 
 
 ---
@@ -493,7 +486,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- DOM is abundantly studied in HL acquisition; its development is affected by:
+- DOM is abundantly studied in HL acquisition; at the between-speakers level, its acquisition is modulated by:
 
 
 --
@@ -567,7 +560,7 @@ Master_School_Averages$ChildGroup <- factor(Master_School_Averages$ChildGroup, l
 
 
 --
-- HS5 and HS7/8 were further subdivided into different groups:
+- HS5 and HS7/8 were further evaluated for educational experience:
 
 --
   + DLI students (received 50% of elementary education in Spanish + Spanish HL course in middle school)
@@ -750,14 +743,14 @@ School_Boxplot <- School_Average_Reordered %>%
 
 
 --
-- Two binomial logistic regressions/GLMMs used with production/selection of DOM as the binary dependent variable (participant and item as random effects)
+- Two binomial logistic regressions/GLMMs used (participant and item as random effects)
 
 
 --
-- GLMM #1: all groups' data incorporated with following independent variables:
+- GLMM #1: all groups' DOM data incorporated with following independent variables:
 
 --
-  + Group (HS5, HS7/8, HSA, SDBA)
+  + Group (SDBA as reference level, HSA, HS5, HS7/8)
 
 --
   + BESA proficiency score
@@ -766,11 +759,11 @@ School_Boxplot <- School_Average_Reordered %>%
   + Frequency of use (from questionnaire)
 
 --
-  + Task (EPT vs. MST)
+  + Task (EPT as reference level vs. MST)
 
 
 --
-- GLMM #2: children's data with school type, age group, and their interaction
+- GLMM #2: HS children's data only with school type, age group, and their interaction
 
 
 ---
@@ -1096,6 +1089,8 @@ Peña, E. D., Gutiérrez-Clellen, V. F., Iglesias, A., Goldstein, B. A., & Bedor
 Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
 
 Rodríguez-Mondoñedo, M. (2008). The acquisition of Differential Object Marking in Spanish. *Probus*, *20*(1). https://doi.org/10.1515/PROBUS.2008.004
+
+Torrego, E. (1998). *The dependencies of objects*. MIT Press.
 
 Torregrossa, J., Flores, C., & Rinke, E. (2023). What modulates the acquisition of difficult structures in a heritage language? A study on Portuguese in contact with French, German and Italian. *Bilingualism: Language and Cognition*, *26*(1), 179–192. https://doi.org/10.1017/S1366728922000438
 
