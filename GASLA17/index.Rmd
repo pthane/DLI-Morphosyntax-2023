@@ -1,6 +1,6 @@
 ---
 title: "Towards a Unified Theory of Heritage Language Acquisition: Evidence from Spanish Differential Object Marking Across Childhood"
-author: "Patrick D. Thane<br/>University of Massachusetts - Amherst"
+author: "Patrick D. Thane (pthane@umass.edu)<br/>University of Massachusetts - Amherst"
 institute: "17th Generative Approaches to Second Language Acquisition Conference"
 date: "Friday, May 3, 2024"
 output:
@@ -1002,15 +1002,15 @@ Diffs_Plot <- Diffs %>%
 
 
 --
-- Only evaluated DOM in "core" contexts such as [+animate] and [+specific] direct objects
+- Two significant limitations that should be addressed through future work with similar methodologies
 
 
 --
-- Broader age range to make a clearer set of predictions regarding protracted development: how would younger bilinguals perform?
+- Only evaluated DOM in "core" contexts such as [+animate] and [+specific] direct objects, and did not evaluate comission
 
 
 --
-- Did not control for age of acquisition using statistical modeling (only requested number of bilingual parents)
+- Broader age range and age-matched monolinguals to make a clearer set of predictions regarding protracted development over the whole childhood period
 
 
 ---
