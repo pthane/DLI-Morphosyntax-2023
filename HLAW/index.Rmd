@@ -1,0 +1,1558 @@
+---
+title: "Age and education in the acquisition of inflectional morphology in heritage Spanish"
+author: "Patrick D. Thane<br/>University of Massachusetts - Amherst"
+institute: "Heritage Languages Around the World 2"
+date: "May 30, 2024"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: false
+---
+
+```{r, setup, include = FALSE}
+library(tidyverse)
+library(lme4)
+library(xaringan)
+library(xaringanthemer)
+library(xaringanExtra)
+library(lmerTest)
+library(kableExtra)
+library(patchwork)
+library(jtools)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(emmeans)
+
+options(htmltools.dir.version = FALSE)
+options(scipen = 999)
+
+
+knitr::opts_chunk$set(fig.width = 16, fig.height = 7, fig.retina = 3, fig.align = 'center', cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE, hiline = TRUE)
+```
+
+```{r xaringan, include = FALSE, warning = FALSE}
+style_duo_accent(
+  primary_color = "#881C1C",
+  secondary_color = "#212721",
+  inverse_header_color = "#FFFDD0")
+```
+
+```{r xaringan-logo, echo = FALSE}
+use_logo(
+  image_url = "https://www.umass.edu/university-relations/sites/default/files/styles/tile_max_250px/public/2023-12/seal_workmark_source-lrg.png?itok=DOrf20Xh"
+)
+```
+
+```{r, load-subjunctive-data}
+# EPT
+SDB_EPT_Subj <- read.csv("../CSV Files/SDB/SDB Subjunctive EPT.csv") %>% 
+  mutate(Group = "SDBA",
+         GradeGroup = "SDBA",
+         ChildGroup = "N/A",
+         Task = "EPT",
+         School = "Adult")
+
+HSA_EPT_Subj <- read.csv("../CSV Files/Adult HS/Adult HS Subjunctive EPT.csv") %>% 
+  mutate(Group = "HSA",
+         GradeGroup = "N/A",
+         ChildGroup = "N/A",
+         Task = "EPT",
+         School = "Adult")
+
+DLI78_EPT_Subj <- read.csv("../CSV Files/DLI-78/DLI-78 Subjunctive EPT.csv") %>% 
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "DLI-7/8",
+         Task = "EPT",
+         School = "Dual language")
+
+MLS78_EPT_Subj <- read.csv("../CSV Files/MLS-78/MLS-78 Subjunctive EPT.csv") %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "MLS-7/8",
+         Task = "EPT",
+         School = "English-only")
+
+DLI5_EPT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "DLI-5",
+         Task = "EPT",
+         School = "Dual language")
+
+MLS5_EPT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "MLS-5",
+         Task = "EPT",
+         School = "English-only")
+
+
+# FCT
+SDB_FCT_Subj <- read.csv("../CSV Files/SDB/SDB Subjunctive FCT.csv") %>% 
+  mutate(Group = "SDBA",
+         GradeGroup = "SDBA",
+         ChildGroup = "N/A",
+         Task = "MST",
+         School = "Adult")
+
+HSA_FCT_Subj <- read.csv("../CSV Files/Adult HS/Adult HS Subjunctive FCT.csv") %>% 
+  mutate(Group = "HSA",
+         GradeGroup = "N/A",
+         ChildGroup = "N/A",
+         Task = "MST",
+         School = "Adult")
+
+DLI78_FCT_Subj <- read.csv("../CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv") %>% 
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "DLI-7/8",
+         Task = "MST",
+         School = "Dual language")
+
+MLS78_FCT_Subj <- read.csv("../CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv") %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "MLS-7/8",
+         Task = "MST",
+         School = "English-only")
+
+DLI5_FCT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "DLI-5",
+         Task = "MST",
+         School = "Dual language")
+
+MLS5_FCT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "MLS-5",
+         Task = "MST",
+         School = "English-only")
+
+## Join datasets
+HS8_EPT_Subj <- rbind(DLI78_EPT_Subj, MLS78_EPT_Subj)
+HS8_FCT_Subj <- rbind(DLI78_FCT_Subj, MLS78_FCT_Subj)
+
+HS5_EPT_Subj <- rbind(DLI5_EPT_Subj, MLS5_EPT_Subj)
+HS5_FCT_Subj <- rbind(DLI5_FCT_Subj, MLS5_FCT_Subj)
+```
+
+```{r, load-DOM-data}
+# EPT
+SDB_EPT_DOM <- read.csv("../CSV Files/SDB/SDB DOM EPT.csv") %>% 
+  mutate(Group = "SDBA",
+         GradeGroup = "SDBA",
+         ChildGroup = "N/A",
+         Task = "EPT",
+         School = "Adult")
+
+HSA_EPT_DOM <- read.csv("../CSV Files/Adult HS/Adult HS DOM EPT.csv") %>% 
+  mutate(Group = "HSA",
+         GradeGroup = "N/A",
+         ChildGroup = "N/A",
+         Task = "EPT",
+         School = "Adult")
+
+DLI78_EPT_DOM <- read.csv("../CSV Files/DLI-78/DLI-78 DOM EPT.csv") %>% 
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "DLI-7/8",
+         Task = "EPT",
+         School = "Dual language")
+
+MLS78_EPT_DOM <- read.csv("../CSV Files/MLS-78/MLS-78 DOM EPT.csv") %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "MLS-7/8",
+         Task = "EPT",
+         School = "English-only")
+
+DLI5_EPT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "DLI-5",
+         Task = "EPT",
+         School = "Dual language")
+
+MLS5_EPT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "MLS-5",
+         Task = "EPT",
+         School = "English-only")
+
+
+# FCT
+SDB_FCT_DOM <- read.csv("../CSV Files/SDB/SDB DOM FCT.csv") %>% 
+  mutate(Group = "SDBA",
+         GradeGroup = "SDBA",
+         ChildGroup = "N/A",
+         Task = "MST",
+         School = "Adult")
+
+HSA_FCT_DOM <- read.csv("../CSV Files/Adult HS/Adult HS DOM FCT.csv") %>% 
+  mutate(Group = "HSA",
+         GradeGroup = "N/A",
+         ChildGroup = "N/A",
+         Task = "MST",
+         School = "Adult")
+
+DLI78_FCT_DOM <- read.csv("../CSV Files/DLI-78/DLI-78 DOM FCT.csv") %>% 
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "DLI-7/8",
+         Task = "MST",
+         School = "Dual language")
+
+MLS78_FCT_DOM <- read.csv("../CSV Files/MLS-78/MLS-78 DOM FCT.csv") %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "HS7/8",
+         GradeGroup = "7th/8th grade",
+         ChildGroup = "MLS-7/8",
+         Task = "MST",
+         School = "English-only")
+
+DLI5_FCT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "DLI-5",
+         Task = "MST",
+         School = "Dual language")
+
+MLS5_FCT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "HS5",
+         GradeGroup = "5th grade",
+         ChildGroup = "MLS-5",
+         Task = "MST",
+         School = "English-only")
+
+## Join datasets
+HS8_EPT_DOM <- rbind(DLI78_EPT_DOM, MLS78_EPT_DOM)
+HS8_FCT_DOM <- rbind(DLI78_FCT_DOM, MLS78_FCT_DOM)
+
+HS5_EPT_DOM <- rbind(DLI5_EPT_DOM, MLS5_EPT_DOM)
+HS5_FCT_DOM <- rbind(DLI5_FCT_DOM, MLS5_FCT_DOM)
+```
+
+```{r, generate-Subj-averages}
+# Adult data
+## SDB
+SDB_EPT_Subj_Structure <- aggregate(SDB_EPT_Subj$Mood_Use, list(SDB_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+SDB_EPT_Subj_Structure <- SDB_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+SDB_EPT_Subj_Structure <- left_join(SDB_EPT_Subj, SDB_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+SDB_FCT_Subj_Structure <- aggregate(SDB_FCT_Subj$Mood_Use, list(SDB_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+SDB_FCT_Subj_Structure <- SDB_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+SDB_FCT_Subj_Structure <- left_join(SDB_FCT_Subj, SDB_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HSA
+HSA_EPT_Subj_Structure <- aggregate(HSA_EPT_Subj$Mood_Use, list(HSA_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+HSA_EPT_Subj_Structure <- HSA_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+HSA_EPT_Subj_Structure <- left_join(HSA_EPT_Subj, HSA_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HSA_FCT_Subj_Structure <- aggregate(HSA_FCT_Subj$Mood_Use, list(HSA_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+HSA_FCT_Subj_Structure <- HSA_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+HSA_FCT_Subj_Structure <- left_join(HSA_FCT_Subj, HSA_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+# Children by age group
+## HS7/8
+HS8_EPT_Subj_Structure <- aggregate(HS8_EPT_Subj$Mood_Use, list(HS8_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+HS8_EPT_Subj_Structure <- HS8_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+HS8_EPT_Subj_Structure <- left_join(HS8_EPT_Subj, HS8_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS8_FCT_Subj_Structure <- aggregate(HS8_FCT_Subj$Mood_Use, list(HS8_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+HS8_FCT_Subj_Structure <- HS8_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+HS8_FCT_Subj_Structure <- left_join(HS8_FCT_Subj, HS8_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HS5
+HS5_EPT_Subj_Structure <- aggregate(HS5_EPT_Subj$Mood_Use, list(HS5_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+HS5_EPT_Subj_Structure <- HS5_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+HS5_EPT_Subj_Structure <- left_join(HS5_EPT_Subj, HS5_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS5_FCT_Subj_Structure <- aggregate(HS5_FCT_Subj$Mood_Use, list(HS5_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+HS5_FCT_Subj_Structure <- HS5_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+HS5_FCT_Subj_Structure <- left_join(HS5_FCT_Subj, HS5_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+# Children by school group
+## DLI7/8
+DLI78_EPT_Subj_Structure <- aggregate(DLI78_EPT_Subj$Mood_Use, list(DLI78_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+DLI78_EPT_Subj_Structure <- DLI78_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+DLI78_EPT_Subj_Structure <- left_join(DLI78_EPT_Subj, DLI78_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+DLI78_FCT_Subj_Structure <- aggregate(DLI78_FCT_Subj$Mood_Use, list(DLI78_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+DLI78_FCT_Subj_Structure <- DLI78_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+DLI78_FCT_Subj_Structure <- left_join(DLI78_FCT_Subj, DLI78_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS7/8
+MLS78_EPT_Subj_Structure <- aggregate(MLS78_EPT_Subj$Mood_Use, list(MLS78_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+MLS78_EPT_Subj_Structure <- MLS78_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+MLS78_EPT_Subj_Structure <- left_join(MLS78_EPT_Subj, MLS78_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+MLS78_FCT_Subj_Structure <- aggregate(MLS78_FCT_Subj$Mood_Use, list(MLS78_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+MLS78_FCT_Subj_Structure <- MLS78_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+MLS78_FCT_Subj_Structure <- left_join(MLS78_FCT_Subj, MLS78_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5
+DLI5_EPT_Subj_Structure <- aggregate(DLI5_EPT_Subj$Mood_Use, list(DLI5_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+DLI5_EPT_Subj_Structure <- DLI5_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+DLI5_EPT_Subj_Structure <- left_join(DLI5_EPT_Subj, DLI5_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+DLI5_FCT_Subj_Structure <- aggregate(DLI5_FCT_Subj$Mood_Use, list(DLI5_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+DLI5_FCT_Subj_Structure <- DLI5_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+DLI5_FCT_Subj_Structure <- left_join(DLI5_FCT_Subj, DLI5_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5
+MLS5_EPT_Subj_Structure <- aggregate(MLS5_EPT_Subj$Mood_Use, list(MLS5_EPT_Subj$Structure), FUN = mean, na.rm = TRUE)
+MLS5_EPT_Subj_Structure <- MLS5_EPT_Subj_Structure %>% rename(Structure_Avg = x)
+MLS5_EPT_Subj_Structure <- left_join(MLS5_EPT_Subj, MLS5_EPT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+MLS5_FCT_Subj_Structure <- aggregate(MLS5_FCT_Subj$Mood_Use, list(MLS5_FCT_Subj$Structure), FUN = mean, na.rm = TRUE)
+MLS5_FCT_Subj_Structure <- MLS5_FCT_Subj_Structure %>% rename(Structure_Avg = x)
+MLS5_FCT_Subj_Structure <- left_join(MLS5_FCT_Subj, MLS5_FCT_Subj_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+```
+
+```{r, generate-DOM-averages}
+# Adult data
+## SDB
+SDB_EPT_DOM_Structure <- aggregate(SDB_EPT_DOM$DOM_Use, list(SDB_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+SDB_EPT_DOM_Structure <- SDB_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+SDB_EPT_DOM_Structure <- left_join(SDB_EPT_DOM, SDB_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+SDB_FCT_DOM_Structure <- aggregate(SDB_FCT_DOM$DOM_Use, list(SDB_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+SDB_FCT_DOM_Structure <- SDB_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+SDB_FCT_DOM_Structure <- left_join(SDB_FCT_DOM, SDB_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HSA
+HSA_EPT_DOM_Structure <- aggregate(HSA_EPT_DOM$DOM_Use, list(HSA_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+HSA_EPT_DOM_Structure <- HSA_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+HSA_EPT_DOM_Structure <- left_join(HSA_EPT_DOM, HSA_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HSA_FCT_DOM_Structure <- aggregate(HSA_FCT_DOM$DOM_Use, list(HSA_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+HSA_FCT_DOM_Structure <- HSA_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+HSA_FCT_DOM_Structure <- left_join(HSA_FCT_DOM, HSA_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+# Children by age group
+## HS7/8
+HS8_EPT_DOM_Structure <- aggregate(HS8_EPT_DOM$DOM_Use, list(HS8_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+HS8_EPT_DOM_Structure <- HS8_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+HS8_EPT_DOM_Structure <- left_join(HS8_EPT_DOM, HS8_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS8_FCT_DOM_Structure <- aggregate(HS8_FCT_DOM$DOM_Use, list(HS8_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+HS8_FCT_DOM_Structure <- HS8_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+HS8_FCT_DOM_Structure <- left_join(HS8_FCT_DOM, HS8_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HS5
+HS5_EPT_DOM_Structure <- aggregate(HS5_EPT_DOM$DOM_Use, list(HS5_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+HS5_EPT_DOM_Structure <- HS5_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+HS5_EPT_DOM_Structure <- left_join(HS5_EPT_DOM, HS5_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS5_FCT_DOM_Structure <- aggregate(HS5_FCT_DOM$DOM_Use, list(HS5_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+HS5_FCT_DOM_Structure <- HS5_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+HS5_FCT_DOM_Structure <- left_join(HS5_FCT_DOM, HS5_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+# Children by school group
+## DLI7/8
+DLI78_EPT_DOM_Structure <- aggregate(DLI78_EPT_DOM$DOM_Use, list(DLI78_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+DLI78_EPT_DOM_Structure <- DLI78_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+DLI78_EPT_DOM_Structure <- left_join(DLI78_EPT_DOM, DLI78_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+DLI78_FCT_DOM_Structure <- aggregate(DLI78_FCT_DOM$DOM_Use, list(DLI78_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+DLI78_FCT_DOM_Structure <- DLI78_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+DLI78_FCT_DOM_Structure <- left_join(DLI78_FCT_DOM, DLI78_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS7/8
+MLS78_EPT_DOM_Structure <- aggregate(MLS78_EPT_DOM$DOM_Use, list(MLS78_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+MLS78_EPT_DOM_Structure <- MLS78_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+MLS78_EPT_DOM_Structure <- left_join(MLS78_EPT_DOM, MLS78_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+MLS78_FCT_DOM_Structure <- aggregate(MLS78_FCT_DOM$DOM_Use, list(MLS78_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+MLS78_FCT_DOM_Structure <- MLS78_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+MLS78_FCT_DOM_Structure <- left_join(MLS78_FCT_DOM, MLS78_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5
+DLI5_EPT_DOM_Structure <- aggregate(DLI5_EPT_DOM$DOM_Use, list(DLI5_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+DLI5_EPT_DOM_Structure <- DLI5_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+DLI5_EPT_DOM_Structure <- left_join(DLI5_EPT_DOM, DLI5_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+DLI5_FCT_DOM_Structure <- aggregate(DLI5_FCT_DOM$DOM_Use, list(DLI5_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+DLI5_FCT_DOM_Structure <- DLI5_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+DLI5_FCT_DOM_Structure <- left_join(DLI5_FCT_DOM, DLI5_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5
+MLS5_EPT_DOM_Structure <- aggregate(MLS5_EPT_DOM$DOM_Use, list(MLS5_EPT_DOM$Structure), FUN = mean, na.rm = TRUE)
+MLS5_EPT_DOM_Structure <- MLS5_EPT_DOM_Structure %>% rename(Structure_Avg = x)
+MLS5_EPT_DOM_Structure <- left_join(MLS5_EPT_DOM, MLS5_EPT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+MLS5_FCT_DOM_Structure <- aggregate(MLS5_FCT_DOM$DOM_Use, list(MLS5_FCT_DOM$Structure), FUN = mean, na.rm = TRUE)
+MLS5_FCT_DOM_Structure <- MLS5_FCT_DOM_Structure %>% rename(Structure_Avg = x)
+MLS5_FCT_DOM_Structure <- left_join(MLS5_FCT_DOM, MLS5_FCT_DOM_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+```
+
+```{r, rejoin-subj-datasets}
+# By grade
+EPT_Subj_Age <- rbind(SDB_EPT_Subj_Structure, HSA_EPT_Subj_Structure, HS8_EPT_Subj_Structure, HS5_EPT_Subj_Structure) %>% 
+  mutate(Structure = "Subjunctive")
+
+FCT_Subj_Age <- rbind(SDB_FCT_Subj_Structure, HSA_FCT_Subj_Structure, HS8_FCT_Subj_Structure, HS5_FCT_Subj_Structure) %>% 
+  mutate(Structure = "Subjunctive")
+
+Master_Age_Subj <- rbind(EPT_Subj_Age, FCT_Subj_Age) %>% 
+  mutate(Mood = "Subjunctive")
+
+Master_Age_Subj$Group <- factor(Master_Age_Subj$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
+Master_Age_Subj$Task <- factor(Master_Age_Subj$Task, levels = c("EPT", "MST"))
+```
+
+```{r, rejoin-DOM-datasets}
+# By grade
+EPT_DOM_Age <- rbind(SDB_EPT_DOM_Structure, HSA_EPT_DOM_Structure, HS8_EPT_DOM_Structure, HS5_EPT_DOM_Structure) %>% 
+  mutate(Structure = "DOM")
+
+FCT_DOM_Age <- rbind(SDB_FCT_DOM_Structure, HSA_FCT_DOM_Structure, HS8_FCT_DOM_Structure, HS5_FCT_DOM_Structure) %>% 
+  mutate(Structure = "DOM")
+
+Master_Age_DOM <- rbind(EPT_DOM_Age, FCT_DOM_Age)
+Master_Age_DOM$Group <- factor(Master_Age_DOM$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
+Master_Age_DOM$Task <- factor(Master_Age_DOM$Task, levels = c("EPT", "MST"))
+```
+
+```{r, generate-subj-school-group}
+EPT_Subj_School <- rbind(DLI78_EPT_Subj_Structure, MLS78_EPT_Subj_Structure, DLI5_EPT_Subj_Structure, MLS5_EPT_Subj_Structure)
+
+FCT_Subj_School <- rbind(DLI78_FCT_Subj_Structure, MLS78_FCT_Subj_Structure, DLI5_FCT_Subj_Structure, MLS5_FCT_Subj_Structure)
+
+Master_Subj_School <- rbind(EPT_Subj_School, FCT_Subj_School)
+
+Master_Subj_School$GradeGroup <- factor(Master_Subj_School$GradeGroup, levels = c("7th/8th grade", "5th grade"))
+Master_Subj_School$ChildGroup <- factor(Master_Subj_School$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+```
+
+```{r, generate-DOM-school-group}
+EPT_DOM_School <- rbind(DLI78_EPT_DOM_Structure, MLS78_EPT_DOM_Structure, DLI5_EPT_DOM_Structure, MLS5_EPT_DOM_Structure)
+
+FCT_DOM_School <- rbind(DLI78_FCT_DOM_Structure, MLS78_FCT_DOM_Structure, DLI5_FCT_DOM_Structure, MLS5_FCT_DOM_Structure)
+
+Master_DOM_School <- rbind(EPT_DOM_School, FCT_DOM_School)
+
+Master_DOM_School$GradeGroup <- factor(Master_DOM_School$GradeGroup, levels = c("7th/8th grade", "5th grade"))
+Master_DOM_School$ChildGroup <- factor(Master_DOM_School$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+```
+
+```{r, generate-subj-participant-part-avg}
+EPT_Subj_Part_Avg <- aggregate(EPT_Subj_Age$Mood_Use, list(EPT_Subj_Age$Part_ID), FUN = sum, na.rm = TRUE)
+EPT_Subj_Part_Avg <- EPT_Subj_Part_Avg %>% rename(Part_Avg = x)
+EPT_Subj_Part_Avg <- left_join(EPT_Subj_Age, EPT_Subj_Part_Avg, by = c("Part_ID" = "Group.1")) %>% 
+  filter(Item == "EPT-02") %>%
+  filter(!Group == "SDBA")
+
+FCT_Subj_Part_Avg <- aggregate(FCT_Subj_Age$Mood_Use, list(FCT_Subj_Age$Part_ID), FUN = sum, na.rm = TRUE)
+FCT_Subj_Part_Avg <- FCT_Subj_Part_Avg %>% rename(Part_Avg = x)
+FCT_Subj_Part_Avg <- left_join(FCT_Subj_Age, FCT_Subj_Part_Avg, by = c("Part_ID" = "Group.1")) %>% 
+  filter(Item == "FCT-02") %>%
+  filter(!Group == "SDBA")
+
+Master_Subj_Part_Avg <- rbind(EPT_Subj_Part_Avg, FCT_Subj_Part_Avg)
+Master_Subj_Part_Avg$Group <- factor(Master_Subj_Part_Avg$Group, levels = c("HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-DOM-participant-part-avg}
+EPT_DOM_Part_Avg <- aggregate(EPT_DOM_Age$DOM_Use, list(EPT_DOM_Age$Part_ID), FUN = sum, na.rm = TRUE)
+EPT_DOM_Part_Avg <- EPT_DOM_Part_Avg %>% rename(Part_Avg = x)
+EPT_DOM_Part_Avg <- left_join(EPT_DOM_Age, EPT_DOM_Part_Avg, by = c("Part_ID" = "Group.1")) %>% 
+  filter(Item == "EPT-02") %>%
+  filter(!Group == "SDBA")
+
+FCT_DOM_Part_Avg <- aggregate(FCT_DOM_Age$DOM_Use, list(FCT_DOM_Age$Part_ID), FUN = sum, na.rm = TRUE)
+FCT_DOM_Part_Avg <- FCT_DOM_Part_Avg %>% rename(Part_Avg = x)
+FCT_DOM_Part_Avg <- left_join(FCT_DOM_Age, FCT_DOM_Part_Avg, by = c("Part_ID" = "Group.1")) %>% 
+  filter(Item == "FCT-03") %>%
+  filter(!Group == "SDBA")
+
+Master_DOM_Part_Avg <- rbind(EPT_DOM_Part_Avg, FCT_DOM_Part_Avg)
+Master_DOM_Part_Avg$Group <- factor(Master_DOM_Part_Avg$Group, levels = c("HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-subj-boxplot-averages-by-age}
+EPT_Subj_Age_Averages <- rbind(SDB_EPT_Subj, HSA_EPT_Subj, HS8_EPT_Subj, HS5_EPT_Subj) %>% 
+  group_by(Part_ID, Group) %>%
+  summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(Mood_Use)),
+            Ratio = Total_Subj/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Ratio = (Ratio*100))
+
+FCT_Subj_Age_Averages <- rbind(SDB_FCT_Subj, HSA_FCT_Subj, HS8_FCT_Subj, HS5_FCT_Subj) %>% 
+  group_by(Part_ID, Group) %>%
+  summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(Mood_Use)),
+            Ratio = Total_Subj/Total_Responses) %>% 
+  mutate(Task = "MST",
+         Ratio = (Ratio*100))
+
+Master_Subj_Age_Averages <- rbind(EPT_Subj_Age_Averages, FCT_Subj_Age_Averages)
+Master_Subj_Age_Averages$Group <- factor(Master_Subj_Age_Averages$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-DOM-boxplot-averages-by-age}
+EPT_DOM_Age_Averages <- rbind(SDB_EPT_DOM, HSA_EPT_DOM, HS8_EPT_DOM, HS5_EPT_DOM) %>% 
+  group_by(Part_ID, Group) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Ratio = (Ratio*100))
+
+FCT_DOM_Age_Averages <- rbind(SDB_FCT_DOM, HSA_FCT_DOM, HS8_FCT_DOM, HS5_FCT_DOM) %>% 
+  group_by(Part_ID, Group) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "MST",
+         Ratio = (Ratio*100))
+
+Master_DOM_Age_Averages <- rbind(EPT_DOM_Age_Averages, FCT_DOM_Age_Averages)
+Master_DOM_Age_Averages$Group <- factor(Master_DOM_Age_Averages$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-subj-boxplot-averages-by-education}
+EPT_Subj_School_Averages <- rbind(DLI78_EPT_Subj, MLS78_EPT_Subj, DLI5_EPT_Subj, MLS5_EPT_Subj) %>% 
+  group_by(Part_ID, GradeGroup, School, ChildGroup) %>%
+  summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(Mood_Use)),
+            Ratio = Total_Subj/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Ratio = (Ratio*100))
+
+FCT_Subj_School_Averages <- rbind(DLI78_FCT_Subj, MLS78_FCT_Subj, DLI5_FCT_Subj, MLS5_FCT_Subj) %>% 
+  group_by(Part_ID, GradeGroup, School, ChildGroup) %>%
+  summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(Mood_Use)),
+            Ratio = Total_Subj/Total_Responses) %>% 
+  mutate(Task = "MST",
+         Ratio = (Ratio*100))
+
+Master_Subj_School_Averages <- rbind(EPT_Subj_School_Averages, FCT_Subj_School_Averages)
+Master_Subj_School_Averages$GradeGroup <- factor(Master_Subj_School_Averages$GradeGroup, levels = c("7th/8th grade", "5th grade"))
+Master_Subj_School_Averages$ChildGroup <- factor(Master_Subj_School_Averages$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+```
+
+```{r, generate-DOM-boxplot-averages-by-education}
+EPT_DOM_School_Averages <- rbind(DLI78_EPT_DOM, MLS78_EPT_DOM, DLI5_EPT_DOM, MLS5_EPT_DOM) %>% 
+  group_by(Part_ID, GradeGroup, School, ChildGroup) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Ratio = (Ratio*100))
+
+FCT_DOM_School_Averages <- rbind(DLI78_FCT_DOM, MLS78_FCT_DOM, DLI5_FCT_DOM, MLS5_FCT_DOM) %>% 
+  group_by(Part_ID, GradeGroup, School, ChildGroup) %>%
+  summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(DOM_Use)),
+            Ratio = Total_DOM/Total_Responses) %>% 
+  mutate(Task = "MST",
+         Ratio = (Ratio*100))
+
+Master_DOM_School_Averages <- rbind(EPT_DOM_School_Averages, FCT_DOM_School_Averages)
+Master_DOM_School_Averages$GradeGroup <- factor(Master_DOM_School_Averages$GradeGroup, levels = c("7th/8th grade", "5th grade"))
+Master_DOM_School_Averages$ChildGroup <- factor(Master_DOM_School_Averages$ChildGroup, levels = c("DLI-7/8", "MLS-7/8", "DLI-5", "MLS-5"))
+```
+
+# Introduction
+
+
+--
+- Heritage language theory has developed rapidly in the past decades:
+
+
+--
+  + Incomplete acquisition (Montrul, 2008, 2013)
+
+--
+  + Protracted development (e.g., Jia & Paradis, 2020)
+
+--
+  + Attrition (Polinsky, 2011; Hicks & Domínguez, 2020)
+  
+--
+  + Reassembly of features (Putnam & Sánchez, 2013)
+
+
+--
+- These theories differ in 4 key dimensions:
+
+--
+  + Rate vs. route of acquisition
+
+--
+  + Directionality of effects (acquisition vs. loss)
+
+--
+  + Level of variability (between-groups, between-speaker, within-speaker)
+
+--
+  + Degree of commitment to age effects
+
+
+---
+# Establishing Common Ground
+
+
+--
+- Any study that can adjudicate between these theories in the acquisition of heritage languages by child HSs must:
+
+
+--
+  + Incorporate productive and receptive tasks
+
+--
+  + Test a wide age span of children and adults
+
+--
+  + Consider differences between the *rate* and *route* of development between HSs and other native speakers
+
+--
+  + Consider differences between the *rate* and *route* of development between different HSs
+
+
+--
+- Shifting the questions:
+
+--
+  + How can we unearth the conditions that lead to high levels of HL development?
+  
+--
+  + How can we illustrate the remarkable systematicity of heritage grammars?
+
+
+---
+# Education Effects in HL Acquisition
+
+
+--
+- Literacy level and bilingual education affect HL acquisition (Bayram et al., 2017; Kupisch & Rothman, 2018; Torregrossa et al., 2023)
+
+
+--
+- Dual language immersion (DLI): opportunity in the U.S. for children to learn at least 50% of instruction in Spanish (or a different non-English language)
+
+
+--
+  + Input *quantity* is greater for children in DLI programs
+
+--
+  + Potentially superior input *quality* in DLI through academic registers
+
+
+--
+- Studying different HL education levels aligns with Putnam and Sánchez's (2013) approach concentrating on individual experiences
+
+
+--
+- Torregrosa et al. (2023): bilingual education impacts structures that also appear to be more challenging to master for monolinguals
+
+
+---
+# Defining Complexity
+
+
+--
+- In generative studies, the notion of complexity has often been defined as the number of syntactic progressions (e.g., Scontras & Laleko, 2021)
+
+
+--
+- In a multi-structure study with bilingual children, Rinke et al. (2023) argue:
+
+--
+  + Structures with interfaces with semantics and/or pragmatics are more challenging for HSs to acquire
+
+--
+  + Structures that are acquired later may be more complex for HSs to acquire
+
+
+--
+- Can we observe differences between structures within the same speaker?
+
+
+---
+# Differential Object Marking in Spanish
+
+
+--
+- Spanish is one of 300+ languages to mark certain direct objects, particularly those that are [+animate] and [+specific] (Bossong, 1991)
+
+--
+  + Other entailments are involved with DOM, but only these two "core" considerations are discussed here
+
+--
+  + DOM-marked objects are preceded by the marker *a* (morphological realization of DOM)
+
+
+--
+- In Spanish, [+animate] and [+specific] direct objects raise from VP-internal to check an interpretable D-feature in _spec,vP_ (Torrego, 1998)
+
+
+--
+- Challenges in mastering/maintaining DOM for English-Spanish bilinguals:
+
+--
+  + DOM is not present in English, making it subject to crosslinguistic influence
+
+--
+  + There is an interface between syntax and semantics, which may make this structure more challenging to master (e.g., Sorace, 2011)
+
+
+--
+- DOM is an interface structure (syntax/semantics) but it is acquired early, by age 3 (Rodríguez-Mondoñedo, 2008)
+
+---
+# Volitional Subjunctive in Spanish
+
+
+--
+- There is no *single* representation for this structure (Fábregas, 2014), but:
+
+--
+  + One set of morphological inflections
+
+--
+  + There are multiple degrees of interfaces involved with different uses of the subjunctive
+
+
+--
+- The volitional subjunctive is selected by a matrix verb or phrase (Kempchinsky, 2009):
+
+--
+  + Matrix items select an uninterpretable mood feature
+  
+--
+  + Feature checking in the heads of Force and Fin in the subordinate clause
+
+
+--
+- The subjunctive is heavily studied with Spanish HSs, with the following consensus:
+
+--
+  + Proficiency and exposure affect rates of subjunctive production (Dracos & Requena, 2022; Giancaspro, 2019; Montrul, 2009; Perez-Cortes, 2016)
+
+--
+  + Receptive knowledge is easier to access than production (Perez-Cortes, 2016)
+
+--
+  + Lexical frequency and morphological regularity influence variability (Giancaspro, 2020; Giancaspro et al., 2022)
+
+
+--
+- The volitional subjunctive represents core syntax, but is acquired late by monolinguals (Blake, 1983; Dracos et al., 2019)
+
+
+---
+# Research Questions
+
+
+--
+**1. Do HSs show similarities with Spanish-dominant bilinguals at the group and individual levels?**
+
+Prediction: HSs will differ as a group, but some will converge on norms of Spanish-dominant adults.
+
+
+--
+**2. Does interface variability or timing of acquisition account for more variability in HL acquisition?**
+
+Prediction: later-acquired structures will be more challenging to acquire than interface structures.
+
+
+--
+**3. Does bilingual education affect command of DOM with [+animate] and [+specific] direct objects and of the volitional subjunctive?**
+
+
+Prediction: Dual language education will positively impact production/selection of DOM and volitional subjunctive.
+
+
+--
+**4. Do children continue to master inflectional morphology with age into adulthood?**
+
+
+Prediction: children will show increased development across adolescence and into adulthood.
+
+
+--
+**5. Do HSs show stronger receptive than productive knowledge of mood?**
+
+
+Prediction: participants will have stronger receptive than productive command of these structures.
+
+
+---
+# Participants
+
+
+--
+- 127 total participants (Spanish HSs dominant in English)
+
+--
+  + 41 5th grade Spanish HS, ages 10-11 (HS5)
+
+--
+  + 34 7th/8th grade Spanish HS, ages 12-14 (HS7/8)
+
+--
+  + 35 HS adults (HSA)
+
+--
+  + 18 Spanish-dominant bilingual adults (SDBA)
+
+
+--
+- HS5 and HS7/8 were further evaluated for educational experience:
+
+--
+  + DLI students (received 50% of elementary education in Spanish + Spanish HL course in middle school)
+  
+--
+  + Other students received a traditional monolingual English education
+
+--
+  + Both schools were selected because of their similar student bodies (socioeconomic status, home Spanish speakers, number of English language learners)
+
+
+--
+- Extensive diversity in Spanish dialects:
+
+--
+  + Participants or their relatives were from 13 total Spanish-speaking countries
+  
+--
+  + No documented optionality in DOM use in [+animate] and [+specific] contexts with definite and proper nouns
+
+
+---
+# Methods
+
+
+--
+- BESA proficiency measure of morphosyntactic competence (Peña et al., 2014)
+
+
+--
+- Language questionnaire targeting self-reported frequency of use
+
+
+--
+  + 6 contexts of exposure
+
+--
+  + 1-5 Likert scales
+
+
+--
+- Productive and receptive domains tested:
+
+--
+  + Production: sentence completion task (SCT)
+
+--
+  + Receptive knowledge: morphology selection task (MST) between grammatical and non-grammatical options
+
+
+--
+- Tasks tapped subjunctive and DOM in the following contexts:
+
+--
+  + DOM: after -ar verbs with 3rd person plural subjects and preceding a proper noun
+
+--
+  + Subjunctive: in the subordinate clause following the verb *querer*
+
+
+---
+#  Production/Selection by Age Group
+
+```{r, rearrange-subj-age-boxplot-order}
+Subj_Age_Averages_Reordered <- Master_Subj_Age_Averages
+Subj_Age_Averages_Reordered$Group <- factor(Subj_Age_Averages_Reordered$Group, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+
+Subj_Age_Reordered <- Master_Age_Subj
+Subj_Age_Reordered$Group <- factor(Subj_Age_Reordered$Group, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+```
+
+```{r, rearrange-DOM-age-boxplot-order}
+DOM_Age_Averages_Reordered <- Master_DOM_Age_Averages
+DOM_Age_Averages_Reordered$Group <- factor(DOM_Age_Averages_Reordered$Group, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+
+DOM_Age_Reordered <- Master_Age_DOM
+DOM_Age_Reordered$Group <- factor(DOM_Age_Reordered$Group, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+```
+
+```{r, subj-bar-graph-by-age}
+Subj_Master_Age_Plot <- Subj_Age_Reordered %>% 
+  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses with subjunctive", fill = "Task", title = "Subjunctive Averages by Age Group and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, DOM-bar-graph-by-age}
+DOM_Master_Age_Plot <- DOM_Age_Reordered %>% 
+  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses with DOM", fill = "Task", title = "DOM Averages by Age Group and Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-age-plots}
+(Subj_Master_Age_Plot)+(DOM_Master_Age_Plot)
+```
+
+---
+# Production/Selection by Education
+
+```{r, rearrange-subj-school-boxplot-order}
+Subj_School_Average_Reordered <- Master_Subj_School_Averages
+Subj_School_Average_Reordered$GradeGroup <- factor(Subj_School_Average_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
+
+Subj_School_Reordered <- Master_Subj_School
+Subj_School_Reordered$GradeGroup <- factor(Subj_School_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
+```
+
+```{r, rearrange-DOM-school-boxplot-order}
+DOM_School_Average_Reordered <- Master_DOM_School_Averages
+DOM_School_Average_Reordered$GradeGroup <- factor(DOM_School_Average_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
+
+DOM_School_Reordered <- Master_DOM_School
+DOM_School_Reordered$GradeGroup <- factor(DOM_School_Reordered$GradeGroup, levels = c("5th grade", "7th/8th grade"))
+```
+
+```{r, subj-bar-graph-by-school}
+Subj_School_Age_Plot <- Subj_School_Reordered %>% 
+  ggplot(aes(x = GradeGroup, y = Structure_Percentage, fill = Task)) +
+  facet_grid(facets = vars(School)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Child age group", y = "Percentage of responses with subjunctive", fill = "Task", title = "Child Subjunctive Averages by Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, DOM-bar-graph-by-school}
+DOM_School_Age_Plot <- DOM_School_Reordered %>% 
+  ggplot(aes(x = GradeGroup, y = Structure_Percentage, fill = Task)) +
+  facet_grid(facets = vars(School)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 105)) +
+  geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 3.5) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Child age group", y = "Percentage of responses with DOM", fill = "Task", title = "Child DOM Averages by Task") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-school-plots}
+(Subj_School_Age_Plot)+(DOM_School_Age_Plot)
+```
+
+
+---
+# GLMM #1: All Groups
+
+```{r, generate-columns}
+Master_Age_DOM_Accuracy <- Master_Age_DOM %>% 
+  mutate(Accuracy = DOM_Use)
+
+Master_Age_Subj_Accuracy <- Master_Age_Subj %>% 
+  mutate(Accuracy = Mood_Use)
+
+Master_Data <- rbind(Master_Age_DOM_Accuracy, Master_Age_Subj_Accuracy)
+```
+
+```{r, master-correlation}
+Master_Correlation <- glmer(Accuracy ~ Group + Structure + Task + Group*Structure +
+                           (1 | Part_ID) + (1 | Item),
+                         data = Master_Data,
+                         family = "binomial")
+```
+
+```{r, generate-DOM-correlation-forest-plot}
+Master_Forest_Plot <- plot_model(Master_Correlation, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+        scale_y_continuous(breaks = seq(-8, 8, 2),
+                     limits = c(-8, 8)) +
+    scale_x_discrete(labels = c("HS5 : Subjunctive", "HS7/8 : Subjunctive", "HSA : Subjunctive", "MST", "Subjunctive", "HS5 group", "HS7/8 group", "HSA group", "(Intercept)")) +
+
+  labs(title = "GLMM Summary (All Participant Groups)", y = "Estimates") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-DOM-correlation-forest-plot}
+(Master_Forest_Plot)
+```
+
+
+---
+# GLMM #2: Effects of School and Age
+
+```{r, combine-school-datasets}
+Master_School_Subj_Accuracy <- Master_Subj_School %>% 
+  mutate(Accuracy = Mood_Use) %>% 
+  mutate(Mood = "Subjunctive")
+
+Master_School_DOM_Accuracy <- Master_DOM_School %>% 
+  mutate(Accuracy = DOM_Use)
+
+Master_School_Accuracy <- rbind(Master_School_Subj_Accuracy, Master_School_DOM_Accuracy)
+```
+
+```{r, DOM-school-correlation}
+School_Data <- glmer(Accuracy ~ Structure + GradeGroup + School + Structure*GradeGroup + Structure*School + GradeGroup*School +
+                      (1 | Part_ID) + (1 | Item),
+                    data = Master_School_Accuracy,
+                    family = "binomial")
+```
+
+```{r, generate-school-correlation-forest-plot}
+School_Data_Plot <- plot_model(School_Data, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+    scale_y_continuous(breaks = seq(-3, 3, 1),
+                     limits = c(-3, 3)) +
+    scale_x_discrete(labels = c("5th grade : Monolingual school", "Subjunctive : Monolingual school", "Subjunctive : HS5", "Monolingual school group", "HS5 age group", "Subjunctive", "(Intercept)")) +
+    labs(title = "GLMM Summary (All Participant Groups)", y = "Estimates") +
+    theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-school-correlation-forest-plot}
+(School_Data_Plot)
+```
+
+
+---
+# Individual Performance with Subjunctive
+
+```{r, generate-subj-individual-values}
+EPT_Subj_Diffs <- EPT_Subj_Age %>%
+  filter(!is.na(Mood_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(Mood_Use))
+
+FCT_Diffs <- FCT_Subj_Age %>%
+  filter(!is.na(Mood_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(Mood_Use))
+
+Subj_Diffs = left_join(EPT_Subj_Diffs, FCT_Diffs, by = "Part_ID", "Group") %>%
+  rename(Group = Group.x,
+         Production = Production.x,
+         Preference = Production.y) %>% 
+  mutate(Total = Preference + Production) %>% 
+  filter(!Group == "SDBA")
+
+Subj_Diffs$Group <- factor(Subj_Diffs$Group, levels = c("HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-Subj-diffs-plot}
+Subj_Diffs_Plot <- Subj_Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  scale_x_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  scale_y_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  labs(x = "Number of sentences with subjunctive produced", y = "Number of sentences with subjunctive selected", title = "Individual Rates of Subjunctive Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-Subj-diffs-plot}
+(Subj_Diffs_Plot)
+```
+
+---
+# Individual Performance with DOM
+
+```{r, generate-DOM-individual-values}
+EPT_DOM_Diffs <- EPT_DOM_Age %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+FCT_Diffs <- FCT_DOM_Age %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+DOM_Diffs = left_join(EPT_DOM_Diffs, FCT_Diffs, by = "Part_ID", "Group") %>%
+  rename(Group = Group.x,
+         Production = Production.x,
+         Preference = Production.y) %>% 
+  mutate(Total = Preference + Production) %>% 
+  filter(!Group == "SDBA")
+
+DOM_Diffs$Group <- factor(DOM_Diffs$Group, levels = c("HSA", "HS7/8", "HS5"))
+```
+
+```{r, generate-DOM-diffs-plot}
+DOM_Diffs_Plot <- DOM_Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  scale_x_continuous(breaks = seq (0, 10, 2),
+                     limits = c(-1, 11)) +
+  scale_y_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  labs(x = "Number of sentences with DOM produced", y = "Number of sentences with DOM selected", title = "Individual Rates of DOM Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-DOM-diffs-plot}
+(DOM_Diffs_Plot)
+```
+
+---
+# Research Question #1
+
+
+--
+- All groups of HSs do differ in their *rates* of subjunctive production and selection of both structures at the group level
+
+
+--
+- Many individual HSs, including at least one from each age group, converged on the levels of the Spanish-dominant adults
+
+
+--
+- Not a single participant categorically omitted DOM nor the subjunctive (present in their grammars: every participant used the subjunctive and DOM in at least two sentences)
+
+
+---
+# Research Question #2
+
+**Does interface variability or timing of acquisition account for more variability in HL acquisition?**
+
+--
+- Prediction: later-acquired structures will be more challenging to acquire than interface structures
+
+--
+- DOM production/selection > subjunctive; timing of acquisition may affect development more than interface effects
+
+
+--
+- Far more structures are needed, but forthcoming work with HSs of Spanish shows similar results when also integrating more structures
+
+
+--
+- Prediction #2 supported
+
+
+---
+# Research Question #3
+
+
+--
+**Does bilingual education affect command of DOM with [+animate] and [+specific] direct objects and of the volitional subjunctive?**
+
+
+--
+- Prediction: Dual language education will positively impact production/selection of DOM and volitional subjunctive
+
+
+--
+- Bilingual education affected the earlier-acquired structure more, unlike in Torregrossa et al. (2023)
+
+--
+  + DL reinforces what HSs have already picked up in their linguistic environment
+
+--
+  + This method of education may not be enough to fully support the development of structures that are mastered by monolinguals around the school period
+
+
+--
+- The prediction is partially supported (for DOM only)
+
+
+--
+- The advantage for DOM emerged most in the older children without 50% of their school exposure to Spanish
+
+
+--
+  + Language continues to develop past the immersion years in HSs
+
+--
+  + Does this suggest that cumulative exposure matters more than current exposure?
+
+
+--
+- Dual language immersion does not *guarantee* sustained acquisition of all structures
+
+
+---
+# Research Question #4
+
+
+--
+**Do children continue to master inflectional morphology with age into adulthood?**
+
+
+--
+- Prediction: children will show increased development across adolescence and into adulthood
+
+
+--
+- The younger the participant, the less likely to use the two structures
+
+
+--
+- Similar developmental paths were identified for participants in the acquisition of DOM and subjunctive:
+
+
+--
+  + Increase from 5th grade to 7th/8th grade (ages 11 to 14)
+
+--
+  + The HS7/8 and HSA are quite similar to one another in their production and selection tendencies
+  
+--
+  + Bilingual children are largely adult-like by early adolescence (with different rates of subjunctive production)
+
+
+---
+# Research Question #5
+
+
+**Do HSs show stronger receptive than productive knowledge of mood?**
+
+
+--
+- Prediction: participants will have stronger receptive than productive command of these structures
+
+
+--
+- Bilinguals exhibited stronger command of both structures on receptive tasks
+
+
+--
+- Supports Putnam and Sánchez (2013), who argue that receptive knowledge is easier to acces; however:
+
+
+--
+  + Participants' asymmetries across tasks do not appear to increase with age
+
+--
+  + Therefore, there is no evidence of even partial restructuring of Spanish
+
+
+---
+# Conclusion
+
+
+--
+- Bilingual education does not appear to affect all structures equally
+
+
+--
+- Stronger receptive than productive knowledge; preference for production/selection of DOM
+
+
+--
+- HSs of Spanish continue to acquire inflectional morphology into adolescence (supports protracted development, e.g., Jia & Paradis, 2020)
+
+
+--
+- Later-acquired structures are challenging, even if they are interface-free
+
+
+--
+- HSs' overall knowledge appears to be different when compared to adult populations of native speakers
+
+
+--
+- Some HSs converge on the tendencies of Spanish-dominant bilinguals; none completely omit either structure
+
+
+--
+- Not a single theory can capture these results:
+
+--
+  + HSs' knowledge increases over time (route of acquisition): protracted development (Jia & Paradis, 2020)
+
+
+--
+  + HSs' grammatical systems differed from those of Spanish-dominant bilingual adults, who were categorical
+
+--
+  + HSs do not appear to be restructuring knowledge, but Putnam and Sánchez (2013) correctly predict asymmetries between production and receptive knowledge
+
+
+---
+# References
+
+
+Bayram, F., Rothman, J., Iverson, M., Kupisch, T., Miller, D., Puig-Mayenco, E., & Westergaard, M. (2017). Differences in use without deficiencies in competence: Passives in the Turkish and German of Turkish heritage speakers in Germany. *International Journal of Bilingual Education and Bilingualism*, *22*(8), 919–939. https://doi.org/10.1080/13670050.2017.1324403
+
+Blake, R. (1983). Mood selection among Spanish-speaking children, ages 4 to 12. *The Bilingual Language Review*, *10*, 21–32.
+
+Bossong, G. (1991). *Differential object marking in Romance and beyond*. In D. Wanner & D. A. Kibbee (Eds.), Current issues in linguistic theory (Vol. 69, p. 143). John Benjamins Publishing Company. https://doi.org/10.1075/cilt.69.14bos
+
+Dracos, M., & Requena, P. E. (2022). Child heritage speakers’ acquisition of the Spanish subjunctive in volitional and adverbial clauses. *Language Acquisition*, *30*(1), 1–28. https://doi.org/10.1080/10489223.2022.2071156
+
+Dracos, M., Requena, P., & Miller, K. (2019). Acquisition of mood selection in Spanish-speaking children. *Language Acquisition*, *26*(1), 106–118. https://doi.org/10.1080/10489223.2018.1464006
+
+Fábregas, A. (2014). A guide to subjunctive and modals in Spanish: Questions and analyses. Borealis – An International *Journal of Hispanic Linguistics*, *3*(2), 1–94. https://doi.org/10.7557/1.3.2.3064
+
+---
+# References
+
+Giancaspro, D. (2019). The late(r) bird gets the verb? Effects of age of acquisition of English on adult heritage speakers’ knowledge of subjunctive mood in Spanish. *Languages*, *4*(69), 1–34. https://doi.org/10.3390/languages4030069
+
+Giancaspro, D. (2020). Not in the mood: Frequency effects in heritage speakers’ subjunctive knowledge. In B. Brehmer & J. Treffers-Daller (Eds.), *Studies in bilingualism* (Vol. 59, pp. 72–97). John Benjamins. https://doi.org/10.1075/sibil.59.03gia
+
+Giancaspro, D., Perez‐Cortes, S., & Higdon, J. (2022). (Ir)regular mood swings: Lexical variability in heritage speakers’ oral production of subjunctive mood. *Language Learning*, *72*(2), 456–496. https://doi.org/10.1111/lang.12489
+
+Hicks, G., & Domínguez, L. (2020). A model for L1 grammatical attrition. *Second Language Research*, *36*(2), 143–165. https://doi.org/10.1177/0267658319862011
+
+Jia, R., & Paradis, J. (2020). The acquisition of relative clauses by Mandarin heritage language children. *Linguistic Approaches to Bilingualism*, *10*(2), 153–183. https://doi.org/10.1075/lab.16015.jia
+
+Kempchinsky, P. (2009). What can the subjunctive disjoint reference effect tell us about the subjunctive? *Lingua*, *119*(12), 1788–1810. https://doi.org/10.1016/j.lingua.2008.11.009
+
+
+---
+# References
+
+Laleko, O., & Scontras, G. (2021). On the many dimensions of complexity in heritage languages. *Heritage Language Journal*, *18*(2), 1–37. https://doi.org/10.1163/15507076-12340009
+
+Montrul, S. (2008). *Incomplete acquisition in bilingualism: Re-examining the age factor* (Vol. 39). John Benjamins Publishing Company. https://doi.org/10.1075/sibil.39
+
+Montrul, S. (2009). Knowledge of tense-aspect and mood in Spanish heritage speakers. *International Journal of Bilingualism*, *13*(2), 239–269. https://doi.org/10.1177/1367006909339816
+
+Montrul, S. (2013). Incomplete L1 acquisition. In J. Herschensohn & M. Young-Scholten (Eds.), *The Cambridge handbook of second language acquisition* (pp. 353–371). Cambridge University Press. https://doi.org/10.1017/CBO9781139051729.022
+
+Perez-Cortes, S. (2016). *Acquiring obligatory and variable mood selection: Spanish heritage speakers’ and L2 learners’ performance in desideratives and reported speech contexts.* [Doctoral dissertation]. Rutgers University – New Brunswick.
+
+Polinsky, M. (2011). Reanalysis in adult heritage language: New evidence in support of attrition. Studies in *Second Language Acquisition*, *33*(2), 305–328. https://doi.org/10.1017/S027226311000077X
+
+
+---
+# References
+
+Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
+
+Rinke, E., Flores, C., & Torregrossa, J. (2023). How different types of complexity can account for difficult structures in bilingual and monolingual language acquisition. In M. Putnam & M. Polinsky (Eds.), *Formal Approaches to Complexity in Heritage Language Grammars* (pp. 1–17). Language Sciences Press.
+
+Rodríguez-Mondoñedo, M. (2008). The acquisition of Differential Object Marking in Spanish. *Probus*, *20*(1). https://doi.org/10.1515/PROBUS.2008.004
+
+Sorace, A. (2011). Pinning down the concept of “interface” in bilingualism. *Linguistic Approaches to Bilingualism*, *1*(1), 34.
+
+Torrego, E. (1998). *The dependencies of objects.* MIT Press.
+
+Torregrossa, J., Flores, C., & Rinke, E. (2023). What modulates the acquisition of difficult structures in a heritage language? A study on Portuguese in contact with French, German and Italian. *Bilingualism: Language and Cognition*, *26*(1), 179–192. https://doi.org/10.1017/S1366728922000438
+
+
+---
+# Appendix A: Results Summary by Age
+
+```{r, generate-subj-age-boxplot}
+Subj_Age_Boxplot <- Subj_Age_Averages_Reordered %>% 
+  ggplot(aes(x = Group, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses  with subjunctive", title = "Subjunctive Production/Selection Averages") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, generate-DOM-age-boxplot}
+DOM_Age_Boxplot <- DOM_Age_Averages_Reordered %>% 
+  ggplot(aes(x = Group, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of responses with DOM", title = "DOM Production/Selection Averages") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-stat-summaries}
+(Subj_Age_Boxplot)+(DOM_Age_Boxplot)
+```
+
+---
+# Appendix B: Results Summary by Education
+
+```{r, generate-subj-school-boxplot}
+Subj_School_Boxplot <- Subj_School_Average_Reordered %>% 
+  ggplot(aes(x = GradeGroup, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  facet_grid(facets = vars(School)) +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "School", y = "Percentage of responses  with subjunctive", title = "Child HS Subjunctive Production/Selection Summary") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, generate-DOM-school-boxplot}
+DOM_School_Boxplot <- DOM_School_Average_Reordered %>% 
+  ggplot(aes(x = GradeGroup, y = Ratio, fill = Task)) +
+  geom_boxplot() +
+  facet_grid(facets = vars(School)) +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "School", y = "Percentage of responses with DOM", title = "Child HS DOM Production/Selection Summary") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(face = "bold", size = 18))
+```
+
+```{r, print-school-boxplots}
+(Subj_School_Boxplot)+(DOM_School_Boxplot)
+```
+---
+# Appendix C: Sample Items
+
+
+**Sample sentence from SCT**
+
+A veces Juanito se pone triste si sus hermanas dicen que no quieren hablar con él. ¿Qué quiere la mamá? Quiere que las hermanas _________ (LLAMAR) Juanito cada noche.
+
+
+
+**Sample sentences from MST**
+
+La mamá sabe que Juanito tiene miedo de alturas. No quiere subir al tobogán en el parque de juegos solito. ¿Qué quiere la mamá?
+
+  + Quiere que las hermanas lo lleven para subir al tobogán. 
+
+  + *Quiere que las hermanas lo llevan para subir al tobogán. 
+
+
+¿Qué tienen que hacer las hermanas? 
+  + Tienen que llevar a Juanito para subir al tobogán. 
+
+  + *Tienen que llevar Juanito para subir al tobogán.
