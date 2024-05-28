@@ -55,45 +55,51 @@ SDB_EPT_Subj <- read.csv("../CSV Files/SDB/SDB Subjunctive EPT.csv") %>%
   mutate(Group = "SDBA",
          GradeGroup = "SDBA",
          ChildGroup = "N/A",
-         Task = "EPT",
-         School = "Adult")
+         Task = "SCT",
+         School = "Adult") %>% 
+  filter(Property == "Intensional subjunctive")
 
 HSA_EPT_Subj <- read.csv("../CSV Files/Adult HS/Adult HS Subjunctive EPT.csv") %>% 
   mutate(Group = "HSA",
          GradeGroup = "N/A",
          ChildGroup = "N/A",
-         Task = "EPT",
-         School = "Adult")
+         Task = "SCT",
+         School = "Adult") %>% 
+  filter(Property == "Intensional subjunctive")
 
 DLI78_EPT_Subj <- read.csv("../CSV Files/DLI-78/DLI-78 Subjunctive EPT.csv") %>% 
   mutate(Group = "HS7/8",
          GradeGroup = "7th/8th grade",
          ChildGroup = "DLI-7/8",
-         Task = "EPT",
-         School = "Dual language")
+         Task = "SCT",
+         School = "Dual language") %>% 
+  filter(Property == "Intensional subjunctive")
 
 MLS78_EPT_Subj <- read.csv("../CSV Files/MLS-78/MLS-78 Subjunctive EPT.csv") %>% 
   filter(!School == "GBCS") %>%
   mutate(Group = "HS7/8",
          GradeGroup = "7th/8th grade",
          ChildGroup = "MLS-7/8",
-         Task = "EPT",
-         School = "English-only")
+         Task = "SCT",
+         School = "English-only") %>% 
+  filter(Property == "Intensional subjunctive")
 
 DLI5_EPT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>% 
   mutate(Group = "HS5",
          GradeGroup = "5th grade",
          ChildGroup = "DLI-5",
-         Task = "EPT",
-         School = "Dual language")
+         Task = "SCT",
+         School = "Dual language") %>% 
+  filter(Property == "Intensional subjunctive")
 
 MLS5_EPT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv") %>% 
   filter(!School == "GBCS") %>% 
   mutate(Group = "HS5",
          GradeGroup = "5th grade",
          ChildGroup = "MLS-5",
-         Task = "EPT",
-         School = "English-only")
+         Task = "SCT",
+         School = "English-only") %>% 
+  filter(Property == "Intensional subjunctive")
 
 
 # FCT
@@ -102,21 +108,24 @@ SDB_FCT_Subj <- read.csv("../CSV Files/SDB/SDB Subjunctive FCT.csv") %>%
          GradeGroup = "SDBA",
          ChildGroup = "N/A",
          Task = "MST",
-         School = "Adult")
+         School = "Adult") %>% 
+  filter(Property == "Intensional subjunctive")
 
 HSA_FCT_Subj <- read.csv("../CSV Files/Adult HS/Adult HS Subjunctive FCT.csv") %>% 
   mutate(Group = "HSA",
          GradeGroup = "N/A",
          ChildGroup = "N/A",
          Task = "MST",
-         School = "Adult")
+         School = "Adult") %>% 
+  filter(Property == "Intensional subjunctive")
 
 DLI78_FCT_Subj <- read.csv("../CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv") %>% 
   mutate(Group = "HS7/8",
          GradeGroup = "7th/8th grade",
          ChildGroup = "DLI-7/8",
          Task = "MST",
-         School = "Dual language")
+         School = "Dual language") %>% 
+  filter(Property == "Intensional subjunctive")
 
 MLS78_FCT_Subj <- read.csv("../CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv") %>% 
   filter(!School == "GBCS") %>%
@@ -124,14 +133,16 @@ MLS78_FCT_Subj <- read.csv("../CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv") %>%
          GradeGroup = "7th/8th grade",
          ChildGroup = "MLS-7/8",
          Task = "MST",
-         School = "English-only")
+         School = "English-only") %>% 
+  filter(Property == "Intensional subjunctive")
 
 DLI5_FCT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>% 
   mutate(Group = "HS5",
          GradeGroup = "5th grade",
          ChildGroup = "DLI-5",
          Task = "MST",
-         School = "Dual language")
+         School = "Dual language") %>% 
+  filter(Property == "Intensional subjunctive")
 
 MLS5_FCT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>% 
   filter(!School == "GBCS") %>% 
@@ -139,7 +150,8 @@ MLS5_FCT_Subj <- read.csv("../CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>%
          GradeGroup = "5th grade",
          ChildGroup = "MLS-5",
          Task = "MST",
-         School = "English-only")
+         School = "English-only") %>% 
+  filter(Property == "Intensional subjunctive")
 
 ## Join datasets
 HS8_EPT_Subj <- rbind(DLI78_EPT_Subj, MLS78_EPT_Subj)
@@ -155,21 +167,21 @@ SDB_EPT_DOM <- read.csv("../CSV Files/SDB/SDB DOM EPT.csv") %>%
   mutate(Group = "SDBA",
          GradeGroup = "SDBA",
          ChildGroup = "N/A",
-         Task = "EPT",
+         Task = "SCT",
          School = "Adult")
 
 HSA_EPT_DOM <- read.csv("../CSV Files/Adult HS/Adult HS DOM EPT.csv") %>% 
   mutate(Group = "HSA",
          GradeGroup = "N/A",
          ChildGroup = "N/A",
-         Task = "EPT",
+         Task = "SCT",
          School = "Adult")
 
 DLI78_EPT_DOM <- read.csv("../CSV Files/DLI-78/DLI-78 DOM EPT.csv") %>% 
   mutate(Group = "HS7/8",
          GradeGroup = "7th/8th grade",
          ChildGroup = "DLI-7/8",
-         Task = "EPT",
+         Task = "SCT",
          School = "Dual language")
 
 MLS78_EPT_DOM <- read.csv("../CSV Files/MLS-78/MLS-78 DOM EPT.csv") %>% 
@@ -177,14 +189,14 @@ MLS78_EPT_DOM <- read.csv("../CSV Files/MLS-78/MLS-78 DOM EPT.csv") %>%
   mutate(Group = "HS7/8",
          GradeGroup = "7th/8th grade",
          ChildGroup = "MLS-7/8",
-         Task = "EPT",
+         Task = "SCT",
          School = "English-only")
 
 DLI5_EPT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>% 
   mutate(Group = "HS5",
          GradeGroup = "5th grade",
          ChildGroup = "DLI-5",
-         Task = "EPT",
+         Task = "SCT",
          School = "Dual language")
 
 MLS5_EPT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>% 
@@ -192,7 +204,7 @@ MLS5_EPT_DOM <- read.csv("../CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>%
   mutate(Group = "HS5",
          GradeGroup = "5th grade",
          ChildGroup = "MLS-5",
-         Task = "EPT",
+         Task = "SCT",
          School = "English-only")
 
 
@@ -461,7 +473,7 @@ Master_Age_Subj <- rbind(EPT_Subj_Age, FCT_Subj_Age) %>%
   mutate(Mood = "Subjunctive")
 
 Master_Age_Subj$Group <- factor(Master_Age_Subj$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
-Master_Age_Subj$Task <- factor(Master_Age_Subj$Task, levels = c("EPT", "MST"))
+Master_Age_Subj$Task <- factor(Master_Age_Subj$Task, levels = c("SCT", "MST"))
 ```
 
 ```{r, rejoin-DOM-datasets}
@@ -474,7 +486,7 @@ FCT_DOM_Age <- rbind(SDB_FCT_DOM_Structure, HSA_FCT_DOM_Structure, HS8_FCT_DOM_S
 
 Master_Age_DOM <- rbind(EPT_DOM_Age, FCT_DOM_Age)
 Master_Age_DOM$Group <- factor(Master_Age_DOM$Group, levels = c("SDBA", "HSA", "HS7/8", "HS5"))
-Master_Age_DOM$Task <- factor(Master_Age_DOM$Task, levels = c("EPT", "MST"))
+Master_Age_DOM$Task <- factor(Master_Age_DOM$Task, levels = c("SCT", "MST"))
 ```
 
 ```{r, generate-subj-school-group}
@@ -539,7 +551,7 @@ EPT_Subj_Age_Averages <- rbind(SDB_EPT_Subj, HSA_EPT_Subj, HS8_EPT_Subj, HS5_EPT
   summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
             Total_Responses = sum(!is.na(Mood_Use)),
             Ratio = Total_Subj/Total_Responses) %>% 
-  mutate(Task = "EPT",
+  mutate(Task = "SCT",
          Ratio = (Ratio*100))
 
 FCT_Subj_Age_Averages <- rbind(SDB_FCT_Subj, HSA_FCT_Subj, HS8_FCT_Subj, HS5_FCT_Subj) %>% 
@@ -560,7 +572,7 @@ EPT_DOM_Age_Averages <- rbind(SDB_EPT_DOM, HSA_EPT_DOM, HS8_EPT_DOM, HS5_EPT_DOM
   summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
             Total_Responses = sum(!is.na(DOM_Use)),
             Ratio = Total_DOM/Total_Responses) %>% 
-  mutate(Task = "EPT",
+  mutate(Task = "SCT",
          Ratio = (Ratio*100))
 
 FCT_DOM_Age_Averages <- rbind(SDB_FCT_DOM, HSA_FCT_DOM, HS8_FCT_DOM, HS5_FCT_DOM) %>% 
@@ -581,7 +593,7 @@ EPT_Subj_School_Averages <- rbind(DLI78_EPT_Subj, MLS78_EPT_Subj, DLI5_EPT_Subj,
   summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
             Total_Responses = sum(!is.na(Mood_Use)),
             Ratio = Total_Subj/Total_Responses) %>% 
-  mutate(Task = "EPT",
+  mutate(Task = "SCT",
          Ratio = (Ratio*100))
 
 FCT_Subj_School_Averages <- rbind(DLI78_FCT_Subj, MLS78_FCT_Subj, DLI5_FCT_Subj, MLS5_FCT_Subj) %>% 
@@ -603,7 +615,7 @@ EPT_DOM_School_Averages <- rbind(DLI78_EPT_DOM, MLS78_EPT_DOM, DLI5_EPT_DOM, MLS
   summarize(Total_DOM = sum(DOM_Use, na.rm = TRUE),
             Total_Responses = sum(!is.na(DOM_Use)),
             Ratio = Total_DOM/Total_Responses) %>% 
-  mutate(Task = "EPT",
+  mutate(Task = "SCT",
          Ratio = (Ratio*100))
 
 FCT_DOM_School_Averages <- rbind(DLI78_FCT_DOM, MLS78_FCT_DOM, DLI5_FCT_DOM, MLS5_FCT_DOM) %>% 
@@ -640,7 +652,7 @@ Master_DOM_School_Averages$ChildGroup <- factor(Master_DOM_School_Averages$Child
 
 
 --
-- These theories differ in 4 key dimensions:
+- These theories differ in 3 key dimensions:
 
 --
   + Rate vs. route of acquisition
@@ -650,9 +662,6 @@ Master_DOM_School_Averages$ChildGroup <- factor(Master_DOM_School_Averages$Child
 
 --
   + Level of variability (between-groups, between-speaker, within-speaker)
-
---
-  + Degree of commitment to age effects
 
 
 ---
@@ -718,7 +727,7 @@ Master_DOM_School_Averages$ChildGroup <- factor(Master_DOM_School_Averages$Child
 
 
 --
-- In generative studies, the notion of complexity has often been defined as the number of syntactic progressions (e.g., Scontras & Laleko, 2021)
+- In generative studies, the notion of complexity has often been defined as the number of syntactic projections (e.g., Scontras & Laleko, 2021)
 
 
 --
@@ -889,21 +898,6 @@ Prediction: participants will have stronger receptive than productive command of
 
 ---
 # Methods
-
-
---
-- BESA proficiency measure of morphosyntactic competence (Peña et al., 2014)
-
-
---
-- Language questionnaire targeting self-reported frequency of use
-
-
---
-  + 6 contexts of exposure
-
---
-  + 1-5 Likert scales
 
 
 --
@@ -1222,6 +1216,10 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
 
 
 --
+-
+**Do HSs show similarities with Spanish-dominant bilinguals at the group and individual levels?**
+
+--
 - All groups of HSs do differ in their *rates* of subjunctive production and selection of both structures at the group level
 
 
@@ -1242,15 +1240,15 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
 - Prediction: later-acquired structures will be more challenging to acquire than interface structures
 
 --
-- DOM production/selection > subjunctive; timing of acquisition may affect development more than interface effects
+- Similar levels of production/selection across structures; no clear differences between DOM and subjunctive
 
 
 --
-- Far more structures are needed, but forthcoming work with HSs of Spanish shows similar results when also integrating more structures
+- Prediction #2 not supported
 
 
 --
-- Prediction #2 supported
+- More work is needed to distinguish between interface and acquisition timing effects
 
 
 ---
@@ -1307,10 +1305,6 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
 
 
 --
-- The younger the participant, the less likely to use the two structures
-
-
---
 - Similar developmental paths were identified for participants in the acquisition of DOM and subjunctive:
 
 
@@ -1322,6 +1316,10 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
   
 --
   + Bilingual children are largely adult-like by early adolescence (with different rates of subjunctive production)
+
+
+--
+- Prediction #4 partially supported
 
 
 ---
@@ -1367,29 +1365,15 @@ DOM_Diffs_Plot <- DOM_Diffs %>%
 
 
 --
-- Later-acquired structures are challenging, even if they are interface-free
+- No clear difference between timing of acquisition and interface variability
 
 
 --
-- HSs' overall knowledge appears to be different when compared to adult populations of native speakers
+- HSs' overall knowledge appears to be different (*rate* AND *route*) when compared to adult populations of native speakers
 
 
 --
 - Some HSs converge on the tendencies of Spanish-dominant bilinguals; none completely omit either structure
-
-
---
-- Not a single theory can capture these results:
-
---
-  + HSs' knowledge increases over time (route of acquisition): protracted development (Jia & Paradis, 2020)
-
-
---
-  + HSs' grammatical systems differed from those of Spanish-dominant bilingual adults, who were categorical
-
---
-  + HSs do not appear to be restructuring knowledge, but Putnam and Sánchez (2013) correctly predict asymmetries between production and receptive knowledge
 
 
 ---
