@@ -1,23 +1,24 @@
 library(tidyverse)
+library(here)
 
 options(scipen = 99)
 
 
 ## Load data
 ###### Note: FCT-02 was selected because it was the first "obligatory" question that all participants completed in each group.
-SDB <- read_csv("./CSV Files/SDB/SDB Subjunctive FCT.csv") %>%
+SDB <- read_csv(here("./CSV Files/SDB/SDB Subjunctive FCT.csv")) %>%
   filter(Item == "FCT-02")
 
-DLE78 <- read_csv("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv") %>%
+DLE78 <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv")) %>%
   filter(Item == "FCT-02")
 
-MLS78 <- read_csv("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv") %>%
+MLS78 <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv")) %>%
   filter(Item == "FCT-02")
 
-DLE5 <- read_csv("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv") %>%
+DLE5 <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")) %>%
   filter(Item == "FCT-02")
 
-MLS5 <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv") %>%
+MLS5 <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv")) %>%
   filter(Item == "FCT-02")
 
 Combined <- rbind(SDB, DLE78, MLS78, DLE5, MLS5)

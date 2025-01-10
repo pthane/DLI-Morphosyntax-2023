@@ -3,38 +3,39 @@ library(lme4)
 library(lmerTest)
 library(sjPlot)
 library(emmeans)
+library(here)
 
 options(scipen = 99)
 
 
 # Load data
 ## Production
-SDB_EPT <- read_csv("./CSV Files/SDB/SDB DOM EPT.csv") %>% 
+SDB_EPT <- read_csv(here("./CSV Files/SDB/SDB DOM EPT.csv")) %>% 
   filter(Item %in% c("EPT-02", "EPT-08", "EPT-12", "EPT-14", "EPT-20", "EPT-24", "EPT-26", "EPT-32", "EPT-38", "EPT-42")) %>% 
   mutate(Group = "SDBA",
          Task = "SCT")
 
-DLI78_EPT <- read_csv("./CSV Files/DLI-78/DLI-78 DOM EPT.csv") %>% 
+DLI78_EPT <- read_csv(here("./CSV Files/DLI-78/DLI-78 DOM EPT.csv")) %>% 
   mutate(Group = "BES-7/8",
          Task = "SCT",
          School = "Immersion",
          Age = "7th/8th")
 
-MLS78_EPT <- read_csv("./CSV Files/MLS-78/MLS-78 DOM EPT.csv") %>%
+MLS78_EPT <- read_csv(here("./CSV Files/MLS-78/MLS-78 DOM EPT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-7/8",
          Task = "SCT",
          School = "Monolingual",
          Age = "7th/8th")
 
-DLI5_EPT <- read_csv("./CSV Files/DLI-5/DLI-5 DOM EPT.csv") %>% 
+DLI5_EPT <- read_csv(here("./CSV Files/DLI-5/DLI-5 DOM EPT.csv")) %>% 
   filter(Item %in% c("EPT-02", "EPT-08", "EPT-12", "EPT-14", "EPT-20", "EPT-24", "EPT-26", "EPT-32", "EPT-38", "EPT-42")) %>% 
   mutate(Group = "BES-5",
          Task = "SCT",
          School = "Immersion",
          Age = "5th")
 
-MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>%
+MLS5_EPT <- read_csv(here("./CSV Files/MLS-5/MLS-5 DOM EPT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-5",
          Task = "SCT",
@@ -43,30 +44,30 @@ MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>%
 
 
 # Selection
-SDB_FCT <- read_csv("./CSV Files/SDB/SDB DOM FCT.csv") %>% 
+SDB_FCT <- read_csv(here("./CSV Files/SDB/SDB DOM FCT.csv")) %>% 
   mutate(Group = "SDBA",
          Task = "MST")
 
-DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 DOM FCT.csv") %>% 
+DLI78_FCT <- read_csv(here("./CSV Files/DLI-78/DLI-78 DOM FCT.csv")) %>% 
   mutate(Group = "BES-7/8",
          Task = "MST",
          School = "Immersion",
          Age = "7th/8th")
 
-MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 DOM FCT.csv") %>%
+MLS78_FCT <- read_csv(here("./CSV Files/MLS-78/MLS-78 DOM FCT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-7/8",
          Task = "MST",
          School = "Monolingual",
          Age = "7th/8th")
 
-DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 DOM FCT.csv") %>% 
+DLI5_FCT <- read_csv(here("./CSV Files/DLI-5/DLI-5 DOM FCT.csv")) %>% 
   mutate(Group = "BES-5",
          Task = "MST",
          School = "Immersion",
          Age = "5th")
 
-MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>%
+MLS5_FCT <- read_csv(here("./CSV Files/MLS-5/MLS-5 DOM FCT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-5",
          Task = "MST",
@@ -81,7 +82,7 @@ EPT <- rbind(SDB_EPT, DLI78_EPT, MLS78_EPT, DLI5_EPT, MLS5_EPT)
 EPT_Heritage <- EPT %>% 
   filter(!Group == "SDBA")
 EPT_Heritage$Age <- factor(EPT_Heritage$Age, levels = c("5th", "7th/8th"))
-EPT_Heritage$School <- factor(EPT$School, levels = c("Immersion", "Monolingual"))
+EPT_Heritage$School <- factor(EPT_Heritage$School, levels = c("Immersion", "Monolingual"))
 
 
 ## Receptive task
@@ -90,7 +91,7 @@ FCT <- rbind(SDB_FCT, DLI78_FCT, MLS78_FCT, DLI5_FCT, MLS5_FCT)
 FCT_Heritage <- FCT %>% 
   filter(!Group == "SDBA")
 FCT_Heritage$Age <- factor(FCT_Heritage$Age, levels = c("5th", "7th/8th"))
-FCT_Heritage$School <- factor(FCT$School, levels = c("Immersion", "Monolingual"))
+FCT_Heritage$School <- factor(FCT_Heritage$School, levels = c("Immersion", "Monolingual"))
 
 
 ## Joint
@@ -132,9 +133,9 @@ summary(Omnibus_Tukey)
 # Heritage model
 ## Generate heritage model
 Heritage <- glmer(DOM_Use ~ School + Age + Task + Use_Joint_Std + BESA_Total_Std + School:Age +
-               (1 | Part_ID) + (1 | Item),
-             data = Aggregate_Heritage,
-             family = "binomial")
+                    (1 | Part_ID) + (1 | Item),
+                  data = Aggregate_Heritage,
+                  family = "binomial")
 
 summary(Heritage)
 
@@ -172,9 +173,9 @@ plot_model(Production, show.values = TRUE, show.intercept = TRUE, value.offset =
 # Receptive model
 ## Generate receptive model
 MST <- glmer(DOM_Use ~ School + Age + Use_Joint_Std + BESA_Total_Std + School:Age +
-                      (1 | Part_ID) + (1 | Item),
-                    data = FCT_Heritage,
-                    family = "binomial")
+               (1 | Part_ID) + (1 | Item),
+             data = FCT_Heritage,
+             family = "binomial")
 
 summary(MST)
 
@@ -187,4 +188,3 @@ plot_model(MST, show.values = TRUE, show.intercept = TRUE, value.offset = .3, tr
   scale_x_discrete(labels = c("School : Age", "Proficiency", "Frequency of use", "7th/8th grade", "Monolingual school", "(Intercept)")) +
   theme(axis.title = element_text(face = "bold"),
         plot.title = element_text(hjust = 0.5, face = "bold"))
-

@@ -1,51 +1,52 @@
 library(tidyverse)
+library(here)
 
 
 # Load data
 ## Production
-SDB_EPT <- read_csv("./CSV Files/SDB/SDB DOM EPT.csv") %>% 
+SDB_EPT <- read_csv(here("./CSV Files/SDB/SDB DOM EPT.csv")) %>% 
   filter(Item %in% c("EPT-02", "EPT-08", "EPT-12", "EPT-14", "EPT-20", "EPT-24", "EPT-26", "EPT-32", "EPT-38", "EPT-42")) %>% 
   mutate(Group = "SDBA",
          Task = "SCT")
 
-DLI78_EPT <- read_csv("./CSV Files/DLI-78/DLI-78 DOM EPT.csv") %>% 
+DLI78_EPT <- read_csv(here("./CSV Files/DLI-78/DLI-78 DOM EPT.csv")) %>% 
   mutate(Group = "BES-7/8",
          Task = "SCT")
 
-MLS78_EPT <- read_csv("./CSV Files/MLS-78/MLS-78 DOM EPT.csv") %>%
+MLS78_EPT <- read_csv(here("./CSV Files/MLS-78/MLS-78 DOM EPT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-7/8",
          Task = "SCT")
 
-DLI5_EPT <- read_csv("./CSV Files/DLI-5/DLI-5 DOM EPT.csv") %>% 
+DLI5_EPT <- read_csv(here("./CSV Files/DLI-5/DLI-5 DOM EPT.csv")) %>% 
   filter(Item %in% c("EPT-02", "EPT-08", "EPT-12", "EPT-14", "EPT-20", "EPT-24", "EPT-26", "EPT-32", "EPT-38", "EPT-42")) %>% 
   mutate(Group = "BES-5",
          Task = "SCT")
 
-MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM EPT.csv") %>%
+MLS5_EPT <- read_csv(here("./CSV Files/MLS-5/MLS-5 DOM EPT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-5",
          Task = "SCT")
 
 # Selection
-SDB_FCT <- read_csv("./CSV Files/SDB/SDB DOM FCT.csv") %>% 
+SDB_FCT <- read_csv(here("./CSV Files/SDB/SDB DOM FCT.csv")) %>% 
   mutate(Group = "SDBA",
          Task = "MST")
 
-DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 DOM FCT.csv") %>% 
+DLI78_FCT <- read_csv(here("./CSV Files/DLI-78/DLI-78 DOM FCT.csv")) %>% 
   mutate(Group = "BES-7/8",
          Task = "MST")
 
-MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 DOM FCT.csv") %>%
+MLS78_FCT <- read_csv(here("./CSV Files/MLS-78/MLS-78 DOM FCT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-7/8",
          Task = "MST")
 
-DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 DOM FCT.csv") %>% 
+DLI5_FCT <- read_csv(here("./CSV Files/DLI-5/DLI-5 DOM FCT.csv")) %>% 
   mutate(Group = "BES-5",
          Task = "MST")
 
-MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 DOM FCT.csv") %>%
+MLS5_FCT <- read_csv(here("./CSV Files/MLS-5/MLS-5 DOM FCT.csv")) %>%
   filter(!School == "GBCS") %>% 
   mutate(Group = "ME-5",
          Task = "MST")
