@@ -1,23 +1,24 @@
 library(tidyverse)
+library(here)
 
 
 # Load data
 ## Load EPT
-SDB_EPT <- read_csv("./CSV Files/SDB/SDB Subjunctive EPT.csv")
-HSA_EPT <- read_csv("./CSV Files/Adult HS/Adult HS Subjunctive EPT.csv")
-DLI78_EPT <- read_csv("./CSV Files/DLI-78/DLI-78 Subjunctive EPT.csv")
-MLS78_EPT <- read_csv("./CSV Files/MLS-78/MLS-78 Subjunctive EPT.csv")
-DLI5_EPT <- read_csv("./CSV Files/DLI-5/DLI-5 Subjunctive EPT.csv")
-MLS5_EPT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv")
+SDB_EPT <- read_csv(here("./CSV Files/SDB/SDB Subjunctive EPT.csv"))
+HSA_EPT <- read_csv(here("./CSV Files/Adult HS/Adult HS Subjunctive EPT.csv"))
+DLI78_EPT <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive EPT.csv"))
+MLS78_EPT <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive EPT.csv"))
+DLI5_EPT <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive EPT.csv"))
+MLS5_EPT <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv"))
 
 
 ## Load FCT
-SDB_FCT <- read_csv("./CSV Files/SDB/SDB Subjunctive FCT.csv")
-HSA_FCT <- read_csv("./CSV Files/Adult HS/Adult HS Subjunctive FCT.csv")
-DLI78_FCT <- read_csv("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv")
-MLS78_FCT <- read_csv("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv")
-DLI5_FCT <- read_csv("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")
-MLS5_FCT <- read_csv("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv")
+SDB_FCT <- read_csv(here("./CSV Files/SDB/SDB Subjunctive FCT.csv"))
+HSA_FCT <- read_csv(here("./CSV Files/Adult HS/Adult HS Subjunctive FCT.csv"))
+DLI78_FCT <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv"))
+MLS78_FCT <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv"))
+DLI5_FCT <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv"))
+MLS5_FCT <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv"))
 
 
 ## Join Files
@@ -35,3 +36,4 @@ Aggregate$Group <- factor(Aggregate$Group, levels = c("SDB", "HSA", "DLI-7/8", "
 unique(EPT$Part_ID)
 unique(FCT$Part_ID)
 unique(Aggregate$Part_ID)
+
