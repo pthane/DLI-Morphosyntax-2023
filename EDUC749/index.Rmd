@@ -1,0 +1,1414 @@
+---
+title: "Exemplifying Quantitative Research in Bilingual Education: Heritage Language Acquisition in Dual-Language Immersion"
+author: "Patrick D. Thane<br/>pthane@umass.edu"
+institute: "Western Massachusetts Bilingual Hub"
+date: "November 20, 2023"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: false
+---
+
+```{r, setup, include = FALSE}
+library(tidyverse)
+library(lme4)
+library(xaringan)
+library(xaringanthemer)
+library(xaringanExtra)
+library(lmerTest)
+library(kableExtra)
+library(patchwork)
+library(jtools)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(emmeans)
+library(here)
+
+options(htmltools.dir.version = FALSE)
+options(scipen = 999)
+
+
+knitr::opts_chunk$set(fig.width = 16, fig.height = 7, fig.retina = 3, fig.align = 'center', cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE, hiline = TRUE)
+```
+
+```{r xaringan, include = FALSE, warning = FALSE}
+style_duo_accent(
+  primary_color = "#881C1C",
+  secondary_color = "#212721",
+  inverse_header_color = "#FFFDD0")
+```
+
+```{r xaringan-logo, echo = FALSE}
+use_logo(
+  image_url = "https://www.umass.edu/brand/sites/default/files/M-lockedup.png"
+)
+```
+
+```{r, load-DOM-data}
+# EPT
+SDB_DOM_EPT <- read_csv(here("./CSV Files/SDB/SDB DOM EPT.csv")) %>% 
+    filter(Item %in% c("EPT-02", "EPT-08", "EPT-12", "EPT-14", "EPT-20", "EPT-24", "EPT-26", "EPT-32", "EPT-38", "EPT-42")) %>% 
+  mutate(Group = "SDBA",
+         Task = "SCT",
+         School = "SDBA",
+         Age = "SDBA")
+
+DLI78_DOM_EPT <- read_csv(here("./CSV Files/DLI-78/DLI-78 DOM EPT.csv")) %>% 
+  mutate(Group = "DLI-7/8",
+         Task = "SCT",
+         School = "DLI",
+         Age = "7th/8th")
+
+MLS78_DOM_EPT <- read_csv(here("./CSV Files/MLS-78/MLS-78 DOM EPT.csv")) %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "MLS-7/8",
+         Task = "SCT",
+         School = "MLS",
+         Age = "7th/8th")
+
+DLI5_DOM_EPT <- read_csv(here("./CSV Files/DLI-5/DLI-5 DOM EPT.csv")) %>% 
+  mutate(Group = "DLI-5",
+         Task = "SCT",
+         School = "DLI",
+         Age = "5th")
+
+MLS5_DOM_EPT <- read_csv(here("./CSV Files/MLS-5/MLS-5 DOM EPT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "MLS-5",
+         Task = "SCT",
+         School = "MLS",
+         Age = "5th")
+
+
+# FCT
+SDB_DOM_FCT <- read_csv(here("./CSV Files/SDB/SDB DOM FCT.csv")) %>% 
+  mutate(Group = "SDBA",
+         Task = "MST",
+         School = "SDBA",
+         Age = "SDBA")
+
+DLI78_DOM_FCT <- read_csv(here("./CSV Files/DLI-78/DLI-78 DOM FCT.csv")) %>% 
+  mutate(Group = "DLI-7/8",
+         Task = "MST",
+         School = "DLI",
+         Age = "7th/8th")
+
+MLS78_DOM_FCT <- read_csv(here("./CSV Files/MLS-78/MLS-78 DOM FCT.csv")) %>% 
+  filter(!School == "GBCS") %>%
+  mutate(Group = "MLS-7/8",
+         Task = "MST",
+         School = "MLS",
+         Age = "7th/8th")
+
+DLI5_DOM_FCT <- read_csv(here("./CSV Files/DLI-5/DLI-5 DOM FCT.csv")) %>% 
+  mutate(Group = "DLI-5",
+         Task = "MST",
+         School = "DLI",
+         Age = "5th")
+
+MLS5_DOM_FCT <- read_csv(here("./CSV Files/MLS-5/MLS-5 DOM FCT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  mutate(Group = "MLS-5",
+         Task = "MST",
+         School = "MLS",
+         Age = "5th")
+
+
+## Join datasets
+DOM_EPT <- rbind(SDB_DOM_EPT, DLI78_DOM_EPT, MLS78_DOM_EPT, DLI5_DOM_EPT, MLS5_DOM_EPT)
+DOM_FCT <- rbind(SDB_DOM_FCT, DLI78_DOM_FCT, MLS78_DOM_FCT, DLI5_DOM_FCT, MLS5_DOM_FCT)
+```
+
+```{r, load-subj-data}
+# EPT
+SDB_Subj_EPT <- read_csv(here("./CSV Files/SDB/SDB Subjunctive EPT.csv")) %>%
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "SDBA",
+         Task = "SCT",
+         Mood = "Subjunctive",
+         School = "SDBA",
+         Age = "SDBA")
+
+DLI78_Subj_EPT <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive EPT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-7/8",
+         Task = "SCT",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "7th/8th")
+
+MLS78_Subj_EPT <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive EPT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-7/8",
+         Task = "SCT",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "7th/8th")
+
+DLI5_Subj_EPT <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive EPT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-5",
+         Task = "SCT",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "5th")
+
+MLS5_Subj_EPT <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-5",
+         Task = "SCT",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "5th")
+
+
+# FCT
+SDB_Subj_FCT <- read_csv(here("./CSV Files/SDB/SDB Subjunctive FCT.csv")) %>%
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "SDBA",
+         Task = "MST",
+         Mood = "Subjunctive",
+         School = "SDBA",
+         Age = "SDBA")
+
+DLI78_Subj_FCT <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-7/8",
+         Task = "MST",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "7th/8th")
+
+MLS78_Subj_FCT <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-7/8",
+         Task = "MST",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "7th/8th")
+
+DLI5_Subj_FCT <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-5",
+         Task = "MST",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "5th")
+
+MLS5_Subj_FCT <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-5",
+         Task = "MST",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "5th")
+
+
+## Join datasets
+Subj_EPT <- rbind(SDB_Subj_EPT, DLI78_Subj_EPT, MLS78_Subj_EPT, DLI5_Subj_EPT, MLS5_Subj_EPT)
+Subj_FCT <- rbind(SDB_Subj_FCT, DLI78_Subj_FCT, MLS78_Subj_FCT, DLI5_Subj_FCT, MLS5_Subj_FCT)
+```
+
+```{r, generate-DOM-averages}
+## SDB, SCT
+SDB_DOM_EPT_Structure <- aggregate(SDB_DOM_EPT$DOM_Use, list(SDB_DOM_EPT$Structure), FUN = mean, na.rm = TRUE)
+SDB_DOM_EPT_Structure <- SDB_DOM_EPT_Structure %>% rename(Structure_Avg = x)
+SDB_DOM_EPT_Structure <- left_join(SDB_DOM_EPT, SDB_DOM_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## SDB, MST
+SDB_DOM_FCT_Structure <- aggregate(SDB_DOM_FCT$DOM_Use, list(SDB_DOM_FCT$Structure), FUN = mean, na.rm = TRUE)
+SDB_DOM_FCT_Structure <- SDB_DOM_FCT_Structure %>% rename(Structure_Avg = x)
+SDB_DOM_FCT_Structure <- left_join(SDB_DOM_FCT, SDB_DOM_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI78, SCT
+DLI78_DOM_EPT_Structure <- aggregate(DLI78_DOM_EPT$DOM_Use, list(DLI78_DOM_EPT$Structure), FUN = mean, na.rm = TRUE)
+DLI78_DOM_EPT_Structure <- DLI78_DOM_EPT_Structure %>% rename(Structure_Avg = x)
+DLI78_DOM_EPT_Structure <- left_join(DLI78_DOM_EPT, DLI78_DOM_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI78, MST
+DLI78_DOM_FCT_Structure <- aggregate(DLI78_DOM_FCT$DOM_Use, list(DLI78_DOM_FCT$Structure), FUN = mean, na.rm = TRUE)
+DLI78_DOM_FCT_Structure <- DLI78_DOM_FCT_Structure %>% rename(Structure_Avg = x)
+DLI78_DOM_FCT_Structure <- left_join(DLI78_DOM_FCT, DLI78_DOM_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS78, SCT
+MLS78_DOM_EPT_Structure <- aggregate(MLS78_DOM_EPT$DOM_Use, list(MLS78_DOM_EPT$Structure), FUN = mean, na.rm = TRUE)
+MLS78_DOM_EPT_Structure <- MLS78_DOM_EPT_Structure %>% rename(Structure_Avg = x)
+MLS78_DOM_EPT_Structure <- left_join(MLS78_DOM_EPT, MLS78_DOM_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS78, MST
+MLS78_DOM_FCT_Structure <- aggregate(MLS78_DOM_FCT$DOM_Use, list(MLS78_DOM_FCT$Structure), FUN = mean, na.rm = TRUE)
+MLS78_DOM_FCT_Structure <- MLS78_DOM_FCT_Structure %>% rename(Structure_Avg = x)
+MLS78_DOM_FCT_Structure <- left_join(MLS78_DOM_FCT, MLS78_DOM_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5, SCT
+DLI5_DOM_EPT_Structure <- aggregate(DLI5_DOM_EPT$DOM_Use, list(DLI5_DOM_EPT$Structure), FUN = mean, na.rm = TRUE)
+DLI5_DOM_EPT_Structure <- DLI5_DOM_EPT_Structure %>% rename(Structure_Avg = x)
+DLI5_DOM_EPT_Structure <- left_join(DLI5_DOM_EPT, DLI5_DOM_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5, MST
+DLI5_DOM_FCT_Structure <- aggregate(DLI5_DOM_FCT$DOM_Use, list(DLI5_DOM_FCT$Structure), FUN = mean, na.rm = TRUE)
+DLI5_DOM_FCT_Structure <- DLI5_DOM_FCT_Structure %>% rename(Structure_Avg = x)
+DLI5_DOM_FCT_Structure <- left_join(DLI5_DOM_FCT, DLI5_DOM_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5, SCT
+MLS5_DOM_EPT_Structure <- aggregate(MLS5_DOM_EPT$DOM_Use, list(MLS5_DOM_EPT$Structure), FUN = mean, na.rm = TRUE)
+MLS5_DOM_EPT_Structure <- MLS5_DOM_EPT_Structure %>% rename(Structure_Avg = x)
+MLS5_DOM_EPT_Structure <- left_join(MLS5_DOM_EPT, MLS5_DOM_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5, MST
+MLS5_DOM_FCT_Structure <- aggregate(MLS5_DOM_FCT$DOM_Use, list(MLS5_DOM_FCT$Structure), FUN = mean, na.rm = TRUE)
+MLS5_DOM_FCT_Structure <- MLS5_DOM_FCT_Structure %>% rename(Structure_Avg = x)
+MLS5_DOM_FCT_Structure <- left_join(MLS5_DOM_FCT, MLS5_DOM_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## Join datasets
+DOM_EPT_Final <- rbind(SDB_DOM_EPT_Structure, DLI78_DOM_EPT_Structure, MLS78_DOM_EPT_Structure, DLI5_DOM_EPT_Structure, MLS5_DOM_EPT_Structure) %>% 
+  mutate(Structure = "DOM")
+
+DOM_FCT_Final <- rbind(SDB_DOM_FCT_Structure, DLI78_DOM_FCT_Structure, MLS78_DOM_FCT_Structure, DLI5_DOM_FCT_Structure, MLS5_DOM_FCT_Structure) %>% 
+  mutate(Structure = "DOM")
+```
+
+```{r, prepare-subj-averages}
+## SDB, SCT
+SDB_Subj_EPT_Structure <- aggregate(SDB_Subj_EPT$Mood_Use, list(SDB_Subj_EPT$Structure), FUN = mean, na.rm = TRUE)
+SDB_Subj_EPT_Structure <- SDB_Subj_EPT_Structure %>% rename(Structure_Avg = x)
+SDB_Subj_EPT_Structure <- left_join(SDB_Subj_EPT, SDB_Subj_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## SDB, MST
+SDB_Subj_FCT_Structure <- aggregate(SDB_Subj_FCT$Mood_Use, list(SDB_Subj_FCT$Structure), FUN = mean, na.rm = TRUE)
+SDB_Subj_FCT_Structure <- SDB_Subj_FCT_Structure %>% rename(Structure_Avg = x)
+SDB_Subj_FCT_Structure <- left_join(SDB_Subj_FCT, SDB_Subj_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI78, SCT
+DLI78_Subj_EPT_Structure <- aggregate(DLI78_Subj_EPT$Mood_Use, list(DLI78_Subj_EPT$Structure), FUN = mean, na.rm = TRUE)
+DLI78_Subj_EPT_Structure <- DLI78_Subj_EPT_Structure %>% rename(Structure_Avg = x)
+DLI78_Subj_EPT_Structure <- left_join(DLI78_Subj_EPT, DLI78_Subj_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI78, MST
+DLI78_Subj_FCT_Structure <- aggregate(DLI78_Subj_FCT$Mood_Use, list(DLI78_Subj_FCT$Structure), FUN = mean, na.rm = TRUE)
+DLI78_Subj_FCT_Structure <- DLI78_Subj_FCT_Structure %>% rename(Structure_Avg = x)
+DLI78_Subj_FCT_Structure <- left_join(DLI78_Subj_FCT, DLI78_Subj_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS78, SCT
+MLS78_Subj_EPT_Structure <- aggregate(MLS78_Subj_EPT$Mood_Use, list(MLS78_Subj_EPT$Structure), FUN = mean, na.rm = TRUE)
+MLS78_Subj_EPT_Structure <- MLS78_Subj_EPT_Structure %>% rename(Structure_Avg = x)
+MLS78_Subj_EPT_Structure <- left_join(MLS78_Subj_EPT, MLS78_Subj_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS78, MST
+MLS78_Subj_FCT_Structure <- aggregate(MLS78_Subj_FCT$Mood_Use, list(MLS78_Subj_FCT$Structure), FUN = mean, na.rm = TRUE)
+MLS78_Subj_FCT_Structure <- MLS78_Subj_FCT_Structure %>% rename(Structure_Avg = x)
+MLS78_Subj_FCT_Structure <- left_join(MLS78_Subj_FCT, MLS78_Subj_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5, SCT
+DLI5_Subj_EPT_Structure <- aggregate(DLI5_Subj_EPT$Mood_Use, list(DLI5_Subj_EPT$Structure), FUN = mean, na.rm = TRUE)
+DLI5_Subj_EPT_Structure <- DLI5_Subj_EPT_Structure %>% rename(Structure_Avg = x)
+DLI5_Subj_EPT_Structure <- left_join(DLI5_Subj_EPT, DLI5_Subj_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## DLI5, MST
+DLI5_Subj_FCT_Structure <- aggregate(DLI5_Subj_FCT$Mood_Use, list(DLI5_Subj_FCT$Structure), FUN = mean, na.rm = TRUE)
+DLI5_Subj_FCT_Structure <- DLI5_Subj_FCT_Structure %>% rename(Structure_Avg = x)
+DLI5_Subj_FCT_Structure <- left_join(DLI5_Subj_FCT, DLI5_Subj_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5, SCT
+MLS5_Subj_EPT_Structure <- aggregate(MLS5_Subj_EPT$Mood_Use, list(MLS5_Subj_EPT$Structure), FUN = mean, na.rm = TRUE)
+MLS5_Subj_EPT_Structure <- MLS5_Subj_EPT_Structure %>% rename(Structure_Avg = x)
+MLS5_Subj_EPT_Structure <- left_join(MLS5_Subj_EPT, MLS5_Subj_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## MLS5, MST
+MLS5_Subj_FCT_Structure <- aggregate(MLS5_Subj_FCT$Mood_Use, list(MLS5_Subj_FCT$Structure), FUN = mean, na.rm = TRUE)
+MLS5_Subj_FCT_Structure <- MLS5_Subj_FCT_Structure %>% rename(Structure_Avg = x)
+MLS5_Subj_FCT_Structure <- left_join(MLS5_Subj_FCT, MLS5_Subj_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## Join datasets
+Subj_EPT_Final <- rbind(SDB_Subj_EPT_Structure, DLI78_Subj_EPT_Structure, MLS78_Subj_EPT_Structure, DLI5_Subj_EPT_Structure, MLS5_Subj_EPT_Structure) %>% 
+  mutate(Structure = "Subjunctive")
+
+Subj_FCT_Final <- rbind(SDB_Subj_FCT_Structure, DLI78_Subj_FCT_Structure, MLS78_Subj_FCT_Structure, DLI5_Subj_FCT_Structure, MLS5_Subj_FCT_Structure) %>% 
+  mutate(Structure = "Subjunctive")
+```
+
+```{r, generate-DOM-master}
+## Calculate participant averages
+DOM_EPT_Part_Avg <- aggregate(DOM_EPT_Final$DOM_Use, list(DOM_EPT_Final$Part_ID), FUN = sum, na.rm = TRUE)
+DOM_EPT_Part_Avg <- DOM_EPT_Part_Avg %>% rename(Part_Avg = x)
+DOM_EPT_Part_Avg <- left_join(DOM_EPT_Final, DOM_EPT_Part_Avg, by = c("Part_ID" = "Group.1"))
+
+DOM_FCT_Part_Avg <- aggregate(DOM_FCT_Final$DOM_Use, list(DOM_FCT_Final$Part_ID), FUN = sum, na.rm = TRUE)
+DOM_FCT_Part_Avg <- DOM_FCT_Part_Avg %>% rename(Part_Avg = x)
+DOM_FCT_Part_Avg <- left_join(DOM_FCT_Final, DOM_FCT_Part_Avg, by = c("Part_ID" = "Group.1"))
+
+
+## Form overall master
+DOM_Master <- rbind(DOM_EPT_Part_Avg, DOM_FCT_Part_Avg)
+DOM_Master$Group <- factor(DOM_Master$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
+DOM_Master$Task <- factor(DOM_Master$Task, levels = c("SCT", "MST"))
+
+
+## Calculate HS master
+DOM_Master_HS <- DOM_Master %>% 
+  filter(!Group == "SDBA")
+DOM_Master_HS$Group <- factor(DOM_Master_HS$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
+DOM_Master_HS$Task <- factor(DOM_Master_HS$Task, levels = c("SCT", "MST"))
+DOM_Master_HS$Age <- factor(DOM_Master_HS$Age, levels = c("5th", "7th/8th"))
+```
+
+```{r, generate-subj-master}
+## Calculate participant averages
+Subj_EPT_Part_Avg <- aggregate(Subj_EPT_Final$Mood_Use, list(Subj_EPT_Final$Part_ID), FUN = sum, na.rm = TRUE)
+Subj_EPT_Part_Avg <- Subj_EPT_Part_Avg %>% rename(Part_Avg = x)
+Subj_EPT_Part_Avg <- left_join(Subj_EPT_Final, Subj_EPT_Part_Avg, by = c("Part_ID" = "Group.1"))
+
+Subj_FCT_Part_Avg <- aggregate(Subj_FCT_Final$Mood_Use, list(Subj_FCT_Final$Part_ID), FUN = sum, na.rm = TRUE)
+Subj_FCT_Part_Avg <- Subj_FCT_Part_Avg %>% rename(Part_Avg = x)
+Subj_FCT_Part_Avg <- left_join(Subj_FCT_Final, Subj_FCT_Part_Avg, by = c("Part_ID" = "Group.1"))
+
+
+## Form overall master
+Subj_Master <- rbind(Subj_EPT_Part_Avg, Subj_FCT_Part_Avg)
+Subj_Master$Group <- factor(Subj_Master$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
+Subj_Master$Task <- factor(Subj_Master$Task, levels = c("SCT", "MST"))
+
+
+## Form HS master
+Subj_Master_HS <- Subj_Master %>% 
+  filter(!Group == "SDBA")
+Subj_Master_HS$Group <- factor(Subj_Master_HS$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8"))
+Subj_Master_HS$Task <- factor(Subj_Master_HS$Task, levels = c("SCT", "MST"))
+Subj_Master_HS$Age <- factor(Subj_Master_HS$Age, levels = c("5th", "7th/8th"))
+```
+
+```{r, create-aggregate}
+Aggregate <- rbind(DOM_Master, Subj_Master)
+```
+
+```{r, create-task-specific-dataframes}
+DOM_EPT_HS <- DOM_Master_HS %>% 
+  filter(Task == "SCT")
+
+DOM_FCT_HS <- DOM_Master_HS %>% 
+  filter(Task == "MST")
+
+Subj_EPT_HS <- Subj_Master_HS %>% 
+  filter(Task == "SCT")
+
+Subj_FCT_HS <- Subj_Master_HS %>% 
+  filter(Task == "MST")
+```
+
+# Reviewing Dual-Language Immersion
+
+--
+- **Dual-language immersion (DLI)** is an equitable way to educate bilingual and bicultural children in U.S. public schools
+
+--
+  + English is taught for a portion of the school day
+
+--
+  + Spanish or a different language is taught for a different portion of the school day
+
+
+--
+- There are multiple methods of DLI:
+
+--
+  + One-way immersion: all students are home speakers of a language other than English
+
+--
+  + Two-way immersion: home speakers of English *and* home speakers of another language (usually Spanish) come together to learn in both languages
+  
+
+--
+- This is an inclusive method of education because:
+
+--
+  + Everyone goes through the process of learning a language
+  
+--
+  + Languages that often have less social power are given equal status (in theory)
+
+--
+  + Children who come in with some proficiency in both languages are the "gold standard" (bilingualism as the resoltuion, not the problem)
+  
+
+---
+# Exposing the Gap
+
+
+--
+There is a large body of research on dual-language immersion that shows benefits of many different sorts:
+
+
+--
+- Faster executive functioning skills (Nicolay & Poncelet, 2013; Garraffa et al., 2020)
+
+
+--
+- Greater sociocultural competence (Bearse & de Jong, 2008)
+
+
+--
+- Higher or equal standardized test scores in mathematics (Marian et al., 2013; Steele et al., 2017)
+
+
+--
+- Greater motivations to stay in school (Christian et al., 2004)
+
+
+--
+- Higher grade point averages (Thomas & Collier, 2002)
+
+
+--
+- Grade-level (or above grade-level) English language arts performance by the end of elementary school (Christian et al., 2004; Marian et al., 2013)
+
+
+---
+```{r, include-elephant, height = 10, fig.width = 16, fig.align = 'center', fig.retina = 2}
+Elephant <- "http://www.elephantcapability.com/wp-content/uploads/2015/11/AdobeStock_94910721.jpeg"
+
+knitr::include_graphics(Elephant)
+```
+
+
+---
+# Revealing the Paradox
+
+
+--
+Heritage Spanish-speaking children…also continue developing their Spanish proficiency, particularly more formal registers, an opportunity not offered by the vast majority of United States elementary schools.
+
+
+(Potowski, 2007b, p. 188)
+
+--
+
+**…but…**
+
+
+--
+"What about…a study that compares L1 heritage speakers in a dual immersion program with their counterparts in transitional bilingual education programs taught mostly in English?"
+
+
+(Potowski, 2007a, p. 164).
+
+
+--
+**…so…**
+--
+
+
+More needs to be done to adequately document the impact of DLI on heritage language acquisition.
+
+
+---
+# A Role for Education?
+
+
+
+- Education in the heritage language likely provides greater *quantity* and *quality* of input for HSs
+
+
+--
+  + Quantitative component: more exposure across the school years, at a time when students begin to shift proficiency in English (Castilla-Earls et al., 2019)
+
+--
+  + Qualitative component: academic registers of the language likely expose learners to greater syntactic complexity and lexical diversity
+
+
+--
+- Previous evidence of educational impact on HL development:
+
+--
+  + Bayram et al. (2017): literacy level affects children's knowledge of Turkish passives
+
+--
+  + Kupisch & Rothman (2018): French HS educated in French in Germany > Italian HS in Germany
+
+--
+  + Barnett et al. (2007): Spanish-speaking preschoolers in DLI have higher vocabulary scores than in monolingual programs
+
+
+--
+- To date, no systematic study comparing heritage speakers of Spanish in immersion programs to monolingually-educated HSs *during the school years*
+
+---
+# The Role of Age in Previous Research
+
+
+--
+- It is unclear if HSs show growth in their knowledge of Spanish into adolescence, or if they lose their heritage language due to less exposure
+
+
+--
+  + This likely depends on each individual
+
+--
+  + What, then, are the factors that can account for individual variability?
+
+--
+- Age is difficult to interpret:
+
+
+--
+  + Some studies reveal *negative* age effects in HS children (e.g., Goebel-Mahrle & Shin, 2021; Merino, 1983)
+
+--
+  + Other studies reveal *positive* age effects (e.g., Corbet & Domínguez, 2020; Cuza & Miller, 2015; Martinez Nieto & Restrepo, 2022; Montrul & Potowski, 2007)
+  
+--
+  + Many studies reveal no effect for age (e.g., Dracos & Requena, 2022; Guijarro-Fuentes et al., 2017)
+
+
+--
+- Do patterns of exposure to the language matter?
+
+
+--
+  + Proficiency (overall knowledge)
+
+--
+  + Frequency of use of the heritage language (exposure matters; Putnam & Sánchez, 2013)
+
+
+---
+# Structures Tested
+
+
+- Volitional subjunctive:
+
+--
+  + Example: *quiero que VENGAS a la fiesta* (versus *quiero que VIENES a la fiesta*)
+
+--
+  + Late-acquired by monolingual Spanish-speaking children (Dracos et al., 2019)
+
+--
+  + Variable in child/adult HS (e.g., Dracos & Requena, 2022; Montrul, 2009)
+
+--
+  + This structure doesn't really affect meaning in Spanish, but because it is infrequent, it is a good way to test the power of bilingual education on language development
+
+
+--
+- Differential object marking (DOM) or "personal *a*"
+
+--
+  + Example: ve Juan (Juan sees) versus ve *a* Juan (she sees Juan)
+
+--
+  + Stabilizes in monolingual acquisition by approx. age 3 (Rodríguez-Mondoñedo, 2008)
+  
+--
+  + Variable in HS; adults > children (Montrul & Sánchez-Walker, 2013)
+
+--
+  + This structure has important impact on meaning in Spanish
+
+
+---
+# Little By Little…
+
+```{r, include-brain-overload, height = 10, fig.width = 16, fig.align = 'center', fig.retina = 3}
+Overload <- "https://media.licdn.com/dms/image/D4D12AQEhxeRkMDhcVQ/article-cover_image-shrink_600_2000/0/1686833097722?e=2147483647&v=beta&t=MoDETgA3tTvqRUwC0uKQqr5YBgQVt9aPZbulVH_ktls"
+
+knitr::include_graphics(Overload)
+```
+
+---
+# Summary So Far
+
+
+--
+- Dual-language immersion is a powerful tool for teaching bilingual children
+
+
+--
+- We know quite little about the role of how DLI shapes heritage language development
+
+
+--
+- There are multiple theories of HL acquisition, and studying multiple age groups of children can help us to figure out which theories are best for our data
+
+
+--
+- The subjunctive and DOM seem to be difficult to learn, so would DLI make a particularly noticeable impact on these structures?
+
+---
+
+# Research Questions
+
+
+--
+**1. Do bilingual education and frequency of use of Spanish affect Spanish HS children's development of the subjunctive and differential object marking?**
+
+--
+  + Students in DLI will use the subjunctive and DOM more frequently than peers in monolingual schools.
+
+--
+  + Children who report using Spanish across contexts more frequently will use more subjunctive and DOM than peers.
+
+
+--
+**2. Do Spanish HS children recognize subjunctive and DOM on a receptive, comprehension-like task more than they produce them?**
+
+--
+  + Participants will recognize these structures more on a receptive task than they will produce them, because production is more challenging than comprehension (Perez-Cortes et al., 2019)
+
+
+--
+**3. Do Spanish HS children show improvement in their knowledge of subjunctive and differential object marking as they get older?**
+
+--
+  + Adolescent Spanish HSs will produce and select more subjunctive and DOM than younger children.
+
+
+---
+# Participants
+
+
+--
+- 17 Spanish-dominant bilingual adults (SBDA) raised in typically monolingual Spanish-speaking regions (descriptive stats only)
+
+
+--
+- 57 Spanish HS children (all children in two groups by age and school exposure); matched for SES
+
+--
+  + DLI-7/8: DLI students in 7th/8th grades (12-14 years old); 50% in Spanish through grade 5
+
+--
+  + MLS-7/8: students in a monolingual school in 7th/8th grades (12-14 years old); no Spanish at school
+
+--
+ + DLI-5: DLI students in 5th grade (10-11 years old); 50% in Spanish since Kindergarten
+
+--
+  + MLS-5: students in a monolingual school in 5th grade (11-12 years old); no Spanish at school
+
+
+--
+```{r, load-partipant-table}
+Participants <- read_csv(here("./PoLaR/PoLaR Participant Table.csv"))
+```
+
+```{r, list-participant-table}
+kable(Participants[1:4], align = "lccccc")
+```
+
+---
+# Methods
+
+
+--
+- BESA proficiency test for bilingual children (Peña et al., 2014)
+
+
+--
+- Language questionnaire targeting self-reported frequency of use
+
+
+--
+  + 6 contexts of exposure
+
+--
+  + 1-5 Likert scales
+
+
+--
+- Productive and receptive domains tested:
+
+--
+  + Production: sentence completion task (SCT)
+
+--
+  + Receptive knowledge: morphology selection task (MST) between grammatical and non-grammatical options
+
+---
+# Sample Items from the Tasks
+
+
+**Sample sentence from SCT**
+
+A veces Juanito se pone triste si sus hermanas dicen que no quieren hablar con él. ¿Qué quiere la mamá? Quiere que las hermanas _________ (LLAMAR) Juanito cada noche.
+
+
+
+**Sample sentences from MST**
+
+La mamá sabe que Juanito tiene miedo de alturas. No quiere subir al tobogán en el parque de juegos solito. ¿Qué quiere la mamá?
+
+  + Quiere que las hermanas lo lleven para subir al tobogán. 
+
+  + *Quiere que las hermanas lo llevan para subir al tobogán. 
+
+
+¿Qué tienen que hacer las hermanas? 
+  + Tienen que llevar a Juanito para subir al tobogán. 
+
+  + *Tienen que llevar Juanito para subir al tobogán
+
+---
+# Collecting and Analyzing the Data
+
+--
+1. Prepare and pilot the experiment with children not in the study (I practiced with my kiddos in Madrid!)
+
+
+--
+2. Administer the experiment online to adults, gather consent from children's parents
+
+
+--
+3. Administer the experiment online while with students in their schools
+
+
+--
+1. Create an Excel document analyzing every student's response (over 10,000 data points collected)
+
+
+--
+  + Report binary variable (1 = subjunctive/DOM used; 0 = anything else; no score if the participant didn't respond)
+
+--
+  + Code additional variables: frequency of use of Spanish, score on a grammar test, etcetera
+
+
+--
+2. Use *R* (R Core Team, 2022) to make graphs and conduct statistical analyses
+
+
+---
+# Variables for Analysis
+
+
+--
+- The golden question in quantitative research: **What is the effect of X on Y?**
+
+
+--
+- Dependent variable (*y*): use of subjunctive/DOM (see above)
+
+
+--
+- Independent variables (*x*):
+
+
+--
+  + Task (SCT, production versus MST, receptive)
+
+--
+  + Group (MLS-5, DLI-5, MLS-7/8, DLI-7/8)
+
+--
+  + Age group (5th grade versus 7th/8th grade)
+
+--
+  + Frequency of use of Spanish (sum of 6 Likert scales; possible score 0-30)
+
+
+---
+# Production and Selection Rates
+```{r, generate-DOM-bar-graph}
+DOM_Bar_Plot <- DOM_Master %>% 
+  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+    facet_wrap(facets = vars(Structure)) +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 100)) +
+    geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 6) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of DOM responses") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(size = 20, face = "bold"))
+```
+
+```{r, generate-subj-bar-graph}
+Subj_Bar_Plot <- Subj_Master %>% 
+  ggplot(aes(x = Group, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+    facet_wrap(facets = vars(Structure)) +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 100)) +
+    geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 6) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of subjunctive responses") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(size = 20, face = "bold"))
+```
+
+```{r, print-DOM-bar-graph}
+(DOM_Bar_Plot)+(Subj_Bar_Plot)
+```
+
+
+---
+# DOM: Correlation
+
+```{r, generate-DOM-overall-correlation}
+DOM_Overall <- glmer(DOM_Use ~ Group + Task + Use_Joint_Std + Task:Use_Joint_Std +
+                       (1 | Part_ID) + (1 | Item),
+                     data = DOM_Master_HS,
+                     family = "binomial")
+```
+
+```{r, generate-DOM-overall-forest-plot}
+DOM_Overall_Plot <- plot_model(DOM_Overall, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+                scale_y_continuous(breaks = seq(-6, 6, 2),
+                     limits = c(-6, 6)) +
+            scale_x_discrete(labels = c("MST : Freq. of use", "Frequency of use of Spanish", "Morphology selection task (MST)", "DLI-7/8 group", "MLS-7/8 group", "DLI-5 group", "(Intercept)")) +
+  labs(title = "DOM Overall Model", y = "Estimates") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-DOM-overall-forest-plot}
+(DOM_Overall_Plot)
+```
+
+
+---
+# DOM: Within-Group Comparisons
+
+```{r, generate-DOM-tukey}
+DOM_Pairwise <- emmeans(DOM_Overall, spec = "Group")
+DOM_Tukey <- contrast(DOM_Pairwise, method = "pairwise")
+DOM_Table <- summary(DOM_Tukey)
+```
+
+```{r, show-DOM-Tukey-results}
+kable(DOM_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
+```
+
+
+--
+- Whenever the *p* value is less than .05, you can anticipate that the difference is "real" ("significant")
+
+
+--
+- Therefore, the following differences are significant:
+
+
+--
+  + Between the DLI-7/8 and MLS-7/8 groups (the bilingually-educated children were more likely to use the subjunctive)
+
+--
+  + Between the DLI-7/8 and MLS-5 groups (older DLI students > younger, monolingually-educated students)
+
+
+---
+# DOM: Individual Analyses
+
+```{r, calculate-DOM-ind-diffs}
+DOM_EPT_Diffs <- DOM_EPT %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+DOM_FCT_Diffs <- DOM_FCT %>%
+  filter(!is.na(DOM_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(DOM_Use))
+
+DOM_Diffs = left_join(DOM_EPT_Diffs, DOM_FCT_Diffs, by = "Part_ID", "Group") %>%
+  rename(Group = Group.x,
+         Production = Production.x,
+         Preference = Production.y) %>% 
+  mutate(Total = Preference + Production) %>% 
+  filter(!Group == "SDBA")
+
+DOM_Diffs$Group <- factor(DOM_Diffs$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
+```
+
+```{r, generate-DOM-diffs-plot}
+DOM_Diffs_Plot <- DOM_Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  scale_x_continuous(breaks = seq (0, 10, 2),
+                     limits = c(-1, 11)) +
+  scale_y_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  labs(x = "Number of sentences with DOM produced", y = "Number of sentences with DOM selected", title = "Individual Rates of DOM Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-DOM-diffs-plot}
+(DOM_Diffs_Plot)
+```
+
+
+---
+# DOM: Summary
+
+
+--
+- It seems that both age and DLI work together because:
+
+--
+  + DLI-7/8 were greater than both monolingually-educated groups
+
+--
+  + DLI-7/8 were not different from DLI-5 (same school, different age)
+
+--
+  + DLI-5 were not different from MLS-5 (same age, different school)
+
+
+--
+- Heritage speakers recognized DOM on the MST (receptive task) more than they produced it on the SCT
+
+
+--
+- Lots of individual variability; nobody *never* used DOM, and some were just like Spanish-dominant speakers
+
+
+---
+# Subjunctive: Correlation
+
+```{r, generate-subj-overall-correlation}
+Subj_Overall <- glmer(Mood_Use ~ Group + Task + Use_Joint_Std + Task:Use_Joint_Std +
+                       (1 | Part_ID) + (1 | Item),
+                     data = Subj_Master_HS,
+                     family = "binomial")
+```
+
+```{r, generate-subj-overall-forest-plot}
+Subj_Overall_Plot <- plot_model(Subj_Overall, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+              scale_y_continuous(breaks = seq(-6, 6, 2),
+                     limits = c(-6, 6)) +
+            scale_x_discrete(labels = c("MST : Freq. of use", "Frequency of use of Spanish", "Morphology selection task (MST)", "DLI-7/8 group", "MLS-7/8 group", "DLI-5 group", "(Intercept)")) +
+  labs(title = "DOM Overall Model", y = "Estimates") +
+  labs(title = "Subjunctive Overall Model", y = "Estimates") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-Subj-overall-forest-plot}
+(Subj_Overall_Plot)
+```
+
+
+---
+# Subjunctive: Group Differences
+
+```{r, generate-subj-tukey}
+Subj_Pairwise <- emmeans(Subj_Overall, spec = "Group")
+Subj_Tukey <- contrast(Subj_Pairwise, method = "pairwise")
+Subj_Table <- summary(Subj_Tukey)
+```
+
+```{r, show-subj-Tukey-results}
+kable(Subj_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
+```
+
+--
+- No differences between groups have *p* values below .05
+
+
+--
+- There does not seem to be any effect of DLI on the development of the subjunctive
+
+
+--
+- Looking at the graphs, it seems that older children have more knowledge of subjunctive than younger children, so additional stats would be useful comparing age groups without considering school group
+
+
+---
+# Subjunctive: Age-Only Comparisons
+
+```{r, isolate-subj-age-only}
+Subj_Age_Data <- Subj_Master_HS
+Subj_Age_Data$Age <- factor(Subj_Age_Data$Age, levels = c("7th/8th", "5th"))
+
+Subj_Age <- glmer(Mood_Use ~ Age +
+                    (1 | Part_ID) + (1 | Item),
+                  data = Subj_Age_Data,
+                  family = "binomial")
+
+Subj_Age_Pairwise <- emmeans(Subj_Age, spec = "Age")
+Subj_Age_Tukey <- contrast(Subj_Age_Pairwise, method = "pairwise")
+Subj_Age_Table <- summary(Subj_Age_Tukey)
+```
+
+```{r, print-subj-age-Tukey-table}
+kable(Subj_Age_Table[1:6], col.names = c("Contrast", "Estimate", "SE", "df", "t ratio", "p"), align = "lccccc")
+```
+
+
+--
+- The *p* value for the difference between 7th/8th grade and 5th grade heritage speakers is below .05, so there is a "significant" effect for age in the subjunctive data
+
+
+--
+- This could not be observed by comparing the four groups to one another, so it was acceptable to keep running stats in this instance
+
+---
+# Subjunctive: Individual Analyses
+
+```{r, calculate-subj-ind-diffs}
+Subj_EPT_Diffs <- Subj_EPT %>%
+  filter(!is.na(Mood_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(Mood_Use))
+
+Subj_FCT_Diffs <- Subj_FCT %>%
+  filter(!is.na(Mood_Use)) %>%
+  group_by(Part_ID, Group) %>%
+  summarize(Production = sum(Mood_Use))
+
+Subj_Diffs = left_join(Subj_EPT_Diffs, Subj_FCT_Diffs, by = "Part_ID", "Group") %>%
+  rename(Group = Group.x,
+         Production = Production.x,
+         Preference = Production.y) %>% 
+  mutate(Total = Preference + Production) %>% 
+  filter(!Group == "SDBA")
+
+Subj_Diffs$Group <- factor(Subj_Diffs$Group, levels = c("MLS-5", "DLI-5", "MLS-7/8", "DLI-7/8", "SDBA"))
+```
+
+```{r, generate-subj-diffs-plot}
+Subj_Diffs_Plot <- Subj_Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Group), size = 3) +
+  scale_x_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  scale_y_continuous(breaks = seq (0, 8, 2),
+                     limits = c(-1, 9)) +
+  labs(x = "Number of sentences with subjunctive produced", y = "Number of sentences with subjunctive selected", title = "Individual Rates of Subjunctive Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-subj-diffs-plot}
+(Subj_Diffs_Plot)
+```
+
+---
+# Subjunctive: Summary
+
+
+--
+- No role of bilingual education, but children's knowledge of subjunctive increases with age
+
+
+--
+- Children select more subjunctive on the MST than they produce it on the SCT
+
+
+--
+- Overall frequency of use matters in speakers' knowledge of this structure
+
+--
+- No child *never* uses the subjunctive, and some are within the range of the Spanish-dominant adults
+
+
+---
+# Research Question #1
+
+
+--
+**Do bilingual education and frequency of use of Spanish affect Spanish HS children's development of the subjunctive and differential object marking?**
+
+
+--
+- Prediction: both variables would affect children's knowledge of both structures
+
+
+--
+- Bilingual education affected the use of DOM, but not frequency of use
+
+--
+- Overall frequency of use subtly affected the subjunctive, but not bilingual education
+
+
+--
+- The hypothesis for RQ1 is partially supported and partially rejected
+
+
+--
+- Different variables affect different structures
+
+
+---
+# Research Question #2
+
+
+--
+**Do Spanish HS children recognize subjunctive and DOM on a receptive, comprehension-like task more than they produce them?**
+
+
+--
+- Prediction: HS will use more DOM and subjunctive on a receptive task (MST) than in production (SCT)
+
+
+--
+- Results support this prediction
+
+
+--
+- This supports theories of HL acquisition (Putnam & Sánchez, 2013)
+
+
+--
+- Students may understand more than they hear, which emphasizes that **input is necessary, but it's not enough**
+
+--
+  + This has long been argued for second language acquisition in immersion programs (Swain, 1993, 1995)
+
+--
+  + Simply providing instruction in Spanish isn't enough! We need children to be producing in immersion classrooms, which is a real challenge…
+
+
+---
+# Research Question #3
+
+
+--
+**Do Spanish HS children show improvement in their knowledge of subjunctive and differential object marking as they get older?**
+
+
+--
+- Prediction: HSs will show growth with age in their command of both DOM and subjunctive
+
+--
+- Age *and* bilingual education appear to interact in the acquisition of DOM
+
+--
+  + Neither variable appears to matter by itself, but more statistics would be needed to back up this claim
+
+--
+  + Such an effect is called an *interaction* because there is a relationship between two independent variables (that is, X sometimes affects Y)
+  
+  
+--
+- Age matters in children's mastery of the subjunctive
+
+
+--
+- The hypothesis is mostly supported, except for the fact that age did not matter "across the board" in the acquisition of DOM
+
+
+---
+# Implications
+
+
+--
+- These results tell us one of two things:
+
+--
+  + The theory makes incorrect predictions regarding frequency of use and exposure (unlikely, given extensive previous evidence)
+
+--
+  + DLI classrooms are not promoting the use of Spanish in the way that we anticipate
+
+
+--
+- The second possibility is most likely:
+
+
+--
+  + Babino & Stewart (2017), Potowski (2004): children often (or always) respond in English, even when they receive rich input in Spanish
+
+--
+  + There is often not a systematic focus on language objectives across the content areas in immersion programs
+  
+
+--
+- Without creating specific efforts to integrate langauge and content, some of the more technical aspects of language might not develop "for free"
+
+
+--
+  + Harley (1993): some explicit and some content-based instruction is necessary; they should go together
+
+--
+  + Guerrero (2023): translanguaging may have negative implications in this instance (shift towards English)
+
+
+---
+# Concluding Remarks: Critiquing This Project
+
+
+--
+- We want to find methods to support heritage language development across the childhood years in an *equitable* and *sustainable* way
+
+
+--
+  + Will translanguaging truly accomplish this goal?
+
+--
+  + How can we leverage all students' funds of knowledge while also trying to reinforce the status of the Spanish language, leading to its maintenance?
+  
+
+--
+- Raciolinguistic ideologies (Rosa & Flores, 2017): is it truly important that students speak the way that we would expect them to speak?
+
+
+--
+  + A goal of DLI is to develop competence to interact with *a range of different speakers* (bilingual AND monolingual)
+
+--
+  + DOM has important implications for meaning in Spanish, but the subjunctive isn't as essential…
+
+
+--
+- Registers, metalinguistic awareness, and biliteracy development as important pieces of the puzzle
+
+---
+# Bridging the Gap
+
+From Glenn Martínez (2003, p. 53)
+
+
+--
+**If our students walk into the class saying haiga and walk out saying haya, there has been, in my estimation, no value added. However, if they walk in saying haiga and walk out saying either haya or haiga and having the ability to defend their use of haiga if and when they see fit, then there has been value added. It is critical that we strive to allow students to develop this type of sociolinguistic sophistication in our endeavors as SHL [Spanish as a heritage language] educators.**
+
+---
+# References
+
+
+Babino, A., & Stewart, M. A. (2017). “I like English better”: Latino dual language students’ investment in Spanish, English, and bilingualism. *Journal of Latinos and Education*, *16*(1), 18–29. https://doi.org/10.1080/15348431.2016.1179186
+
+Bearse, C., & de Jong, E. (2008). Cultural and linguistic investment: Adolescents in a secondary two-way immersion program. *Equity & Excellence in Education*, *41*(3), 325–340. https://doi.org/10.1080/10665680802174817
+
+Castilla-Earls, A., Francis, D., Iglesias, A., & Davidson, K. (2019). The impact of the Spanish-to-English proficiency shift on the grammaticality of English learners. Journal of Speech, Language, and Hearing Research, 62(6), 1739–1754. https://doi.org/10.1044/2018_JSLHR-L-18-0324
+
+Christian, D., Genesee, F., Lindholm-Leary, K., & Howard, E. R. (2004). *Final progress report: CAL/CREDE study of two-way immersion education*. Center for Applied Linguistics. http://www.cal.org/twi/CREDEfinal.doc
+
+Corbet, J., & Domínguez, L. (2020). The comprehension of tense–aspect morphology by Spanish heritage speakers in the United Kingdom. *Languages*, *5*(46), 1–20. https://doi.org/10.3390/languages5040046
+
+Dracos, M., & Requena, P. E. (2022). Child heritage speakers’ acquisition of the Spanish subjunctive in volitional and adverbial clauses. *Language Acquisition*, *30*(1), 1–28. https://doi.org/10.1080/10489223.2022.2071156
+
+
+---
+# References
+
+
+Dracos, M., Requena, P., & Miller, K. (2019). Acquisition of mood selection in Spanish-speaking children. *Language Acquisition*, *26*(1), 106–118. https://doi.org/10.1080/10489223.2018.1464006
+
+Goebel-Mahrle, T., & Shin, N. L. (2020). A corpus study of child heritage speakers’ Spanish gender agreement. *International Journal of Bilingualism*, *24*(5–6), 1088–1104. https://doi.org/10.1177/1367006920935510
+
+Guerrero, M. (2023). Gauging the adequacy of translanguaging allocation policy in two-way immersion programs in the U.S. *Journal of Latinos and Education*, *22*(4), 1427–1441. https://doi.org/10.1080/15348431.2021.1971086
+
+Guijarro-Fuentes, P., Pires, A., & Nediger, W. (2017). Delay in the acquisition of Differential Object Marking by Spanish monolingual and bilingual teenagers. *International Journal of Bilingualism*, *21*(2), 159–177. https://doi.org/10.1177/1367006915601249
+
+Harley, B. (1993). Instructional strategies and SLA in early French immersion. *Studies in Second Language Acquisition*, *15*(2), 245–259. https://doi.org/10.1017/S0272263100011980
+
+Marian, V., Shook, A., & Schroeder, S. R. (2013). Bilingual two-way immersion programs benefit academic achievement. *Bilingual Research Journal*, *36*(2), 167–186. https://doi.org/10.1080/15235882.2013.818075
+
+---
+# References
+
+
+Martínez, G. (2003). Classroom based dialect awareness in heritage language instruction: A critical applied linguistic approach. *Heritage Language Journal*, *1*(1), 44–57. https://doi.org/10.46538/hlj.1.1.3
+
+Martinez-Nieto, L., & Restrepo, M. A. (2022). Production and comprehension of grammatical gender by Spanish heritage speakers: Evidence from accusative clitic pronouns. *International Journal of Bilingualism*, 136700692110573. https://doi.org/10.1177/13670069211057318
+
+Merino, B. J. (1983). Language loss in bilingual Chicano children. *Journal of Applied Developmental Psychology*, *4*(3), 277–294. https://doi.org/10.1016/0193-3973(83)90023-0
+
+Montrul, S., & Potowski, K. (2007). Command of gender agreement in school-age Spanish-English bilingual children. *International Journal of Bilingualism*, *11*(3), 301–328. https://doi.org/10.1177/13670069070110030301
+
+Montrul, S., & Sánchez-Walker, N. (2013). Differential object marking in child and adult Spanish heritage speakers. *Language Acquisition*, *20*(2), 109–132. https://doi.org/10.1080/10489223.2013.766741
+
+Peña, E. D., Gutiérrez-Clellen, V. F., Iglesias, A., Goldstein, B. A., & Bedore, L. M. (2014). *Bilingual English-Spanish Assessment (BESA)*. BROOKES Publishing CO. https://brookespublishing.com/wp-content/uploads/2021/01/BESA-excerpt.pdf
+
+---
+# References
+
+
+Perez-Cortes, S., Putnam, M., & Sánchez, L. (2019). Differential access: Asymmetries in accessing features and building representations in heritage language grammars. *Languages*, *4*(81), 1–27. https://doi.org/10.3390/languages4040081
+
+Potowski, K. (2004). Student Spanish use and investment in a dual immersion classroom: Implications for second language acquisition and heritage language maintenance. *The Modern Language Journal*, *88*(1), 75–101. https://doi.org/10.1111/j.0026-7902.2004.00219.x
+
+Potowski, K. (2007a). Characteristics of the Spanish grammar and sociolinguistic proficiency of dual immersion graduates. *Spanish in Context*, *4*(2), 187–216. https://doi.org/10.1075/sic.4.2.04pot
+
+Potowski, K. (2007b). *Language and identity in a dual immersion school.* Multilingual Matters Limited.
+
+Putnam, M. T., & Sánchez, L. (2013). What’s so incomplete about incomplete acquisition?: A prolegomenon to modeling heritage language grammars. *Linguistic Approaches to Bilingualism*, *3*(4), 478–508. https://doi.org/10.1075/lab.3.4.04put
+
+R Core Team. (2022). *R: A language and environment for statistical computing* [Computer software]. R Foundation for Statistical Computing. https://www.R-project.org/
+
+---
+# References
+
+
+Rosa, J., & Flores, N. (2017). Unsettling race and language: Toward a raciolinguistic perspective. *Language in Society*, *46*(5), 621–647. https://doi.org/10.1017/S0047404517000562
+
+Steele, J. L., Slater, R. O., Zamarro, G., Miller, T., Li, J., Burkhauser, S., & Bacon, M. (2017). Effects of dual-language immersion programs on student achievement: Evidence From lottery data. *American Educational Research Journal*, *54*(1), 282S-306S. https://doi.org/10.3102/0002831216634463
+
+Swain, M. (1993). The Output Hypothesis: Just speaking and writing aren’t enough. *The Canadian Modern Language Review*, *50*(1), 158–164. https://doi.org/10.3138/cmlr.50.1.158
+
+Swain, M. (1995). Three functions of output in second language learning. In G. Cook & B. Seidlhofer (Eds.), *Principle & practice in applied linguistics: Studies in honour of H.G. Widdowson* (pp. 125–144). Oxford University Press.
+
+Thomas, W. P., & Collier, V. P. (2002). *A national study of school effectiveness for language minority students’ long-term academic achievement.* Center for Research on Education, Diversity, and Excellence (CREDE). https://escholarship.org/uc/item/65j213pt
