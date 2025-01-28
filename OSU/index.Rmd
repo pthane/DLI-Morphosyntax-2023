@@ -1,0 +1,798 @@
+---
+title: "Behind the Scenes: Constructing Manuscripts to Build Heritage Language Theory"
+author: "Patrick D. Thane (he/him/his)"
+institute: "University of Houston Dual Lab"
+date: "February 4, 2025"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: false
+---
+
+```{r, setup, include = FALSE}
+library(tidyverse)
+library(lme4)
+library(xaringan)
+library(xaringanthemer)
+library(xaringanExtra)
+library(lmerTest)
+library(kableExtra)
+library(patchwork)
+library(jtools)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(emmeans)
+library(here)
+
+options(htmltools.dir.version = FALSE)
+options(scipen = 999)
+
+
+knitr::opts_chunk$set(fig.width = 16, fig.height = 7, fig.retina = 3, fig.align = 'center', cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE, hiline = TRUE)
+```
+
+```{r xaringan, include = FALSE, warning = FALSE}
+style_duo_accent(
+  primary_color = "#C8102E",
+  secondary_color = "#888B8D",
+  inverse_header_color = "#FFF9D9")
+```
+
+```{r xaringan-logo, echo = FALSE}
+use_logo(
+  image_url = "https://uh.edu/brand/_img/uh_red.png"
+)
+```
+
+```{r, load-subj-data}
+# EPT
+SDB_EPT <- read_csv(here("./CSV Files/SDB/SDB Subjunctive EPT.csv")) %>%
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "SDBA",
+         Task = "EPT",
+         Mood = "Subjunctive",
+         School = "SDBA",
+         Age = "SDBA")
+
+HSA_EPT <- read_csv(here("./CSV Files/Adult HS/Adult HS Subjunctive EPT.csv")) %>%
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "HSA",
+         Task = "EPT",
+         Mood = "Subjunctive",
+         School = "HSA",
+         Age = "HSA")
+
+DLI78_EPT <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive EPT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-7/8",
+         Task = "EPT",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "HS7/8")
+
+MLS78_EPT <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive EPT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-7/8",
+         Task = "EPT",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "HS7/8")
+
+DLI5_EPT <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive EPT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-5",
+         Task = "EPT",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "HS5")
+
+MLS5_EPT <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive EPT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-5",
+         Task = "EPT",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "HS5")
+
+
+# FCT
+SDB_FCT <- read_csv(here("./CSV Files/SDB/SDB Subjunctive FCT.csv")) %>%
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "SDBA",
+         Task = "FCT",
+         Mood = "Subjunctive",
+         School = "SDBA",
+         Age = "SDBA")
+
+HSA_FCT <- read_csv(here("./CSV Files/Adult HS/Adult HS Subjunctive FCT.csv")) %>%
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "HSA",
+         Task = "FCT",
+         Mood = "Subjunctive",
+         School = "HSA",
+         Age = "HSA")
+
+DLI78_FCT <- read_csv(here("./CSV Files/DLI-78/DLI-78 Subjunctive FCT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-7/8",
+         Task = "FCT",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "HS7/8")
+
+MLS78_FCT <- read_csv(here("./CSV Files/MLS-78/MLS-78 Subjunctive FCT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-7/8",
+         Task = "FCT",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "HS7/8")
+
+DLI5_FCT <- read_csv(here("./CSV Files/DLI-5/DLI-5 Subjunctive FCT.csv")) %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "DLI-5",
+         Task = "FCT",
+         Mood = "Subjunctive",
+         School = "DLI",
+         Age = "HS5")
+
+MLS5_FCT <- read_csv(here("./CSV Files/MLS-5/MLS-5 Subjunctive FCT.csv")) %>% 
+  filter(!School == "GBCS") %>% 
+  filter(Short_Prop == "Intensional") %>% 
+  mutate(Group = "MLS-5",
+         Task = "FCT",
+         Mood = "Subjunctive",
+         School = "MLS",
+         Age = "HS5")
+
+
+## Join datasets by age group
+HS5_EPT <- rbind(DLI5_EPT, MLS5_EPT)
+HS78_EPT <- rbind(DLI78_EPT, MLS78_EPT)
+
+HS5_FCT <- rbind(DLI5_FCT, MLS5_FCT)
+HS78_FCT <- rbind(DLI78_FCT, MLS78_FCT)
+
+
+## Join all age groups
+EPT <- rbind(SDB_EPT, HSA_EPT, HS78_EPT, HS5_EPT)
+FCT <- rbind(SDB_FCT, HSA_FCT, HS78_FCT, HS5_FCT)
+```
+
+
+```{r, prepare-subj-averages}
+## SDBA
+SDB_EPT_Structure <- aggregate(SDB_EPT$Mood_Use, list(SDB_EPT$Structure), FUN = mean, na.rm = TRUE)
+SDB_EPT_Structure <- SDB_EPT_Structure %>% rename(Structure_Avg = x)
+SDB_EPT_Structure <- left_join(SDB_EPT, SDB_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+SDB_FCT_Structure <- aggregate(SDB_FCT$Mood_Use, list(SDB_FCT$Structure), FUN = mean, na.rm = TRUE)
+SDB_FCT_Structure <- SDB_FCT_Structure %>% rename(Structure_Avg = x)
+SDB_FCT_Structure <- left_join(SDB_FCT, SDB_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HSA
+HSA_EPT_Structure <- aggregate(HSA_EPT$Mood_Use, list(HSA_EPT$Structure), FUN = mean, na.rm = TRUE)
+HSA_EPT_Structure <- HSA_EPT_Structure %>% rename(Structure_Avg = x)
+HSA_EPT_Structure <- left_join(HSA_EPT, HSA_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HSA_FCT_Structure <- aggregate(HSA_FCT$Mood_Use, list(HSA_FCT$Structure), FUN = mean, na.rm = TRUE)
+HSA_FCT_Structure <- HSA_FCT_Structure %>% rename(Structure_Avg = x)
+HSA_FCT_Structure <- left_join(HSA_FCT, HSA_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## HS7/8
+HS78_EPT_Structure <- aggregate(HS78_EPT$Mood_Use, list(HS78_EPT$Structure), FUN = mean, na.rm = TRUE)
+HS78_EPT_Structure <- HS78_EPT_Structure %>% rename(Structure_Avg = x)
+HS78_EPT_Structure <- left_join(HS78_EPT, HS78_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS78_FCT_Structure <- aggregate(HS78_FCT$Mood_Use, list(HS78_FCT$Structure), FUN = mean, na.rm = TRUE)
+HS78_FCT_Structure <- HS78_FCT_Structure %>% rename(Structure_Avg = x)
+HS78_FCT_Structure <- left_join(HS78_FCT, HS78_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## 5th, EPT
+HS5_EPT_Structure <- aggregate(HS5_EPT$Mood_Use, list(HS5_EPT$Structure), FUN = mean, na.rm = TRUE)
+HS5_EPT_Structure <- HS5_EPT_Structure %>% rename(Structure_Avg = x)
+HS5_EPT_Structure <- left_join(HS5_EPT, HS5_EPT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+HS5_FCT_Structure <- aggregate(HS5_FCT$Mood_Use, list(HS5_FCT$Structure), FUN = mean, na.rm = TRUE)
+HS5_FCT_Structure <- HS5_FCT_Structure %>% rename(Structure_Avg = x)
+HS5_FCT_Structure <- left_join(HS5_FCT, HS5_FCT_Structure, by = c("Structure" = "Group.1")) %>%  
+  mutate(Structure_Percentage = Structure_Avg * 100)
+
+
+## Join datasets
+EPT_Final <- rbind(SDB_EPT_Structure, HSA_EPT_Structure, HS78_EPT_Structure, HS5_EPT_Structure) %>% 
+  mutate(Structure = "Subjunctive")
+
+FCT_Final <- rbind(SDB_FCT_Structure, HSA_FCT_Structure, HS78_FCT_Structure, HS5_FCT_Structure) %>% 
+  mutate(Structure = "Subjunctive")
+```
+
+```{r, merge-subj-averages-for-boxplot}
+## Merge group-level averages from above
+EPT_Group_Avg <- aggregate(EPT_Final$Mood_Use, list(EPT_Final$Part_ID), FUN = sum, na.rm = TRUE)
+EPT_Group_Avg <- EPT_Group_Avg %>% rename(Part_Avg = x)
+EPT_Group_Avg <- left_join(EPT_Final, EPT_Group_Avg, by = c("Part_ID" = "Group.1"))
+
+FCT_Group_Avg <- aggregate(FCT_Final$Mood_Use, list(FCT_Final$Part_ID), FUN = sum, na.rm = TRUE)
+FCT_Group_Avg <- FCT_Group_Avg %>% rename(Part_Avg = x)
+FCT_Group_Avg <- left_join(FCT_Final, FCT_Group_Avg, by = c("Part_ID" = "Group.1"))
+
+
+## Form overall master file for boxplot
+Master <- rbind(EPT_Group_Avg, FCT_Group_Avg)
+Master$Age <- factor(Master$Age, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+```
+
+```{r, reorder-groups-for-correlation}
+Master_Correlation <- Master
+Master_Correlation$Age <- factor(Master_Correlation$Age, levels = c("SDBA", "HS5", "HS7/8", "HSA"))
+```
+
+```{r, generate-participant-averages-for-boxplot}
+EPT_Participant_Averages <- rbind(SDB_EPT, HSA_EPT, HS78_EPT, HS5_EPT) %>% 
+  group_by(Part_ID, Age) %>%
+  summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(Mood_Use)),
+            Ratio = Total_Subj/Total_Responses) %>% 
+  mutate(Task = "EPT",
+         Structure_Percentage = (Ratio*100))
+
+FCT_Participant_Averages <- rbind(SDB_FCT, HSA_FCT, HS78_FCT, HS5_FCT) %>% 
+  group_by(Part_ID, Age) %>%
+  summarize(Total_Subj = sum(Mood_Use, na.rm = TRUE),
+            Total_Responses = sum(!is.na(Mood_Use)),
+            Ratio = Total_Subj/Total_Responses) %>% 
+  mutate(Task = "FCT",
+         Structure_Percentage = (Ratio*100))
+
+Participant_Averages <- rbind(EPT_Participant_Averages, FCT_Participant_Averages)
+Participant_Averages$Age <- factor(Participant_Averages$Age, levels = c("HS5", "HS7/8", "HSA", "SDBA"))
+
+```
+
+```{r, create-HS-specific-dataframes}
+EPT_HS <- Master %>% 
+  filter(Task == "EPT")
+
+FCT_HS <- Master %>% 
+  filter(Task == "FCT")
+
+HS <- rbind(EPT_HS, FCT_HS) %>% 
+  filter(!Group == "SDBA")
+HS$Age <- factor(HS$Age, levels = c("HS5", "HS7/8", "HSA"))
+```
+
+---
+# Road Map
+
+1. Brief introduction
+
+
+--
+2. Quick summary of BLC article
+
+
+--
+3. Q&A about BLC article
+
+
+--
+4. Open data practices
+
+
+--
+5. Any other questions about…anything
+
+
+---
+# Introduction
+
+
+- Background:
+
+
+--
+  + Graduated from Rutgers (Bilingualism/SLA) in 2023
+  
+--
+  + Dissertation on heritage language (HL) acquisition in dual language schools
+  
+--
+  + Current postdoctoral fellow in Dual Lab, University of Houston
+
+--
+  + Incoming asst. professor at UT Austin
+
+
+--
+- My research areas
+
+--
+  + Morphosyntactic development in bilingual Spanish
+
+--
+  + Language acquisition in dual language schools
+
+--
+  + Typical and atypical morphological development
+
+
+--
+- Research aims:
+
+
+--
+  + Bring together theoretical and applied research in language acquisition
+
+--
+  + Create a holistic perspective of heritage language development, particularly in children
+
+--
+  + Challenge deficit notions of bilingualism through novel perspectives on the language faculty
+
+---
+# Summing Up
+
+Link to article: https://www.cambridge.org/core/journals/bilingualism-language-and-cognition/article/acquiring-morphology-through-adolescence-in-spanish-as-a-heritage-language-the-case-of-subjunctive-mood/674D0A3F8DAAAE5388E728FD98C07D15
+
+
+--
+* Theories within generative heritage language (HL) acquisition differ in multiple dimensions (see Table 3)
+
+--
+  + Language acquisition vs. language loss
+  
+--
+  + Focus on group-level or individual-level differences
+  
+--
+  + Process vs. product of acquisition (end result or continuing shifts?)
+
+--
+* Understanding bilingual development in childhood might help us to achieve a "unified" acquisition theory
+
+
+--
+* Most existing theories are needed in order to account for results at three levels:
+
+--
+  + Group-level differences (why do HSs differ from other types of bilinguals?)
+
+--
+  + Individual-level differences (why do some HSs differ from others?)
+
+--
+  + Within-speaker differences (what factors characterize the "gray area" in why HSs show very gradient knowledge?)
+
+
+---
+# Unpacking Putnam and Sánchez (2013)
+
+
+- You've already read about incomplete acquisition (see work by S. Montrul), which proposes:
+
+--
+  + Language development is interrupted due to a reduction in input
+
+--
+  + HSs differ as a group from other groups of speakers as a result
+
+
+--
+- Putnam and Sánchez discuss *feature reassembly:*
+
+--
+  + In generative linguistics, language is made up of bunches of features
+
+--
+  + These features get *reassembled* if exposure to the HL is low (prediction of language loss)
+
+--
+  + Producing the HL is harder than interpreting it (explains scenario of balanced bilinguals)
+
+--
+  + Language acquisition as a process; explains differences between/within speakers
+  
+
+--
+- These theories do NOT make conflicting predictions, BUT…
+
+--
+  + …Putnam & Sánchez (2013) is proposed as an alternative to incomplete acquisition
+
+--
+  + …They do differ on philosophical grounds (should we study group-level differences at all?)
+
+
+---
+# Shifting Our Methods
+
+
+--
+- The way we craft our studies can be limiting in the contributions we make!
+
+
+--
+- To test individual differences, we need detailed and precise questionnaire data to gather information about:
+
+--
+  + Patterns of exposure and use
+
+--
+  + Age of acquisition
+
+
+--
+- In order to evaluate within-speaker differences, we need to:
+
+--
+  + Study both production and receptive knowledge (separate tasks)
+
+--
+  + Conduct longitudinal studies, whenever possible
+  
+--
+  + Test multiple linguistic structures or areas
+
+
+--
+- We almost always design studies whose questions focus on only 1-2 of three levels mentioned previously:
+
+
+--
+  + Group-level
+
+--
+  + Individual-level
+
+--
+  + Within-speaker
+
+
+---
+# Results
+
+
+- Spanish-dominant bilingual adults produce and select subjunctive more than all *groups* of heritage speakers
+
+
+--
+- Individual differences paint a different picture:
+
+--
+  + 25/109 HSs produced subjunctive within the range of Spanish-dominant adults
+
+--
+  + All participants used (produced + selected) subjunctive in at least 2 instances
+
+--
+  + HSs are either gradient or categorical in using the subjunctive (but never in omitting it), so group-level differences are quite misleading
+
+
+--
+- Proficiency and use of Spanish modulated individual subjunctive production and selection rates
+
+
+--
+- Older children and adults use similar rates of subjunctive, more than the fifth grade children
+
+
+--
+- Greater selection of subjunctive than production (in line with Putnam and Sánchez, 2013)
+
+
+--
+- Sets the stage for creating a comprehensive theory of HL acquisition by children:
+
+
+--
+  + Nuances at the between-groups, individual, and within-speaker levels
+
+--
+  + (Indirectly) evaluates continued development across the childhood years
+
+--
+  + Along with partner studies, requires bridging theoretical linguistics with the education
+
+--
+  + Achieves a new perspective that HSs' grammars are *more* complex than those of monolinguals
+
+
+---
+# Pausing, Reflecting, and Transitioning
+
+
+--
+- Any questions, theoretical or otherwise?
+
+
+--
+- What are the implications of this work for our view of heritage bilingualism?
+
+
+--
+- How can we make these data transparent and reproducible to contribute to open science?
+
+
+--
+- How do we make critical decisions in R that influence our analyses?
+
+
+---
+# Reproducible Research in R Using GitHub
+
+
+--
+- Anonymized data without identifiers (name, DOB, any sort of ID number, etc.) are not human subjects data and can be shared publicly
+
+
+--
+- The data and code from this study (and all studies from my dissertation) are available on GitHub, and links to the repository are in my manuscripts (https://github.com/pthane/DLI-Morphosyntax-2023)
+
+
+--
+- GitHub is a place to store codes and other documents related to your research such as:
+
+
+--
+  + *ANONYMIZED* CSV files
+
+--
+  + Scripts used for coding
+  
+--
+  + Text files explaining the structure of your repository (usually RTF files)
+
+--
+  + Presentations and HTML documents prepared in RMarkdown
+
+
+--
+- This allows others to download and elaborate on your work for free
+
+
+--
+  + GitHub membership is free and unlimited with an @.edu email address
+  
+--
+  + Public repositories are visible to the entire Internet
+  
+--
+  + R is free, and RTF files do not require Microsoft Word (accessible to all)
+
+
+--
+- This satisfies open materials requirements for publications along with a list of stimuli or interview questions, etc. in your manuscript
+
+
+---
+# Reproducible Coding in R
+
+
+--
+- Using the `here` function helps others who download your work to reproduce it
+
+--
+  + Use this when loading or creating CSV or Excel files
+
+--
+  + This creates a _relative path_ so that anyone who downloads your code can use it
+
+
+---
+# Using the `here` Function
+
+
+```{r, here-example, echo = TRUE}
+## Install `here` package
+install.packages("here", repos = "https://cloud.r-project.org/")
+
+
+## Load `here` package on every script
+library(tidyverse)
+library(here)
+
+
+## Load a CSV file with `here`
+## (Notice the use of parentheses. The name of the file begins in the same place where the .Rproj file is stored. We will use the adult HSs' production data as an example.)
+My_Data <- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"))
+```
+
+
+---
+# Presentations in R with `xaringan`
+
+
+- The `xaringan` package allows you to turn an RMarkdown file into slides that contain code
+
+--
+  + This and all presentations in my GitHub repository were created using `xaringan`
+
+--
+  + `xaringan` allows you to use any code as you would in regular R scripts to create presentations
+
+
+--
+- Using `xaringan` has a number of advantages:
+
+--
+  + Great for conference presentations that you want others to be able to see after via GitHub
+
+--
+  + Great for projects with ongoing data collection
+
+--
+  + Perfect for showing a reproducible product to general audiences
+
+--
+  + You can post code in your slides, allowing others to learn
+
+
+--
+- Tutorial for using `xaringan`: https://www.youtube.com/watch?v=RPFh3y9UAX4
+
+--
+  + Includes 2 hours of instruction and practice activities
+
+--
+  + You don't need all 2 hours to get started and get familiar
+
+
+---
+# Sharing Your `xaringan` RSlides with GitHub
+
+
+- All data can be downloaded and presentations can be shared using stable URLs
+
+
+--
+
+- You must create a subfolder in your RProject with an RMarkdown file named index.Rmd in it, where you will put all of your code to create your slides
+
+--
+- After you knit your RMarkdown file with all of the desired code for the presentation, you can upload it to GitHub.
+
+
+--
+- Every GitHub repository has settings. To use the settings, .
+
+
+--
+- When uploaded to a GitHub repository, the resulting index.html file will turn into a public version of your slides!
+
+
+---
+# 2. Thoughtful graphing/plotting
+```{r, generate-subj-bar-graph}
+Bar_Graph <- Master %>% 
+  ggplot(aes(x = Age, y = Structure_Percentage, fill = Task)) +
+  geom_bar(position = "dodge", color = "black", stat = "identity") +
+  scale_y_continuous(breaks = seq(0, 100, 20),
+                     limits = c(0, 100)) +
+    geom_text(aes(label = round(Structure_Percentage)),
+            position = position_dodge(width = .9),
+            vjust = -0.5,
+            size = 6) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of subjunctive responses", title = "Group-Level Average Subjunctive Use") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18),
+        strip.text = element_text(size = 20, face = "bold"))
+```
+
+```{r, generate-subj-boxplot}
+Boxplot <- Participant_Averages %>% 
+  ggplot(aes(x = Age, y = Structure_Percentage, fill = Task)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_fill_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Group", y = "Percentage of subjunctive responses", title = "Group-Level Summary of Subjunctive Use") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-plots}
+(Bar_Graph)+(Boxplot)
+```
+
+---
+# GLMM Forest Plot
+
+```{r, generate-subj-overall-correlation}
+Correlation <- glmer(Mood_Use ~ Age + Task + Use_Joint_Std + Task:Use_Joint_Std +
+                       (1 | Part_ID) + (1 | Item),
+                     data = Master_Correlation,
+                     family = "binomial")
+```
+
+```{r, generate-subj-overall-forest-plot}
+Correlation_Plot <- plot_model(Correlation, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
+                scale_y_continuous(breaks = seq(-8, 8, 2),
+                     limits = c(-8, 8)) +
+              scale_x_discrete(labels = c("Frequency of use : FCT", "Frequency of use", "FCT", "HSA", "HS7/8", "HS5", "(Intercept)")) +
+  labs(title = "Subjunctive GLMM", y = "Estimates") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"))
+```
+
+```{r, print-Subj-overall-forest-plot}
+(Correlation_Plot)
+```
+
+
+---
+# Individual Differences: Code
+
+```{r, calculate-subj-ind-diffs, echo = TRUE}
+## Bring EPT and FCT data together
+Diffs = left_join(EPT_Participant_Averages, FCT_Participant_Averages, by = "Part_ID", "Age") %>%
+
+## Rename the age column, as it got renamed during the "let_join" operation
+  rename(Age = Age.x) %>% 
+
+## Select only the desired columns to make it easier to interpret
+  select(Part_ID, Age, Structure_Percentage.x, Structure_Percentage.y) %>% 
+  
+## Rename columns with similar names
+  rename(Production = Structure_Percentage.x,
+         Preference = Structure_Percentage.y) %>% 
+
+
+## Remove SDBA data -- this is about HS performance
+  filter(!Age == "SDBA")
+
+
+## Re-order groups so that they appear in increasing order
+Diffs$Age <- factor(Diffs$Age, levels = c("HS5", "HS7/8", "HSA"))
+```
+
+
+---
+# Individual Differences: Graph
+
+```{r, generate-subj-diffs-plot}
+Diffs_Plot <- Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Age), size = 3) +
+  scale_x_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  labs(x = "Percentage of sentences subjunctive produced", y = "Percentage with subjunctive selected", title = "Individual Rates of Subjunctive Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-subj-diffs-plot}
+(Diffs_Plot)
+```
