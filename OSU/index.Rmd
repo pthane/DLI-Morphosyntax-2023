@@ -281,7 +281,7 @@ HS <- rbind(EPT_HS, FCT_HS) %>%
 HS$Age <- factor(HS$Age, levels = c("HS5", "HS7/8", "HSA"))
 ```
 
----
+
 # Road Map
 
 1. Brief introduction
@@ -597,10 +597,7 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 --
   + This creates a _relative path_ so that anyone who downloads your code can use it
 
-
----
-# Using the `here` Function
-
+--
 
 ```{r, here-example, echo = TRUE}
 ## Install `here` package
@@ -608,7 +605,6 @@ install.packages("here", repos = "https://cloud.r-project.org/")
 
 
 ## Load `here` package on every script
-library(tidyverse)
 library(here)
 
 
@@ -694,7 +690,8 @@ My_Data <- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"
 
 
 ---
-# 2. Thoughtful graphing/plotting
+# Group-Level Plots from BLC Paper
+
 ```{r, generate-subj-bar-graph}
 Bar_Graph <- Master %>% 
   ggplot(aes(x = Age, y = Structure_Percentage, fill = Task)) +
@@ -734,8 +731,44 @@ Boxplot <- Participant_Averages %>%
 (Bar_Graph)+(Boxplot)
 ```
 
+
 ---
-# GLMM Forest Plot
+# Individual Differences Plot from BLC Paper
+
+```{r, calculate-subj-ind-diffs}
+Diffs = left_join(EPT_Participant_Averages, FCT_Participant_Averages, by = "Part_ID", "Age") %>%
+  rename(Age = Age.x) %>% 
+  select(Part_ID, Age, Structure_Percentage.x, Structure_Percentage.y) %>% 
+  rename(Production = Structure_Percentage.x,
+         Preference = Structure_Percentage.y) %>% 
+  filter(!Age == "SDBA")
+
+Diffs$Age <- factor(Diffs$Age, levels = c("HS5", "HS7/8", "HSA"))
+```
+
+```{r, generate-subj-diffs-plot}
+Diffs_Plot <- Diffs %>% 
+  ggplot(aes(x = Production, y = Preference)) +
+  geom_jitter(mapping = aes(color = Age), size = 3) +
+  scale_x_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  scale_y_continuous(breaks = seq (0, 100, 20),
+                     limits = c(0, 100)) +
+  labs(x = "Percentage of sentences subjunctive produced", y = "Percentage with subjunctive selected", title = "Individual Rates of Subjunctive Selection and Production", color = "Group") +
+  theme(axis.text = element_text(size = 18, face = "bold"),
+        axis.title = element_text(size = 20, face = "bold"),
+        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
+        legend.title = element_text(size = 18, face = "bold"),
+        legend.text = element_text(size = 18))
+```
+
+```{r, print-subj-diffs-plot}
+(Diffs_Plot)
+```
+
+
+---
+# GLMM Forest Plot (Result of Correlations)
 
 ```{r, generate-subj-overall-correlation}
 Correlation <- glmer(Mood_Use ~ Age + Task + Use_Joint_Std + Task:Use_Joint_Std +
@@ -761,51 +794,49 @@ Correlation_Plot <- plot_model(Correlation, show.values = TRUE, show.intercept =
 
 
 ---
-# Individual Differences: Code
+# Tying It All Together
 
-```{r, calculate-subj-ind-diffs, echo = TRUE}
-## Bring EPT and FCT data together
-Diffs = left_join(EPT_Participant_Averages, FCT_Participant_Averages, by = "Part_ID", "Age") %>%
 
-## Rename the age column, as it got renamed during the "let_join" operation
-  rename(Age = Age.x) %>% 
+- The BLC paper was prepared using *fully* open science:
 
-## Select only the desired columns to make it easier to interpret
-  select(Part_ID, Age, Structure_Percentage.x, Structure_Percentage.y) %>% 
+
+--
+  + Published open access in BLC (free for you while at OSU: https://www.cambridge.org/core/services/open-access-policies/read-and-publish-agreements/oa-agreement-ohiolink)
   
-## Rename columns with similar names
-  rename(Production = Structure_Percentage.x,
-         Preference = Structure_Percentage.y) %>% 
+--
+  + All anonymized data are on GitHub and visible to anyone
+
+--
+  + `here` and `xaringan` make it easy to share these results with others
 
 
-## Remove SDBA data -- this is about HS performance
-  filter(!Age == "SDBA")
+--
+- Theoretical contributions to language acquisition theory *should* be reproducible because:
 
+--
+  + Language is a human right (and bilingualism therefore is too)
 
-## Re-order groups so that they appear in increasing order
-Diffs$Age <- factor(Diffs$Age, levels = c("HS5", "HS7/8", "HSA"))
-```
+--
+  + Our ability to make claims about the way that language works depends on the analyses we perform
+  
+--
+  + Sometimes, others may have different ideas on how to make analyses more robust, and sharing our approach is a necessary first step
 
 
 ---
-# Individual Differences: Graph
+# Closing Questions
 
-```{r, generate-subj-diffs-plot}
-Diffs_Plot <- Diffs %>% 
-  ggplot(aes(x = Production, y = Preference)) +
-  geom_jitter(mapping = aes(color = Age), size = 3) +
-  scale_x_continuous(breaks = seq (0, 100, 20),
-                     limits = c(0, 100)) +
-  scale_y_continuous(breaks = seq (0, 100, 20),
-                     limits = c(0, 100)) +
-  labs(x = "Percentage of sentences subjunctive produced", y = "Percentage with subjunctive selected", title = "Individual Rates of Subjunctive Selection and Production", color = "Group") +
-  theme(axis.text = element_text(size = 18, face = "bold"),
-        axis.title = element_text(size = 20, face = "bold"),
-        plot.title = element_text(hjust = 0.5, size = 24, face = "bold"),
-        legend.title = element_text(size = 18, face = "bold"),
-        legend.text = element_text(size = 18))
-```
 
-```{r, print-subj-diffs-plot}
-(Diffs_Plot)
-```
+- Please always feel free to reach out! pdthane@central.uh.edu
+
+- Time for additional questions about anything you might find useful to know:
+
+
+--
+  + More questions about the broader scope of the article
+
+--
+  + How coding decisions impact our analyses and perceptions
+
+--
+  + The job market in bilingualism

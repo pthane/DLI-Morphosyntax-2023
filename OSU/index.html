@@ -79,7 +79,7 @@ top:1em;right:1em;
 
 
 
----
+
 # Road Map
 
 1. Brief introduction
@@ -395,10 +395,7 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 --
   + This creates a _relative path_ so that anyone who downloads your code can use it
 
-
----
-# Using the `here` Function
-
+--
 
 
 ``` r
@@ -409,12 +406,11 @@ install.packages("here", repos = "https://cloud.r-project.org/")
 ```
 ## 
 ## The downloaded binary packages are in
-## 	/var/folders/fs/8c0p4wh91tq5md1wwk7txz200000gn/T//Rtmprxfqvl/downloaded_packages
+## 	/var/folders/fs/8c0p4wh91tq5md1wwk7txz200000gn/T//Rtmpf6Qq5Y/downloaded_packages
 ```
 
 ``` r
 ## Load `here` package on every script
-library(tidyverse)
 library(here)
 
 
@@ -500,15 +496,27 @@ My_Data &lt;- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.c
 
 
 ---
-# 2. Thoughtful graphing/plotting
+# Group-Level Plots from BLC Paper
+
 
 
 
 
 &lt;img src="index_files/figure-html/print-plots-1.png" width="1152" style="display: block; margin: auto;" /&gt;
 
+
 ---
-# GLMM Forest Plot
+# Individual Differences Plot from BLC Paper
+
+
+
+
+
+&lt;img src="index_files/figure-html/print-subj-diffs-plot-1.png" width="1152" style="display: block; margin: auto;" /&gt;
+
+
+---
+# GLMM Forest Plot (Result of Correlations)
 
 
 
@@ -518,39 +526,52 @@ My_Data &lt;- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.c
 
 
 ---
-# Individual Differences: Code
+# Tying It All Together
 
 
-``` r
-## Bring EPT and FCT data together
-Diffs = left_join(EPT_Participant_Averages, FCT_Participant_Averages, by = "Part_ID", "Age") %&gt;%
+- The BLC paper was prepared using *fully* open science:
 
-## Rename the age column, as it got renamed during the "let_join" operation
-  rename(Age = Age.x) %&gt;% 
 
-## Select only the desired columns to make it easier to interpret
-  select(Part_ID, Age, Structure_Percentage.x, Structure_Percentage.y) %&gt;% 
+--
+  + Published open access in BLC (free for you while at OSU: https://www.cambridge.org/core/services/open-access-policies/read-and-publish-agreements/oa-agreement-ohiolink)
   
-## Rename columns with similar names
-  rename(Production = Structure_Percentage.x,
-         Preference = Structure_Percentage.y) %&gt;% 
+--
+  + All anonymized data are on GitHub and visible to anyone
+
+--
+  + `here` and `xaringan` make it easy to share these results with others
 
 
-## Remove SDBA data -- this is about HS performance
-  filter(!Age == "SDBA")
+--
+- Theoretical contributions to language acquisition theory *should* be reproducible because:
 
+--
+  + Language is a human right (and bilingualism therefore is too)
 
-## Re-order groups so that they appear in increasing order
-Diffs$Age &lt;- factor(Diffs$Age, levels = c("HS5", "HS7/8", "HSA"))
-```
+--
+  + Our ability to make claims about the way that language works depends on the analyses we perform
+  
+--
+  + Sometimes, others may have different ideas on how to make analyses more robust, and sharing our approach is a necessary first step
 
 
 ---
-# Individual Differences: Graph
+# Closing Questions
 
 
+- Please always feel free to reach out! pdthane@central.uh.edu
 
-&lt;img src="index_files/figure-html/print-subj-diffs-plot-1.png" width="1152" style="display: block; margin: auto;" /&gt;
+- Time for additional questions about anything you might find useful to know:
+
+
+--
+  + More questions about the broader scope of the article
+
+--
+  + How coding decisions impact our analyses and perceptions
+
+--
+  + The job market in bilingualism
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
