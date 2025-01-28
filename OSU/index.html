@@ -379,21 +379,49 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 
 
 --
-- This satisfies open materials requirements for publications so long as you also provide a list of stimuli or interview questions, etc. in your manuscript
+- This satisfies open materials requirements for publications along with a list of stimuli or interview questions
 
 
 ---
-# Creating Presentations in R
-
---
-- All data can be downloaded and presentations can be shared using stable URLs
+# Reproducible Coding in R
 
 
 --
-  + Must include public GitHub site (inside repository settings)
+- Using the `here` function helps others who download your work to reproduce it
 
 --
-  + By creating and uploading a Markdown file named index.Rmd (and successfully knitting it as an HTML file), you will automatically create a stable URL where your slides can be viewed
+  + Use this when loading or creating CSV or Excel files
+
+--
+  + This creates a _relative path_ so that anyone who downloads your code can use it
+
+
+---
+# Using the `here` Function
+
+
+
+``` r
+## Install `here` package
+install.packages("here", repos = "https://cloud.r-project.org/")
+```
+
+```
+## 
+## The downloaded binary packages are in
+## 	/var/folders/fs/8c0p4wh91tq5md1wwk7txz200000gn/T//Rtmprxfqvl/downloaded_packages
+```
+
+``` r
+## Load `here` package on every script
+library(tidyverse)
+library(here)
+
+
+## Load a CSV file with `here`
+## (Notice the use of parentheses. The name of the file begins in the same place where the .Rproj file is stored. We will use the adult HSs' production data as an example.)
+My_Data &lt;- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"))
+```
 
 
 ---
@@ -412,7 +440,6 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 --
 - Using `xaringan` has a number of advantages:
 
-
 --
   + Great for conference presentations that you want others to be able to see after via GitHub
 
@@ -421,6 +448,9 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 
 --
   + Perfect for showing a reproducible product to general audiences
+
+--
+  + You can post code in your slides, allowing others to learn
 
 
 --
@@ -434,45 +464,39 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 
 
 ---
-# Reproducible Coding in R
+# Sharing `xaringan` RSlides Using GitHub
+
+
+- All data can be downloaded and presentations can be shared using stable URLs
 
 
 --
-- Using the `here` function helps others who download your work to reproduce it
+- You must create a subfolder in your RProject with an RMarkdown file named index.Rmd in it, where you will put all of your code to create your slides
+
 
 --
-  + Use this when loading or creating CSV or Excel files
+- After you knit your RMarkdown file with all of the desired code for the presentation, you can upload it to GitHub.
+
 
 --
-  + This creates a _relative path_ so that anyone who downloads your code can use it
+- Every GitHub repository has settings to make it into a GitHub site:
+
+--
+  + Settings &gt; Pages (on left menu)
+
+--
+  + In _Pages_, select 'main' under 'Branches' (this is only possible after you have uploaded files)
   
-
----
-# Using the `here` Function
-
+--
+  + Remember to save your settings!
 
 
-``` r
-## Install `here` package
-install.packages("here", repos = "https://cloud.r-project.org/")
-```
-
-```
-## 
-## The downloaded binary packages are in
-## 	/var/folders/fs/8c0p4wh91tq5md1wwk7txz200000gn/T//RtmplKr6hH/downloaded_packages
-```
-
-``` r
-## Load `here` package on every script
-library(tidyverse)
-library(here)
+--
+- Review of how to create HTML page: https://mbounthavong.com/blog/2022/7/30/hosting-a-r-markdown-html-file-on-a-github-page
 
 
-## Load a CSV file with `here`
-## (Notice the use of parentheses. The name of the file begins in the same place where the .Rproj file is stored. We will use the adult HSs' production data as an example.)
-My_Data &lt;- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"))
-```
+--
+- When uploaded to a GitHub repository, the resulting index.html file will automatically turn into a public version of your slides after a few minutes!
 
 
 ---

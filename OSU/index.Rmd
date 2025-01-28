@@ -581,7 +581,7 @@ Link to article: https://www.cambridge.org/core/journals/bilingualism-language-a
 
 
 --
-- This satisfies open materials requirements for publications along with a list of stimuli or interview questions, etc. in your manuscript
+- This satisfies open materials requirements for publications along with a list of stimuli or interview questions
 
 
 ---
@@ -658,26 +658,39 @@ My_Data <- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"
 
 
 ---
-# Sharing Your `xaringan` RSlides with GitHub
+# Sharing `xaringan` RSlides Using GitHub
 
 
 - All data can be downloaded and presentations can be shared using stable URLs
 
 
 --
-
 - You must create a subfolder in your RProject with an RMarkdown file named index.Rmd in it, where you will put all of your code to create your slides
+
 
 --
 - After you knit your RMarkdown file with all of the desired code for the presentation, you can upload it to GitHub.
 
 
 --
-- Every GitHub repository has settings. To use the settings, .
+- Every GitHub repository has settings to make it into a GitHub site:
+
+--
+  + Settings > Pages (on left menu)
+
+--
+  + In _Pages_, select 'main' under 'Branches' (this is only possible after you have uploaded files)
+  
+--
+  + Remember to save your settings!
 
 
 --
-- When uploaded to a GitHub repository, the resulting index.html file will turn into a public version of your slides!
+- Review of how to create HTML page: https://mbounthavong.com/blog/2022/7/30/hosting-a-r-markdown-html-file-on-a-github-page
+
+
+--
+- When uploaded to a GitHub repository, the resulting index.html file will automatically turn into a public version of your slides after a few minutes!
 
 
 ---
