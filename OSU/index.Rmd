@@ -609,7 +609,8 @@ library(here)
 
 
 ## Load a CSV file with `here`
-## (Notice the use of parentheses. The name of the file begins in the same place where the .Rproj file is stored. We will use the adult HSs' production data as an example.)
+## (Notice the use of parentheses. The name of the file begins in the same place where the .Rproj
+## file is stored. We will use the adult HSs' production data as an example.)
 My_Data <- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"))
 ```
 
@@ -682,11 +683,11 @@ My_Data <- read_csv(here("CSV Files", "Adult HS", "Adult HS Subjunctive EPT.csv"
 
 
 --
-- Review of how to create HTML page: https://mbounthavong.com/blog/2022/7/30/hosting-a-r-markdown-html-file-on-a-github-page
+- When uploaded to a GitHub repository, the resulting index.html file will automatically turn into a public version of your slides after a few minutes
 
 
 --
-- When uploaded to a GitHub repository, the resulting index.html file will automatically turn into a public version of your slides after a few minutes!
+- Review of how to create HTML page: https://mbounthavong.com/blog/2022/7/30/hosting-a-r-markdown-html-file-on-a-github-page
 
 
 ---
