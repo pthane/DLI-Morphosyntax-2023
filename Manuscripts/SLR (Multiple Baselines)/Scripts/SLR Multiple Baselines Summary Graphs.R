@@ -21,7 +21,7 @@ Master$Group <- factor(Master$Group, levels = c("MLS-5", "DLBE-5", "MLS-7/8", "D
 
 # Compute graphs
 ## Create axis modification
-Abbreviations <- c("MLS5", "DLBE5", "MLS78", "DLBE78", "Adults")
+Abbreviations <- c("MLS5", "DLBE5", "MLS7/8", "DLBE7/8", "Adults")
 
 
 ## Calculate graphs
@@ -64,8 +64,8 @@ Bar_Graph <- Master_Bar_Summary %>%
             vjust = 0.5,
             size = 2.75,
             fontface = "bold") +
-  scale_fill_manual(values = c("#BF5700", "#F4EFE0")) +
-  labs(x = "Average (SD)", y = "Percentage of target responses") +
+  scale_fill_manual(values = c("black", "white")) +
+  labs(x = "Average (SD)", y = "Percentage of DOM responses") +
   theme(axis.title = element_text(face = "bold"),
         plot.title = element_text(hjust = 0.5, face = "bold"),
         legend.position = "none",
@@ -83,7 +83,7 @@ Boxplot <- Master_Box %>%
   scale_x_discrete(labels = Abbreviations) +
   scale_y_continuous(breaks = seq(0, 100, 20),
                      limits = c(0, 100)) +
-  scale_fill_manual(values = c("#BF5700", "#F4EFE0"), labels = c("PROD", "SEL")) +
+  scale_fill_manual(values = c("black", "white"), labels = c("PROD", "SEL")) +
   labs(x = "Distribution", y = "Percentage of responses") +
   theme(axis.title = element_text(face = "bold"),
         legend.title = element_text(face = "bold"),
@@ -100,10 +100,20 @@ Group_Plot <- (Bar_Graph + Boxplot) +
 
 Group_Plot
 
-ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 4.pdf"),
+
+## Save joint plot
+ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 4 PDF.pdf"),
        plot = Group_Plot,
        device = "pdf",
        width = 7,
        height = 3.5,
        units = "in")
+
+ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 4 PNG.png"),
+       plot = Group_Plot,
+       device = "png",
+       width = 7,
+       height = 3.5,
+       units = "in",
+       dpi = 300)
  

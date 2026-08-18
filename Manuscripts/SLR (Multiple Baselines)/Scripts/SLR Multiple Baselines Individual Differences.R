@@ -42,8 +42,9 @@ Aggregate$Group <- factor(Aggregate$Group, levels = c("MLS-5", "DLBE-5", "MLS-7/
 
 
 # Generate plot
+## Create code
 Ind_Diffs <- Aggregate %>% 
-  ggplot(aes(x = Production, y = Selection, color = Group)) +
+  ggplot(aes(x = Production, y = Selection, shape = Group)) +
   geom_jitter() +
   scale_x_continuous(breaks = seq (0, 100, 20),
                      limits = c(-5, 105)) +
@@ -57,12 +58,22 @@ Ind_Diffs <- Aggregate %>%
 
 Ind_Diffs
 
-ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 6.pdf"),
+
+## Save plot
+ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 6 PDF.pdf"),
        plot = Ind_Diffs,
        device = "pdf",
        width = 6.5,
        height = 3,
        units = "in")
+
+ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 6 PNG.png"),
+       plot = Ind_Diffs,
+       device = "png",
+       width = 6.5,
+       height = 4,
+       units = "in",
+       dpi = 300)
 
 
 # Highlight categorical producers

@@ -43,8 +43,8 @@ Aggregate <- left_join(DOM_EPT, DOM_FCT, by = c("Part_ID", "Group", "Use")) %>%
 ## Calculate graphs
 Use_Plot <- Aggregate %>% 
   ggplot(aes(x = Use, y = Ratio)) + 
-  geom_jitter(aes(color = Group), width = 0.3, height = 0) +
-  geom_smooth(method = "glm", formula = y ~ x, se = TRUE) +
+  geom_jitter(aes(shape = Group), width = 0.3, height = 0) +
+  geom_smooth(method = "glm", formula = y ~ x, se = TRUE, color = "black") +
   facet_grid(rows = vars(Immersion),
              cols = vars(Task)) +
   scale_y_continuous(breaks = seq(0, 100, 20),
@@ -64,10 +64,18 @@ Use_Plot
 
 
 ## Save plot
-ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 5.pdf"),
+ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 5 PDF.pdf"),
        plot = Use_Plot,
        device = "pdf",
        width = 6.5,
        height = 4,
        units = "in")
+
+ggsave(filename = here("Manuscripts", "SLR (Multiple Baselines)", "Graphs", "SLR Multiple Baselines Figure 5 PNG.png"),
+       plot = Use_Plot,
+       device = "png",
+       width = 6.5,
+       height = 4,
+       units = "in",
+       dpi = 300)
 
