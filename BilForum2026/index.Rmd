@@ -993,6 +993,7 @@ Supplemental_Plot <- Supplementary_Data %>%
 
 
 ---
+# Continuing the conversation
 
 ```{r, hall-logo, echo = FALSE, out.width = "35%", fig.align = "center"}
 knitr::include_graphics(here::here("BilForum2026", "HALL_Logo.png"))
@@ -1001,6 +1002,12 @@ knitr::include_graphics(here::here("BilForum2026", "HALL_Logo.png"))
 .center[
 ### [pdthane@utexas.edu](mailto:pdthane@utexas.edu)
 ]
+
+
+**Link to repository and presentation:**
+
+[https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1](https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1)
+
 
 ---
 # References
