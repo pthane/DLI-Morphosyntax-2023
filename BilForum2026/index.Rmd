@@ -120,7 +120,8 @@ Master <- rbind(EPT, FCT) %>%
                                 TRUE ~ Short_Prop)) %>% 
   rename(Context = Short_Prop) %>% 
   select(c(Part_ID, Item, Comp_Use, Group, DELE, DELE_Std, Task, Context, Davies_Std, Verb)) %>% 
-  mutate(Context = factor(Context, levels = c("Subject of ser", "Subject of gustar", "Object of de")))
+  mutate(Context = factor(Context, levels = c("Subject of ser", "Subject of gustar", "Object of de")),
+         Task = factor(Task, levels = c("Production", "Preference")))
 ```
 
 
@@ -148,13 +149,12 @@ Master_Violin <- Master %>%
 Master_Violin$Context <- factor(Master_Violin$Context, levels = c("Subject of ser", "Subject of gustar", "Object of de"))
 
 
-## Left join averages and SD
+## Averages and SD
 Master_Bar_Summary <- Master_Violin %>%
   group_by(Group, Task, Context) %>%
   summarize(Average = mean(Ratio, na.rm = TRUE), 
             SD = sd(Ratio, na.rm = TRUE), 
-            .groups = "drop") %>% 
-  left_join(Master_Violin, Master_Bar_Summary, by = c("Group", "Task", "Context"))
+            .groups = "drop")
 
 Master_Bar_Summary$Context <- factor(Master_Bar_Summary$Context, levels = c("Subject of ser", "Subject of gustar", "Object of de"))
 ```
@@ -319,11 +319,14 @@ DOM <- rbind(HS_EPT_DOM, L2L_EPT_DOM, HS_FCT_DOM, L2L_FCT_DOM)
 
 ## By contrast
 Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>% 
-  mutate(Structure = factor(Structure, levels = c("Infinitives", "Subjunctive", "DOM")))
+  mutate(Structure = factor(Structure, levels = c("Infinitives", "Subjunctive", "DOM")),
+         Task = factor(Task, levels = c("Production", "Preference")))
 ```
 
 # Introduction
 
+
+--
 - Inflectional morphology is a well-known "bottleneck" of heritage (e.g., Slabakova, 2020) and L2 (e.g., Jensen et al., 2020) acquisition
 
 
@@ -355,7 +358,7 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
   + Inflectional irregularities or nontransparent/noncanonical cues
 
 --
-  + Generally, some degree of involvement of the lexicon, semantics, or vocabulary (see Sorace, 2011)
+  + Generally, some degree of involvement of the lexicon, semantics, or pragmatics (see Sorace, 2011)
 
 
 ---
@@ -774,10 +777,10 @@ Summary_Plot <- (Bar_Graph + Violin) +
 ```{r, generate-proficiency-graph}
 ## Program plot
 Proficiency_Plot <- Proficiency %>% 
-  ggplot(aes(x = DELE, y = Ratio, color = Group)) + 
+  ggplot(aes(x = DELE, y = Ratio, color = Task)) + 
   geom_jitter(size = 3, width = 1, alpha = 0.6) +
   geom_smooth(method = glm) +
-  facet_grid(rows = vars(Task),
+  facet_grid(rows = vars(Group),
              cols = vars(Context)) +
   scale_y_continuous(breaks = seq(0, 100, 20),
                      limits = c(-5, 115)) +
@@ -816,8 +819,8 @@ Combined_Correlation <- glmer(Comp_Use ~ Group + DELE_Std + Task + Context + Dav
 
 # Generate forest plot
 Combined_Correlation_Plot <- plot_model(Combined_Correlation, show.values = TRUE, show.intercept = TRUE, value.offset = .3, transform = NULL, vline.color = "black") +
-      scale_x_discrete(labels = c("L2L * Preference", "Lexical frequency", "Object of de", "Subject of gustar", "Preference task", "Proficiency", "L2 Learners", "(Intercept)")) +
-    scale_y_continuous(breaks = seq(-15, 15, 3),
+          scale_x_discrete(labels = c("L2L * Preference", "Lexical frequency", "Object of de", "Subject of gustar", "Preference task", "Proficiency", "L2 Learners", "(Intercept)")) +
+  scale_y_continuous(breaks = seq(-15, 15, 3),
                        limits = c(-15, 15)) +
   labs(title = "Overall model", y = "Estimates") +
   theme(axis.text = element_text(size = 18, face = "bold"),
@@ -891,7 +894,7 @@ Preference_Correlation_Plot <- plot_model(Preference_Correlation, show.values = 
 
 
 --
-- No group-level effects (heritage speakers vs. L2 learners)
+- L2 learners more consistent in using NIs than heritage speakers, particularly on preference task
 
 
 --
@@ -922,7 +925,7 @@ Preference_Correlation_Plot <- plot_model(Preference_Correlation, show.values = 
 
 
 --
-- No group-level advantage for HS over L2Ls (RQ1), but L2Ls showed more asymmetrical performance between production and selection
+- Subtle group-level effect where L2Ls select more gerunds than HSs (RQ1); L2Ls showed more asymmetrical performance between production and selection
 
 
 --
@@ -1001,12 +1004,11 @@ knitr::include_graphics(here::here("BilForum2026", "HALL_Logo.png"))
 
 .center[
 ### [pdthane@utexas.edu](mailto:pdthane@utexas.edu)
-]
-
 
 **Link to repository and presentation:**
 
-[https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1](https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1)
+[https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html](https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1)
+]
 
 
 ---
