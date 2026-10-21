@@ -450,7 +450,7 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 
 --
-- Patterns of language exposure and proficiency could affect the degree of crosslinguistic influence (Putnam & Sánchez, 2013; Sánchez, 2019)
+- Patterns of language exposure and proficiency could affect the extent of crosslinguistic influence (Putnam & Sánchez, 2013; Sánchez, 2019)
 
 
 --
@@ -464,7 +464,7 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 # Levels of (structured) variation
 
 --
-- Patterns of language use affect **individual** variation (Putnam & Sánchez, 2019)
+- Patterns of language use affect **individual** variation (Putnam & Sánchez, 2013)
 
 
 --
@@ -480,7 +480,7 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 
 --
-- Two possibilities, not mutually exclusive:
+- Two possibilities:
 
 --
   + The high inflectional regularity and syntactic invariability of NIs makes them stable and resistant to crosslinguistic influence, showing stability
@@ -509,11 +509,11 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 
 --
-  + Exploring bilingual variation provides a more precise account of the complexities (*not the simplicities*) of heritage grammars
+  + Exploring bilingual variation provides a more precise account of the complexities (*not the simplicities*) of heritage and L2 grammars
 
 
 ---
-# Past research on gerunds
+# Past research on NIs
 
 
 --
