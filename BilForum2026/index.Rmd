@@ -2,7 +2,7 @@
 title: "Resilience in the Acquisition of Nominalized Infinitives in Heritage and Second Language Spanish"
 author: "Patrick D. Thane<br/>University of Texas at Austin"
 institute: "Bilingualism Forum"
-date: "October 26, 2026"
+date: "October 22, 2026"
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
@@ -36,6 +36,15 @@ output:
 .verb-root  { color: #BF5700; }  /* root — UT burnt orange */
 .verb-vowel { color: #333F48; }  /* thematic vowel — UT charcoal */
 .verb-r     { color: #9CA3AF; }  /* invariant /r/ marker — neutral grey, since it never changes */
+
+css
+.logo-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  margin-top: 10px;
+}
 </style>
 
 
@@ -366,6 +375,20 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 
 --
+- **Nominalized Infinitives** (NIs) occur invariably (no co-occurrence of the gerund) in place of nouns, unlike English, as:
+
+
+--
+  + Subjects
+
+--
+  + Verbal direct objects
+
+--
+  + Prepositional objects
+
+
+--
 - Rather than telling a story of "simplification" (e.g., Silva-Corvalán, 2014), why not tell a story of robustness and resilience?
 
 
@@ -383,19 +406,6 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 <div class="verb-display"><span class="verb-root">sab</span><span class="verb-vowel">e</span><span class="verb-r">r</span></div>
 ]
 ]
-
---
-- **Nominalized Infinitives** (NIs) occur invariably (no co-occurrence of the gerund) in place of nouns, unlike English, as:
-
-
---
-  + Subjects
-
---
-  + Verbal direct objects
-
---
-  + Prepositional objects
 
 
 --
@@ -943,7 +953,7 @@ Preference_Correlation_Plot <- plot_model(Preference_Correlation, show.values = 
   + Consistent results for gerunds in subject position with Solano-Escobar & Cuza (2023)
   
 --
-  + Consistent use of infinitives in prepositional object position in Potowski & Escobar (2015)
+  + Consistent use of infinitives in prepositional object position in Escobar & Potowski (2015)
 
 --
   + Dissonant results from Escobar & Potowski (2015) regarding *ser*
@@ -998,17 +1008,18 @@ Supplemental_Plot <- Supplementary_Data %>%
 ---
 # Continuing the conversation
 
-```{r, hall-logo, echo = FALSE, out.width = "35%", fig.align = "center"}
+.logo-row[
+```{r, hall-logo, echo = FALSE, out.width = "260px"}
 knitr::include_graphics(here::here("BilForum2026", "HALL_Logo.png"))
 ```
 
+```{r, qr-code, echo = FALSE, out.width = "260px"}
+knitr::include_graphics(here::here("BilForum2026", "Presentation_QR.png"))
+```
+]
+
 .center[
 ### [pdthane@utexas.edu](mailto:pdthane@utexas.edu)
-
-**Link to repository and presentation:**
-
-[https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html](https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1)
-]
 
 
 ---
@@ -1016,13 +1027,16 @@ knitr::include_graphics(here::here("BilForum2026", "HALL_Logo.png"))
 
 Alarcón, Irma. 2021. “Adjectival and Verbal Agreement in the Oral Production of Early and Late Bilinguals: Fluency, Complexity, and Integrated Knowledge.” *Revista Española de Lingüística Aplicada/Spanish Journal of Applied Linguistics*, *34*(2):371–401. doi:10.1075/resla.19050.ala.
 
-Belpoliti, Flavia, and Encarna Bermejo. 2020. *Spanish Heritage Learners' Emerging Literacy: Empirical Research and Classroom Practice*. Routledge Advances in Spanish Language Teaching. Milton Park, Abingdon, Oxon New York, NY: Routledge.
+Belpoliti, Flavia, and Encarna Bermejo. 2020. *Spanish Heritage Learners' Emerging Literacy: Empirical Research and Classroom Practice*. Routledge Advances in Spanish Language Teaching. Milton Park, Abingdon, Oxon, New York, NY: Routledge.
 
 Cuza, Alejandro, Rocío Pérez-Tattam, Elizabeth Barajas, Lauren Miller, and Claudia Sadowski. 2013. “The Development of Tense and Aspect Morphology in Child and Adult Heritage Speakers.” Pp. 193–220 in *Language learning and language teaching*. Vol. 38, edited by J. W. Schwieter. Amsterdam: John Benjamins.
 
 Cuza, Alejandro, Laura Solano-Escobar, Santiago Castillo Revelo, Francisco Clavijo, and Edier Gomez-Alzate. 2025. “Nadando Es Mi Deporte Favorito: Infinitives and Gerunds in the Speech of Spanish/English Bilingual Children and Adolescents.” *Bilingualism: Language and Cognition* 1–12. doi:10.1017/S1366728925100771.
 
 Duffield, Nigel, and Lydia White. 1999. “Assessing L2 Knowledge of Spanish Clitic Placement: Converging Methodologies.” *Second Language Research* *15*(2):133–60. doi:10.1191/026765899668237583.
+
+Escobar, Anna María, and Kim Potowski. 2015. *El Español de Los Estados Unidos*. Cambridge, United Kingdom: Cambridge University Press.
+
 
 ---
 # References
@@ -1037,13 +1051,14 @@ Jensen, Isabel Nadine, Roumyana Slabakova, Marit Westergaard, and Björn Lundqui
 
 Melendez, Danny, Jill Jegerski, and Silvina Andrea Montrul. 2025. “The Role of Determiners in the Processing of Gender Agreement Morphology by Heritage Speakers of Spanish.” *Languages* *10*(9):202. doi:10.3390/languages10090202.
 
+
 Montrul, Silvina, Salvador Bautista Maldonado, and Andrew Armstrong. 2026. “Variation along the Referentiality Scale in the Production of Spanish Differential Object Marking by Monolingual and Bilingual Children.” *Language Learning and Development* 1–24. doi:10.1080/15475441.2026.2617273.
+
+Perez-Cortes, Silvia, Michael Putnam, and Liliana Sánchez. 2019. “Differential Access: Asymmetries in Accessing Features and Building Representations in Heritage Language Grammars.” *Languages* *4*(81):1–27. doi:10.3390/languages4040081.
 
 
 ---
 # References
-
-Perez-Cortes, Silvia, Michael Putnam, and Liliana Sánchez. 2019. “Differential Access: Asymmetries in Accessing Features and Building Representations in Heritage Language Grammars.” *Languages* *4*(81):1–27. doi:10.3390/languages4040081.
 
 Putnam, Michael T., and Liliana Sánchez. 2013. “What's so Incomplete about Incomplete Acquisition?: A Prolegomenon to Modeling Heritage Language Grammars.” *Linguistic Approaches to Bilingualism* *3*(4):478–508. doi:10.1075/lab.3.4.04put.
 
@@ -1055,13 +1070,13 @@ Shin, Naomi, Alejandro Cuza, and Liliana Sánchez. 2022. “Structured Variation
 
 Shin, Naomi, Barbara Rodríguez, Aja Armijo, and Molly Perara-Lunde. 2019. “Child Heritage Speakers' Production and Comprehension of Direct Object Clitic Gender in Spanish.” *Linguistic Approaches to Bilingualism* *9*(4–5):659–86. doi:10.1075/lab.17029.shi.
 
----
-# References
-
-
 Silva-Corvalán, Carmen. 1994. “The Gradual Loss of Mood Distinctions in Los Angeles Spanish.” *Language Variation and Change* *6*(3):255–72. doi:10.1017/S095439450000168X.
 
 Slabakova, Roumyana. 2019. “Implications of the Bottleneck Hypothesis for Language Attrition.” Pp. 35–48 in *The oxford handbook of language attrition*, edited by M. S. Schmid and B. Köpke. Oxford University Press.
+
+
+---
+# References
 
 Solano-Escobar, Laura. 2025. “The Production of the Subjunctive in Child Heritage Spanish: An Examination of Early Acquired Contexts.” *Lingua* (104026):1–20. doi:10.2139/ssrn.5129442.
 
@@ -1072,10 +1087,6 @@ Sorace, Antonella. 2011. “Pinning down the Concept of ‘Interface’ in Bilin
 Thane, Patrick D. 2023a. “Frequency Matters in Second Language Acquisition Too! Frequency Effects in the Production of Preterit Morphology with State Verbs in Spanish Second Language Learners and Heritage Speakers.” *Lingua* *295*:1–20. doi:10.1016/j.lingua.2023.103611.
 
 Thane, Patrick D. 2023b. “On the Explanatory Validity of Proxies of Frequency in Heritage Language Acquisition Research.” *Heritage Language Journal* *20*(1):1–30. doi:10.1163/15507076-bja10013.
-
-
----
-# References
 
 Thane, Patrick D. 2025. “Acquiring Morphology through Adolescence in Spanish as a Heritage Language: The Case of Subjunctive Mood.” *Bilingualism: Language and Cognition* *28*(2):373–86. doi:10.1017/%20S1366728924000440.
 
