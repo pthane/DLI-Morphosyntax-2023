@@ -37,16 +37,21 @@ output:
 .verb-vowel { color: #333F48; }  /* thematic vowel — UT charcoal */
 .verb-r     { color: #9CA3AF; }  /* invariant /r/ marker — neutral grey, since it never changes */
 
-css
 .logo-row {
   display: flex;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   gap: 60px;
   margin-top: 10px;
 }
-</style>
+.logo-row img {
+  height: 220px;
+  width: auto;
+  object-fit: contain;
+}
 
+</style>
 
 ```{r, setup, include = FALSE}
 library(tidyverse)
@@ -389,10 +394,6 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 
 --
-- Rather than telling a story of "simplification" (e.g., Silva-Corvalán, 2014), why not tell a story of robustness and resilience?
-
-
---
 - Morphological infinitives are regular across the paradigm (easy to learn and master): <span class="verb-root">root</span> + <span class="verb-vowel">thematic vowel</span> + <span class="verb-r">r</span>
 
 --
@@ -417,6 +418,10 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 --
   + NIs are a case of core syntax (semantically-determined alternatives do not occur)
+
+
+--
+- Rather than telling a story of "simplification" (e.g., Silva-Corvalán, 1994), why not tell a story of robustness and resilience?
 
 
 ---
@@ -464,7 +469,7 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 # Levels of (structured) variation
 
 --
-- Patterns of language use affect **individual** variation (Putnam & Sánchez, 2013)
+- Patterns of language use and proficiency affect **individual** variation (Putnam & Sánchez, 2013)
 
 
 --
@@ -486,11 +491,20 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
   + The high inflectional regularity and syntactic invariability of NIs makes them stable and resistant to crosslinguistic influence, showing stability
 
 --
-  + Individual-level and within-spekaer differences can predict variation, and it is structured within certain contexts
+  + Individual-level and within-speaker differences can predict variation
+  
+  
+--
+  + This within-speaker variation can be structured within certain contexts
 
 
 ---
 # A note on structured variation
+
+
+
+--
+- A form of within-speaker variation (but not synonymous)
 
 
 --
@@ -594,13 +608,8 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 --
 1. Do heritage speakers and L2 learners of Spanish show high rates of production of and preference for NIs?
 
-
 --
-2. Does syntactic context influence the production of/preference for NIs (main clause subject of *gustar*, subordinate clause subject of *ser*, prepositional object of *de*)?
-
-
---
-3. Can proficiency level capture individual variation in NI production and preference?
+2. Can proficiency level capture individual variation in NI production and preference?
 
 
 --
@@ -612,6 +621,10 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
 
 --
   + Lexical frequency of the nominalized verb?
+
+--
+  + Structured variation across syntactic contexts (main clause subject of *gustar*, subordinate clause subject of *ser*, prepositional object of *de*)?
+
 
 
 ---
@@ -943,6 +956,10 @@ Preference_Correlation_Plot <- plot_model(Preference_Correlation, show.values = 
 
 
 --
+- No within-speaker variation as a function of task asymmetry or lexical frequency (RQ4), but L2Ls showed more asymmetry between tasks than HSs
+
+
+--
 - Structured variation found where the gerund is preferred in English as the subject of *ser*, but not where it is required, as in the case of the object of the preposition *de*
 
 
@@ -957,10 +974,6 @@ Preference_Correlation_Plot <- plot_model(Preference_Correlation, show.values = 
 
 --
   + Dissonant results from Escobar & Potowski (2015) regarding *ser*
-
-
---
-- No within-speaker variation as a function of task asymmetry or lexical frequency (RQ4), but L2Ls showed more asymmetry between tasks than HSs
 
 
 --
@@ -1008,18 +1021,22 @@ Supplemental_Plot <- Supplementary_Data %>%
 ---
 # Continuing the conversation
 
-.logo-row[
-```{r, hall-logo, echo = FALSE, out.width = "260px"}
-knitr::include_graphics(here::here("BilForum2026", "HALL_Logo.png"))
+```{r, logo-row, echo = FALSE, results = "asis"}
+cat('
+<div class="logo-row">
+ <img src="HALL_Logo.png" style="height:250px;">
+  <img src="Presentation_QR.png" style="height:250px;">
+</div>
+')
 ```
-
-```{r, qr-code, echo = FALSE, out.width = "260px"}
-knitr::include_graphics(here::here("BilForum2026", "Presentation_QR.png"))
-```
-]
 
 .center[
 ### [pdthane@utexas.edu](mailto:pdthane@utexas.edu)
+
+**Link to repository and presentation:**
+
+[https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html](https://pthane.github.io/DLI-Morphosyntax-2023/BilForum2026/index.html#1)
+]
 
 
 ---
