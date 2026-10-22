@@ -741,7 +741,7 @@ Prof_Table
 
 
 --
-- Lexical frequency (standardized value from Davies, 2016 corpus, found to be acceptable for heritage speakers in Thane, 2023; **within-speaker**)
+- Lexical frequency of nominalized verb (standardized value from Davies, 2016 corpus, found to be acceptable for heritage speakers in Thane, 2023; **within-speaker**)
 
 
 --
