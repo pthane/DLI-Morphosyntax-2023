@@ -337,6 +337,18 @@ Supplementary_Data <- rbind(Infinitives_Summary, Subj, DOM) %>%
          Task = factor(Task, levels = c("Production", "Preference")))
 ```
 
+# Follow along!
+
+```{r, follow-along-QR-code, echo = FALSE, results = "asis"}
+cat('
+<div class="logo-row">
+  <img src="Presentation_QR.png" style="height:500px;">
+</div>
+')
+```
+
+
+---
 # Introduction
 
 
